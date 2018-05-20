@@ -67,6 +67,7 @@
             align-items: center;
             align-content: center;
             background-color: gray;
+            position: relative;
         }
 
         .cell {
@@ -159,195 +160,242 @@
             background-color: goldenrod;
             font-size: calc(var(--size-icon)/2);
         }
+        
+
+        dialog::backdrop {
+            background-color: rgba(0,0,0,0.7);
+        }
     </style>
     <script>
-        function Timer(timerElement) {
-            this.element = timerElement;
-            this.timerId = -1;
-            this.lastCheck = Date.now();
-            this.lastElapsed = 0;
-            this.elapsed = 0;
-            this.isRunning = false;
-        }
-        Timer.prototype.tick = function () {
-            this.isRunning = true;
-            this.elapsed = Date.now() - this.lastCheck;
-            if (this.lastElapsed !== this.elapsed) {
-                this.element.innerHTML = this.toString();
-                this.lastElapsed = this.elapsed;
+        class Timer {
+            constructor(timerElement) {
+                this.element = timerElement;
+                this.timerId = -1;
+                this.lastCheck = Date.now();
+                this.lastElapsed = 0;
+                this.elapsed = 0;
+                this.isRunning = false;
             }
-        };
-        Timer.prototype.start = function () {
-            this.stop();
-            this.clear();
-            this.lastCheck = Date.now();
-            this.timerId = setInterval(this.tick.bind(this), 100);
-            this.element.setAttribute("data-timer", this.timerId);
-        };
-        Timer.prototype.stop = function () {
-            clearInterval(this.timerId);
-            this.element.setAttribute("data-timer", null);
-            this.isRunning = false;
-        };
-        Timer.prototype.clear = function () {
-            this.elapsed = 0;
-            this.element.innerHTML = this.toString();
-        };
-        Timer.prototype.toString = function () {
-            let t = this.elapsed;
-            let m = Math.floor(t / 60000);
-            t = t % 60000;
-            let s = Math.floor(t / 1000);
-            return `${`00${m}`.slice(-2)}:${`00${s}`.slice(-2)}`;
-        }
-
-        function MineBoard(boardRoot, width, height) {
-            this.element = boardRoot;
-            this.width = width;
-            this.height = height;
-            this.cellCount = width * height;
-            this.mineCount = Math.floor(this.cellCount / 6);
-            this.cells = new Array(this.cellCount);
-            this.lastClick = 0;
-            this.timer = new Timer(document.querySelector(".timer"));
-            this.timer.clear();
-            this.randomValues = new Uint8Array(this.cellCount);
-            window.crypto.getRandomValues(this.randomValues);
-        }
-        MineBoard.prototype.init = function () {
-            let isBetween = function (value, min, max) {
-                return (value >= min) && (value <= max);
-            };
-            let boardCells = [];
-            for (let x = 0; x < this.width; x++) {
-                boardCells[x] = [];
-                for (let y = 0; y < this.height; y++) {
-                    boardCells[x][y] = 0;
+            tick() {
+                this.isRunning = true;
+                this.elapsed = Date.now() - this.lastCheck;
+                if (this.lastElapsed !== this.elapsed) {
+                    this.element.innerHTML = this.toString();
+                    this.lastElapsed = this.elapsed;
                 }
             }
+            start() {
+                this.stop();
+                this.clear();
+                this.lastCheck = Date.now();
+                this.timerId = setInterval(this.tick.bind(this), 100);
+                this.element.setAttribute("data-timer", this.timerId);
+            }
+            stop() {
+                clearInterval(this.timerId);
+                this.element.setAttribute("data-timer", null);
+                this.isRunning = false;
+            }
+            clear() {
+                this.elapsed = 0;
+                this.element.innerHTML = this.toString();
+            }
+            toString() {
+                let t = this.elapsed;
+                let m = Math.floor(t / 60000);
+                t = t % 60000;
+                let s = Math.floor(t / 1000);
+                return `${`00${m}`.slice(-2)}:${`00${s}`.slice(-2)}`;
+            }
+        }
 
-            let x, y, value = -(this.mineCount * 2);
-            for (let i = 0; i < this.mineCount; i++) {
-                while (true) {
-                    x = Math.floor(Math.random() * this.width);
-                    y = Math.floor(Math.random() * this.height);
-                    if (0 <= boardCells[x][y]) {
-                        break;
+        class MineBoard {
+            constructor(boardRoot, width, height) {
+                this.element = boardRoot;
+                this.width = width;
+                this.height = height;
+                this.cellCount = width * height;
+                this.mineCount = Math.floor(this.cellCount / 6);
+                this.cells = new Array(this.cellCount);
+                this.lastClick = 0;
+                this.timer = new Timer(document.querySelector(".timer"));
+                this.timer.clear();
+                this.randomValues = new Uint8Array(this.cellCount);
+                window.crypto.getRandomValues(this.randomValues);
+            }
+            init() {
+                let isBetween = function (value, min, max) {
+                    return (value >= min) && (value <= max);
+                };
+                let boardCells = [];
+                for (let x = 0; x < this.width; x++) {
+                    boardCells[x] = [];
+                    for (let y = 0; y < this.height; y++) {
+                        boardCells[x][y] = 0;
                     }
                 }
-                for (let n = -1; n < 2; n++) {
-                    for (let m = -1; m < 2; m++) {
-                        if (n === 0 && m === 0) {
-                            boardCells[x][y] = value;
-                        } else if (isBetween(x + n, 0, this.width - 1) && isBetween(y + m, 0, this.height - 1)) {
-                            boardCells[x + n][y + m]++;
+
+                let x, y, value = -(this.mineCount * 2);
+                for (let i = 0; i < this.mineCount; i++) {
+                    while (true) {
+                        x = Math.floor(Math.random() * this.width);
+                        y = Math.floor(Math.random() * this.height);
+                        if (0 <= boardCells[x][y]) {
+                            break;
+                        }
+                    }
+                    for (let n = -1; n < 2; n++) {
+                        for (let m = -1; m < 2; m++) {
+                            if (n === 0 && m === 0) {
+                                boardCells[x][y] = value;
+                            } else if (isBetween(x + n, 0, this.width - 1) && isBetween(y + m, 0, this.height - 1)) {
+                                boardCells[x + n][y + m]++;
+                            }
+                        }
+                    }
+                }
+
+                let index = 0;
+                for (let x = 0; x < this.width; x++) {
+                    for (let y = 0; y < this.height; y++) {
+                        let i = index;
+                        this.cells[index++] = {
+                            value: boardCells[x][y],
+                            hasMine: boardCells[x][y] < 0,
+                            nearby: boardCells[x][y] >= 0 ? boardCells[x][y] : 0,
+                            x: x,
+                            y: y,
+                            index: i,
+                            hidden: true,
+                            flag: false,
+                            hadOverlay: false
+                        };
+                    }
+                }
+            }
+            clearNearby(cellIndex, wasClicked) {
+                let cell = this.cells[cellIndex];
+                console.log(`nearby {hadOverlay: ${cell.hadOverlay},wasClicked: ${wasClicked}}`);
+            }
+            clearAround(cellIndex) {
+                let cell = this.cells[cellIndex];
+                cell.hidden = false;
+                let minX = cell.x === 0 ? 0 : cell.x - 1;
+                let maxX = cell.x === this.width - 1 ? cell.x : cell.x + 1;
+                let minY = cell.y === 0 ? 0 : cell.y - 1;
+                let maxY = cell.y === this.height - 1 ? cell.y : cell.y + 1;
+                console.log({
+                    x: {
+                        min: minX,
+                        max: maxX
+                    },
+                    y: {
+                        min: minY,
+                        max: maxY
+                    }
+                });
+                for (let x = minX; x < maxX + 1; x++) {
+                    for (let y = minY; y < maxY + 1; y++) {
+                        let nextCell = this.cells.filter(c => c.x === x && c.y === y)[0];
+                        if (nextCell.index !== cellIndex && nextCell.hidden) {
+                            this.revealCell(nextCell.index, true, false);
                         }
                     }
                 }
             }
+            showCell(options) {
+                let { cellIndex, wasClicked, onLose, onBlank, onNearby, onWin } = options;
+                let cell = this.cells[cellIndex];
+                cell.hidden = false;
+                let cel = cell.element;
+                if (cell.hasMine) {
+                    // lose
+                    cel.className = "cell mine";
+                    cel.innerHTML = "💣";
+                    if (onLose) { onLose(); }
+                } else if (cell.nearby === 0) {
+                    cel.className = "cell hidden blank";
+                    setTimeout(function () {
+                        cel.classList.remove("hidden");
+                        cel.innerHTML = "&nbsp;";
+                        this.lastClick -= 1;
+                    }, this.lastClick * 20);
+                    this.lastClick += 1;
+                    if (onBlank) { onBlank(cellIndex); }
+                } else if (this.mineCount === 0) {
+                    if (onWin) { onWin(); }
+                } else {
+                    cel.className = `cell hidden nearby nearby-${cell.nearby}`;
+                    setTimeout(function () {
+                        cel.classList.remove("hidden");
+                        cel.innerHTML = cell.nearby;
+                        this.lastClick -= 1;
+                    }, this.lastClick * 20);
+                    this.lastClick += 1;
+                    if (onNearby) { onNearby(cellIndex, wasClicked); }
+                }
+            }
+            revealCell(cellIndex, hadOverlay, wasClicked) {
+                if (!this.timer.isRunning) {
+                    this.timer.start();
+                }
+                this.cells[cellIndex].hadOverlay = hadOverlay;
+                this.showCell({
+                    cellIndex: cellIndex,
+                    wasClicked: wasClicked,
+                    onLose: this.lose.bind(this),
+                    onBlank: this.clearAround.bind(this),
+                    onNearby: this.clearNearby.bind(this),
+                    onWin: this.win.bind(this)
+                });
+                console.log(`cell ${cellIndex} revealed`);
+            }
+            win() {
+                this.timer.stop();
+                showModalInBoard(this.element, document.getElementById("youWin"));
+            }
+            lose() {
+                this.timer.stop();
+                showModalInBoard(this.element, document.getElementById("youLose"));
+                this.cells.filter(c => c.hidden).forEach(c => this.showCell({cellIndex: c.index}));
+            }
+            toggleFlag(cellIndex) {
+                let cell = this.cells[cellIndex];
+                let cel = cell.element;
+                if (cell.flag) {
+                    cell.flag = false;
+                    cel.classList.remove("flag");
+                    cel.querySelector(".overlay").innerHTML = "&nbsp;";
+                    this.mineCount++;
+                } else if (cell.hidden) {
+                    cell.flag = true;
+                    cel.classList.add("flag");
+                    cel.querySelector(".overlay").innerHTML = "🚩";
+                    this.mineCount--;
+                }
+                document.querySelector(".count").innerHTML = this.mineCount;
+            }
+            clearBoard() {
+                this.element.innerHTML = MineBoard.clearBoardHtml;
+            }
+            static get clearBoardHtml() {
+                return `<dialog id="youWin">
+    <h2>You win! 🎉</h2>
+</dialog>
+<dialog id="youLose">
+    <h2>You lose! 😞</h2>
+</dialog>`;
+            }
+        }
 
-            let index = 0;
-            for (let x = 0; x < this.width; x++) {
-                for (let y = 0; y < this.height; y++) {
-                    let i = index;
-                    this.cells[index++] = {
-                        value: boardCells[x][y],
-                        hasMine: boardCells[x][y] < 0,
-                        nearby: boardCells[x][y] >= 0 ? boardCells[x][y] : 0,
-                        x: x,
-                        y: y,
-                        index: i,
-                        hidden: true,
-                        flag: false
-                    };
-                }
-            }
-        };
-        MineBoard.prototype.clearAround = function (cellIndex) {
-            let cell = this.cells[cellIndex];
-            cell.hidden = false;
-            let minX = cell.x === 0 ? 0 : cell.x - 1;
-            let maxX = cell.x === this.width - 1 ? cell.x : cell.x + 1;
-            let minY = cell.y === 0 ? 0 : cell.y - 1;
-            let maxY = cell.y === this.width - 1 ? cell.y : cell.y + 1;
-            for (let x = minX; x < maxX + 1; x++) {
-                for (let y = minY; y < maxY + 1; y++) {
-                    let nextCell = this.cells.filter(c => c.x === x && c.y === y)[0];
-                    if (nextCell.index !== cellIndex && nextCell.hidden) {
-                        this.revealCell(nextCell.index);
-                    }
-                }
-            }
-        };
-        MineBoard.prototype.showCell = function (cellIndex, onLose, onBlank, onNearby, onWin) {
-            let cell = this.cells[cellIndex];
-            cell.hidden = false;
-            let cel = cell.element;
-            if (cell.hasMine) {
-                // lose
-                cel.className = "cell mine";
-                cel.innerHTML = "💣";
-                if (onLose) { onLose(); }
-            } else if (cell.nearby === 0) {
-                let s = Date.now();
-                cel.className = "cell hidden blank";
-                setTimeout(function () {
-                    cel.classList.remove("hidden");
-                    cel.innerHTML = "&nbsp;";
-                    this.lastClick -= 1;
-                }, this.lastClick * 20);
-                this.lastClick += 1;
-                if (onBlank) { onBlank(cellIndex); }
-            } else if (this.mineCount === 0) {
-                if (onWin) { onWin(); }
-            } else {
-                let s = Date.now();
-                cel.className = `cell hidden nearby nearby-${cell.nearby}`;
-                setTimeout(function () {
-                    cel.classList.remove("hidden");
-                    cel.innerHTML = cell.nearby;
-                    this.lastClick -= 1;
-                }, this.lastClick * 20);
-                this.lastClick += 1;
-                if (onNearby) { onNearby(cellIndex); }
-            }
-        };
-        MineBoard.prototype.revealCell = function (cellIndex) {
-            if (!this.timer.isRunning) {
-                this.timer.start();
-            }
-            this.showCell(
-                cellIndex,
-                this.lose.bind(this),
-                this.clearAround.bind(this, cellIndex)
-            );
-            console.log(`cell ${cellIndex} clicked`);
-        };
-        MineBoard.prototype.win = function () {
-            this.timer.stop();
-            alert("You win!");
-        };
-        MineBoard.prototype.lose = function () {
-            this.timer.stop();
-            alert("You lose!");
-            this.cells.filter(c => c.hidden).forEach(c => this.showCell(c.index));
-        };
-        MineBoard.prototype.toggleFlag = function (cellIndex) {
-            let cell = this.cells[cellIndex];
-            let cel = cell.element;
-            if (cell.flag) {
-                cell.flag = false;
-                cel.classList.remove("flag");
-                cel.querySelector(".overlay").innerHTML = "&nbsp;";
-                this.mineCount++;
-            } else if (cell.hidden) {
-                cell.flag = true;
-                cel.classList.add("flag");
-                cel.querySelector(".overlay").innerHTML = "🚩";
-                this.mineCount--;
-            }
-            document.querySelector(".count").innerHTML = this.mineCount;
-        };
+        function showModalInBoard(boardRoot, modalEl) {
+            let modalElRect = boardRoot.getBoundingClientRect();
+            modalEl.style.top = `${modalElRect.top}px`;
+            modalEl.style.right = `${modalElRect.left}px`;
+            modalEl.style.bottom = `${window.innerHeight - modalElRect.top - modalElRect.height}px`;
+            modalEl.style.left = `${modalElRect.left}px`;
+            modalEl.showModal();
+    }
         function debounce(fn, ms) {
             var timer;
             return function (e) {
@@ -365,7 +413,8 @@
             for (let i = 0; i < cellCount; i++) {
                 boardHtml.push(`<button class="cell hidden" data-cell="${i}"><span class="overlay">&nbsp;</span></button>`);
             }
-            boardRoot.innerHTML = boardHtml.join('');
+            boardRoot.innerHTML = boardHtml.join('') + MineBoard.clearBoardHtml;
+            document.querySelectorAll("dialog").forEach(el => el.addEventListener("click", () => el.close()));
             let docEl = document.documentElement;
             let mineSize = (docEl.scrollWidth / 2) / width;
             docEl.style.setProperty("--size-mine", `${mineSize}px`);
@@ -375,23 +424,29 @@
             boardRoot.addEventListener("mousedown", debounce(function (e) {
                 if (e.target.classList.contains("cell")) {
                     let cellIndex = parseInt(e.target.getAttribute("data-cell"), 10);
+                    board.cells[cellIndex].element = e.target;
                     if (e.button === 0) {
-                        board.revealCell.call(board, cellIndex);
+                        console.log(`cell ${cellIndex} clicked`);
+                        board.revealCell.call(board, cellIndex, Boolean(e.hadOverlay), true);
                     }
                     if (e.button === 2) {
-                        board.toggleFlag.call(board, cellIndex);
+                        console.log(`cell ${cellIndex} flagged`);
+                        board.toggleFlag.call(board, cellIndex, Boolean(e.hadOverlay));
                     }
                 } else if (e.target.classList.contains("overlay")) {
                     let cel = e.target.parentElement;
                     let evt = new MouseEvent(e.type, e);
+                    evt.hadOverlay = true;
+                    evt.preventDefault();
                     cel.dispatchEvent(evt);
                 }
                 e.preventDefault();
+                e.stopPropagation();
             }, 20));
             let board = new MineBoard(boardRoot, width, height);
             board.init();
             board.cells.forEach((c, i) => {
-                c.element = document.querySelector(`[data-cell="${i}"]`);
+                c.element = document.querySelector(`button[data-cell="${i}"]`);
             });
             document.querySelector(".count").innerHTML = board.mineCount;
         }
