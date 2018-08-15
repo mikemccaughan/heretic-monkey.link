@@ -1,4 +1,5 @@
 import Timer from "./timer.js";
+import Modal from "./modal.js";
 export default class MineBoard {
     constructor(boardRoot, width, height) {
         this.element = boardRoot;
@@ -61,6 +62,10 @@ export default class MineBoard {
                     hadOverlay: false
                 };
             }
+        }
+        this.modals = {
+            win: new Modal("youWin", "<h2>You win! 🎉</h2>", boardRoot),
+            lose: new Modal("youLose", "<h2>You lose! 😞</h2>", boardRoot)
         }
     }
     clearNearby(cellIndex, wasClicked) {
@@ -132,11 +137,11 @@ export default class MineBoard {
     }
     win() {
         this.timer.stop();
-        this.showModalInBoard(this.element, document.getElementById("youWin"));
+        this.modals.win.show();
     }
     lose() {
         this.timer.stop();
-        this.showModalInBoard(this.element, document.getElementById("youLose"));
+        this.modals.lose.show();
         this.cells.filter(c => c.hidden).forEach(c => this.showCell({cellIndex: c.index}));
     }
     toggleFlag(cellIndex) {
@@ -156,22 +161,6 @@ export default class MineBoard {
         document.querySelector(".count").innerHTML = this.mineCount;
     }
     clearBoard() {
-        this.element.innerHTML = MineBoard.clearBoardHtml;
-    }
-    static get clearBoardHtml() {
-        return `<dialog id="youWin">
-<h2>You win! 🎉</h2>
-</dialog>
-<dialog id="youLose">
-<h2>You lose! 😞</h2>
-</dialog>`;
-    }
-    showModalInBoard(boardRoot, modalEl) {
-        let modalElRect = boardRoot.getBoundingClientRect();
-        modalEl.style.top = `${modalElRect.top}px`;
-        modalEl.style.right = `${modalElRect.left}px`;
-        modalEl.style.bottom = `${window.innerHeight - modalElRect.top - modalElRect.height}px`;
-        modalEl.style.left = `${modalElRect.left}px`;
-        modalEl.showModal();
+        this.element.innerHTML = "";
     }
 }

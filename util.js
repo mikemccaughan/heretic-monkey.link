@@ -26,6 +26,9 @@ export default class Util {
     }
     static getAncestor(element, selector) {
         let parent = element.parentElement;
+        if (parent == null) {
+            return null;
+        }
         if (parent.matches(selector)) {
             return parent;
         }

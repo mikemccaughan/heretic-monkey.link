@@ -7,6 +7,7 @@
     <link href="minesweeper.css" rel="stylesheet" />
     <script type="module" src="util.js"></script>
     <script type="module" src="timer.js"></script>
+    <script type="module" src="modal.js"></script>
     <script type="module" src="mineboard.js"></script>
     <script type="module">
         import MineBoard from "/mineboard.js";
@@ -24,11 +25,6 @@
                 boardHtml.push(`<button class="cell hidden" data-cell="${i}"><span class="overlay">&nbsp;</span></button>`);
             }
             boardRoot.innerHTML = boardHtml.join('') + MineBoard.clearBoardHtml;
-            document.querySelectorAll("dialog").forEach(el => {
-                let clickHandler = getHandler(el, "click", function () { el.close(); });
-                el.removeEventListener("click", clickHandler);
-                el.addEventListener("click", clickHandler);
-            });
             let docEl = document.documentElement;
             let mineHeight = (window.innerHeight - 160) / height;
             let mineWidth = (window.innerWidth - 160) / width;
