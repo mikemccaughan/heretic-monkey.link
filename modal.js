@@ -1,9 +1,4 @@
 export default class Modal {
-    elementId;
-    html;
-    boardElement;
-    element;
-    isOpen;
     constructor(id, html, board) {
         this.elementId = id;
         this.html = html;
@@ -12,6 +7,7 @@ export default class Modal {
         this.element.id = this.elementId;
         this.element.innerHTML = this.html;
         this.boardElement.appendChild(this.element);
+        this.isOpen = false;
         document.documentElement.addEventListener("click", (e) => this.close());
         document.documentElement.addEventListener("keypress", (e) => this.close());
     }
