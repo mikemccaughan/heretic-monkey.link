@@ -64,8 +64,8 @@ export default class MineBoard {
             }
         }
         this.modals = {
-            win: new Modal("youWin", "<h2>You win! 🎉</h2>", boardRoot),
-            lose: new Modal("youLose", "<h2>You lose! 😞</h2>", boardRoot)
+            win: new Modal("youWin", "<h2>You win! 🎉</h2>", this.element),
+            lose: new Modal("youLose", "<h2>You lose! 😞</h2>", this.element)
         }
     }
     clearNearby(cellIndex, wasClicked) {
