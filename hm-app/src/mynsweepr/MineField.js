@@ -9,6 +9,17 @@ class MineField {
             this.lost = lost;
         }
     }
+    hasHiddenCells() {
+        // flagged cells are still hidden; thus we need to know how many
+        // unflagged cells are hidden.
+        return this.getHiddenCells() - this.getFlaggedCells() > 0;
+    }
+    getFlaggedCells() {
+        return Utility.count(this.cells, (cel) => cel.flag);
+    }
+    getHiddenCells() {
+        return Utility.count(this.cells, (cel) => cel.hidden);
+    }
     getMinesRemaining() {
         return Utility.count(this.cells, (cel) => cel.value < 0 && !cel.flag);
     }
@@ -90,7 +101,6 @@ class MineField {
         return Object.assign({}, cell, { hidden: false });
     }
     showCellInCells(cell) {
-        console.log("showCellInCells");
         this.cells = this.takeActionOnCell(cell, this.showCell);
         return this.cells;
     }
@@ -98,7 +108,6 @@ class MineField {
         return Object.assign({}, cell, { flag: !cell.flag });
     }
     flagCellInCells(cell) {
-        console.log("flagCellInCells");
         this.cells = this.takeActionOnCell(cell, this.flagCell);
         return this.cells;
     }
@@ -114,7 +123,6 @@ class MineField {
                 if (takeActionOnSelf || !(cellY === cell.y && cellX === cell.x)) {
                     let cell = this.cells.find((c) => c.x === cellX && c.y === cellY);
                     if (conditional(cell)) {
-                        console.log(`taking action "${action.name}" on \n${JSON.stringify(cell)}`);
                         action(cell);
                     }
                 }
@@ -140,26 +148,21 @@ class MineField {
             return;
         }
         if (!cellState.hidden) {
-            console.log("not revealing cell (not hidden) ", cell);
             return;
         }
         if (cellState.flag) {
-            console.log("not revealing cell (flagged) ", cell);
             return;
         }
         if (cell.value < 0) {
             this.showCellInCells(cell);
-            console.log("you lose");
             this.lost();
             this.revealAllCells();
         } else if (cell.value === 0) {
-            console.log("revealing cell (blank)", cell);
             this.showCellInCells(cell);
             if (!revealingAll) {
                 this.revealAround(cell);
             }
         } else {
-            console.log("revealing cell (nearby)", cell);
             this.showCellInCells(cell);
         }
     }

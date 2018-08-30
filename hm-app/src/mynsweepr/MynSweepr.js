@@ -17,6 +17,7 @@ class MynSweepr extends Component {
         this.handleStopClock = this.stopClock.bind(this);
         this.handleLoss = this.lost.bind(this);
         this.handleUpdateClock = this.updateClockValue.bind(this);
+        this.handleConfirm = this.confirm.bind(this);
         this.state = {
             difficulty: '9',
             size: {
@@ -39,6 +40,7 @@ class MynSweepr extends Component {
         let difficult = parseInt(changeEvent.target.value, 10);
         let width = isNaN(difficult) ? 30 : difficult;
         let height = isNaN(difficult) ? 16 : difficult === 30 ? 16 : difficult;
+        this.stopClock();
         this.setState({
             difficulty: changeEvent.target.value,
             size: {
@@ -51,6 +53,7 @@ class MynSweepr extends Component {
     widthChanged(changeEvent) {
         let width = parseInt(changeEvent.target.value, 10);
         width = isNaN(width) ? 0 : width;
+        this.stopClock();
         this.setState(prevState => {
             let height = prevState.size.height;
             return {
@@ -65,6 +68,7 @@ class MynSweepr extends Component {
     heightChanged(changeEvent) {
         let height = parseInt(changeEvent.target.value, 10);
         height = isNaN(height) ? 0 : height;
+        this.stopClock();
         this.setState(prevState => {
             let width = prevState.size.width;
             return {
@@ -79,22 +83,32 @@ class MynSweepr extends Component {
     minesRemainingChanged() {
         const remainingMines = this.state.field.getMinesRemaining();
         this.setState({ minesRemaining: remainingMines });
-        if (remainingMines === 0) {
-            this.setState({ won: true });
-            this.stopClock();
+        if (remainingMines === 0 && !this.state.field.hasHiddenCells()) {
+            this.won();
         }
     }
     back() {
         this.props.parent.setState({ which: 0 });
     }
+    won() {
+        if (!this.state.won) {
+            this.setState({ won: true });
+            this.stopClock();
+            }
+    }
     lost() {
-        this.setState({ lost: true });
-        this.stopClock();
+        if (!this.state.lost) {
+            this.setState({ lost: true });
+            this.stopClock();
+        }
+    }
+    confirm() {
+        this.setState({
+            won: false,
+            lost: false
+        });
     }
     updateClockValue() {
-        console.log(this.state);
-        console.log(this.state.clock);
-        console.log(this.state.clock.date);
         let elapsedMs = new Date().valueOf() - this.state.clock.date.valueOf();
         let elapsed = new Date(elapsedMs).toISOString();
         this.setState({ 
@@ -152,6 +166,7 @@ class MynSweepr extends Component {
                     width={this.state.size.width}
                     height={this.state.size.height}
                     minesRemainingChanged={this.handleMinesRemainingChanged}
+                    confirm={this.handleConfirm}
                     startClock={this.handleStartClock}>
                 </MineBoard>
             </div>

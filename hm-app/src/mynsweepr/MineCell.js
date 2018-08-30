@@ -2,14 +2,16 @@ import React, { Component } from 'react';
 
 class MineCell extends Component {
     render() {
-        let hasMine = this.props.value < 0;
         let nearby = this.props.value >= 0 ? this.props.value : 0;
         let nearbyClassName = `nearby-${nearby}`;
+        let isHidden = this.props.hidden;
+        let hasFlag = this.props.flag;
+        let hasMine = !isHidden && !hasFlag && this.props.value < 0;
+        let hasNearby = !isHidden && !hasFlag && !hasMine && nearby !== 0;
 
         return (
             <button 
-                className={"cell" + (this.props.hidden ? " hidden" : "") + (this.props.flag ? " flag" : "") + (!this.props.hidden && !this.props.flag && hasMine ? " mine":"") + (!this.props.hidden && !this.props.flag && !hasMine && nearby !== 0 ? " nearby" : "") + (!this.props.hidden && !this.props.flag && !hasMine && nearby !== 0 ? " " + nearbyClassName : "")} 
-                data-cell={JSON.stringify(this.props)}
+                className={"cell" + (isHidden ? " hidden" : "") + (hasFlag ? " flag" : "") + (hasMine ? " mine":"") + (hasNearby ? " nearby " + nearbyClassName : "")} 
                 onClick={this.props.click}
                 onContextMenu={this.props.rightClick}
                 onDoubleClick={this.props.doubleClick}>

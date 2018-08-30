@@ -115,8 +115,12 @@ body {
     max-height: calc(var(--size-mine) - 2px);
     width: calc(var(--size-mine) - 2px);
     background-color: lightblue;
-    opacity: 1;
     overflow: hidden;
+    opacity: 1;
+    transition-delay: 10ms;
+    transition-duration: 500ms;
+    transition-property: opacity;
+    transition-timing-function: ease-in;
 }
 
 .cell.nearby {
@@ -191,8 +195,61 @@ body {
 
 .cell:not(.hidden) .overlay {
     opacity: 1;
+    transition-delay: 100ms;
+    transition-duration: 900ms;
+    transition-property: opacity;
+    transition-timing-function: ease-in;
 }
 
 dialog::backdrop {
     background-color: rgba(0,0,0,0.7);
+}
+
+.board .dialog {
+    display: flex;
+    flex: 1 1 auto;
+    position: absolute;
+    background: white;
+    min-width: 200px;
+    flex-flow: column nowrap;
+    align-items: center;
+    padding: 1em;
+    border: 1px solid black;
+    box-shadow: black 2px 2px 10px;
+    opacity: 0;
+    z-index: -1;
+}
+
+.board.won .dialog.won,
+.board.lost .dialog.lost {
+    display: flex;
+    z-index: 1;
+    opacity: 1;
+    transition-delay: 10ms;
+    transition-duration: 500ms;
+    transition-property: opacity z-index;
+    transition-timing-function: ease-in;
+}
+
+.dialog-content {
+    margin: 0.5em 0.5em 1em 0.5em;
+}
+
+.dialog-buttons {
+    margin: 0 0.5em 0.5em 0.5em;
+}
+
+.dialog-buttons button {
+    border: 1px solid black;
+    padding: 0.5em 1em;
+}
+
+.won .dialog-buttons button {
+    background-color: green;
+    color: white;
+}
+
+.lost .dialog-buttons button {
+    background-color: red;
+    color: white;
 }
