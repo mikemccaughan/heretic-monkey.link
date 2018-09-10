@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
+import Utility from '../utility';
 import DifficultySelector from './DifficultySelector';
 import MineBoard from './MineBoard';
-import MineField from './MineField';
-import './MynSweepr.css';
 import Scoreboard from './Scoreboard';
+import './MynSweepr.css';
 
-class MynSweepr extends Component {
+export default class MynSweepr extends Component {
     constructor(props) {
         super(props);
         this.handleDifficultyChanged = this.difficultyChanged.bind(this);
@@ -13,159 +13,374 @@ class MynSweepr extends Component {
         this.handleHeightChanged = this.heightChanged.bind(this);
         this.handleBack = this.back.bind(this);
         this.handleMinesRemainingChanged = this.minesRemainingChanged.bind(this);
-        this.handleStartClock = this.startClock.bind(this);
-        this.handleStopClock = this.stopClock.bind(this);
+        this.handleFlagCell = this.flagCell.bind(this);
+        this.handleCellReveal = this.revealCell.bind(this);
+        this.handleCellRevealNearby = this.revealNearby.bind(this);
         this.handleLoss = this.lost.bind(this);
-        this.handleUpdateClock = this.updateClockValue.bind(this);
         this.handleConfirm = this.confirm.bind(this);
-        this.state = {
+        this.defaultState = {
             difficulty: '9',
-            size: {
-                width: 9,
-                height: 9
-            },
-            clock: {
-                date: new Date(),
-                value: '00:00',
-                isRunning: false,
-                intervalId: null
-            },
+            width: 9,
+            height: 9,
             minesRemaining: 0,
             won: false,
             lost: false,
-            field: new MineField(9, 9, this.handleLoss)
+            cells: this.initializeBoard(9, 9),
+            totalClickCount: 0
         };
+        this.state = Object.assign({}, this.defaultState);
+        this.scoreboard = null;
     }
-    difficultyChanged(changeEvent) {
-        let difficult = parseInt(changeEvent.target.value, 10);
-        let width = isNaN(difficult) ? 30 : difficult;
-        let height = isNaN(difficult) ? 16 : difficult === 30 ? 16 : difficult;
-        this.stopClock();
-        this.setState({
-            difficulty: changeEvent.target.value,
-            size: {
+
+    init(options) {
+        const { difficulty, width, height } = options;
+        const cells = this.initializeBoard(width, height);
+        if (typeof difficulty !== 'undefined') {
+            this.setState({
+                ...this.defaultState,
+                difficulty: difficulty,
                 width: width,
-                height: height
-            },
-            field: new MineField(width, height, this.handleLoss)
-        });
+                height: height,
+                cells: cells
+            }, this.minesRemainingChanged.bind(this));
+        } else if (width !== 'undefined') {
+            this.setState(prevState => {
+                let height = prevState.height;
+                return {
+                    ...this.defaultState,
+                    difficulty: '?',
+                    width: width,
+                    height: height,
+                    cells: cells
+                };
+            }, this.minesRemainingChanged.bind(this));
+        } else if (height !== 'undefined') {
+            this.setState(prevState => {
+                let width = prevState.width;
+                return {
+                    ...this.defaultState,
+                    difficulty: '?',
+                    width: width,
+                    height: height,
+                    cells: cells
+                };
+            }, this.minesRemainingChanged.bind(this));
+        }
+
+        if (this.scoreboard) {
+            this.scoreboard.handleStopClock();
+        }
+    }
+
+    difficultyChanged(changeEvent) {
+        let difficulty = parseInt(changeEvent.target.value, 10);
+        let width = isNaN(difficulty) ? 30 : difficulty;
+        let height = isNaN(difficulty) ? 16 : difficulty === 30 ? 16 : difficulty;
+        this.init({ difficulty, width, height });
     }
     widthChanged(changeEvent) {
         let width = parseInt(changeEvent.target.value, 10);
         width = isNaN(width) ? 0 : width;
-        this.stopClock();
-        this.setState(prevState => {
-            let height = prevState.size.height;
-            return {
-                size: {
-                    width: width,
-                    height: height
-                },
-                field: new MineField(width, height, this.handleLoss)
-            };
-        });
+        this.init({ width });
     }
     heightChanged(changeEvent) {
         let height = parseInt(changeEvent.target.value, 10);
         height = isNaN(height) ? 0 : height;
-        this.stopClock();
-        this.setState(prevState => {
-            let width = prevState.size.width;
-            return {
-                size: {
-                    width: width,
-                    height: height
-                },
-                field: new MineField(width, height, this.handleLoss)
-            };
-        });
+        this.init({ height });
+    }
+
+    sortCells(cells) {
+        const isNotSorted = cells.some((c, i) => c.index !== i);
+        if (isNotSorted) {
+            console.log(`not sorted - sorting cells`);
+            return cells.sort((a, b) => a.index - b.index);
+        }
+
+        return cells;
+    }
+    updateCells(cells) {
+        this.setState({ cells: [...this.sortCells(cells)] }, this.minesRemainingChanged.bind(this));
+    }
+    takeActionOnSurroundingCells(cell, action, conditional = (cel) => true, takeActionOnSelf = false, cells = this.state.cells) {
+        let minX = 0, maxX = this.state.width - 1;
+        let minY = 0, maxY = this.state.height - 1;
+        let startX = cell.x - 1 <= minX ? minX : cell.x - 1;
+        let stopX = cell.x + 1 >= maxX ? maxX : cell.x + 1;
+        let startY = cell.y - 1 <= minY ? minY : cell.y - 1;
+        let stopY = cell.y + 1 >= maxY ? maxY : cell.y + 1;
+        for (let cellX = startX; cellX <= stopX; cellX++) {
+            for (let cellY = startY; cellY <= stopY; cellY++) {
+                if (takeActionOnSelf || !(cellY === cell.y && cellX === cell.x)) {
+                    let cell = cells.find((c) => c.x === cellX && c.y === cellY);
+                    console.log(`taking action on cell at ${cell.index}, x: ${cellX}, y: ${cellY}`);
+                    if (conditional(cell)) {
+                        cells = this.sortCells(action(cell, this.sortCells(cells)));
+                    }
+                }
+            }
+        }
+
+        return this.sortCells(cells);
+    }
+    takeActionOnCell(cell, action, cells = this.state.cells) {
+        cells = this.sortCells(cells);
+        const cellsBefore = cell.index > 0 ? [...cells.slice(0, cell.index)] : [];
+        const cellsAfter = cell.index + 1 < cells.length ? cells.slice(cell.index + 1) : [];
+        return this.sortCells([...cellsBefore, action(cell), ...cellsAfter]);
+    }
+
+    showCell(cell) {
+        return Object.assign({}, cell, { hidden: false });
+    }
+    showCellInCells(cell, cells = this.state.cells) {
+        return this.takeActionOnCell(cell, this.showCell.bind(this), this.sortCells(cells));
+    }
+
+    flag(cell) {
+        return Object.assign({}, cell, { flag: !cell.flag });
+    }
+    flagCellInCells(cell, cells = this.state.cells) {
+        return this.takeActionOnCell(cell, this.flag.bind(this), this.sortCells(cells));
+    }
+    flagCell(cell) {
+        this.maybeStartClock();
+        this.updateCells(this.flagCellInCells(cell));
+    }
+
+    revealAllCells(cells) {
+        for (let cell of this.sortCells(cells)) {
+            cells = this.reveal(true, cell, this.sortCells(cells));
+        }
+
+        return this.sortCells(cells);
+    }
+    revealAround(revealingAll, cell, cells = this.state.cells) {
+        return this.takeActionOnSurroundingCells(
+            cell,
+            this.reveal.bind(this, revealingAll),
+            cel => !!cel,
+            false,
+            this.sortCells(cells));
+    }
+    reveal(revealingAll, cell = null, cells = this.state.cells) {
+        if (!cell) {
+            return this.sortCells(cells);
+        }
+        let cellState = this.sortCells(cells)[cell.index];
+        console.log(`cell at ${cell.index}: isHidden: ${cellState.hidden}, flag: ${cellState.flag}`);
+        if (!cellState) {
+            console.error(`No cell at index ${cell.index} in cells:\n${JSON.stringify(cells, null, 2)}`);
+            return this.sortCells(cells);
+        }
+        if (!cellState.hidden) {
+            console.warn(`cell at ${cell.index} is not hidden; bailing`);
+            return this.sortCells(cells);
+        }
+        if (cellState.flag) {
+            console.warn(`cell at ${cell.index} is flagged; bailing`);
+            return this.sortCells(cells);
+        }
+        if (cell.value < 0) {
+            console.error(`cell at ${cell.index} is a mine!`);
+            cells = this.showCellInCells(cell, this.sortCells(cells));
+            this.lost();
+            if (!revealingAll) {
+                cells = this.revealAllCells(this.sortCells(cells));
+            }
+        } else if (cell.value === 0) {
+            console.log(`cell at ${cell.index} has no nearby mines...`);
+            cells = this.showCellInCells(cell, this.sortCells(cells));
+            console.log(`cell at ${cell.index} (with value ${cell.value}) is hidden? ${cells[cell.index].hidden}`);
+            if (!revealingAll) {
+                cells = this.revealAround(revealingAll, cell, this.sortCells(cells));
+            }
+        } else {
+            console.warn(`cell at ${cell.index} is getting shown...`);
+            cells = this.showCellInCells(cell, this.sortCells(cells));
+            console.log(`cell at ${cell.index} (with value ${cell.value}) is hidden? ${cells[cell.index].hidden}`);
+        }
+
+        return this.sortCells(cells);
+    }
+    revealNearby(cell, revealingAll = false, cells = this.state.cells) {
+        if (cell.hidden || cell.value <= 0) {
+            return this.sortCells(cells);
+        }
+
+        let flagCount = 0;
+        cells = this.takeActionOnSurroundingCells(cell, (cel, cels) => {
+            if (cel.flag) {
+                flagCount++;
+            }
+
+            return cels;
+        }, (cel) => !!cel, false, this.sortCells(cells));
+
+        console.log(`flagCount: ${flagCount}, cell.nearby: ${cell.value}`);
+        if (flagCount !== cell.value) {
+            return this.sortCells(cells);
+        }
+
+        this.maybeStartClock();
+        this.updateCells(this.sortCells(this.revealAround(revealingAll, cell, this.sortCells(cells))));
+    }
+    revealCell(cell, revealingAll = false, cells = this.state.cells) {
+        this.maybeStartClock();
+        this.updateCells(this.reveal(revealingAll, cell, this.sortCells(cells)));
+    }
+
+    getFlaggedCells() {
+        const count = Utility.count(this.state.cells, (cel) => cel.flag);
+        console.log(`flagged cell count: ${count}`);
+        return count;
+    }
+    getHiddenCells() {
+        const count = Utility.count(this.state.cells, (cel) => cel.hidden);
+        console.log(`hidden cell count: ${count}`);
+        return count;
+    }
+    hasHiddenCells() {
+        const count = Utility.count(this.state.cells, (cel) => cel.hidden && !cel.flag);
+        console.log(`hidden cell count: ${count}`);
+        return count > 0;
+    }
+    getMinesRemaining() {
+        const count = Utility.count(this.state.cells, (cel) => cel.value < 0 && !cel.flag);
+        console.log(`mines remaining: ${count}`);
+        return count;
     }
     minesRemainingChanged() {
-        const remainingMines = this.state.field.getMinesRemaining();
+        const remainingMines = this.getMinesRemaining();
         this.setState({ minesRemaining: remainingMines });
-        if (remainingMines === 0 && !this.state.field.hasHiddenCells()) {
+        if (remainingMines === 0 && !this.hasHiddenCells()) {
             this.won();
         }
     }
+    createCell(x, y, value, index, clickCount, hidden, flag) {
+        hidden = typeof hidden === 'boolean' ? hidden : true;
+        flag = typeof flag === 'boolean' ? flag : false;
+        let key = `${x}.${y}.${value}`;
+        return {
+            key: key,
+            value: value,
+            x: x,
+            y: y,
+            index: index,
+            clickCount: clickCount || 0,
+            hidden: hidden,
+            flag: flag
+        };
+    }
+    initializeBoard(width, height) {
+        width = typeof width === 'number' ? width : 9;
+        height = typeof height === 'number' ? height : 9;
+
+        let cellCount = width * height;
+        let mineCount = Math.floor(cellCount / 6);
+        let board = [];
+        let cells = [];
+        let cellIndex = 0;
+        for (let y = 0; y < height; y++) {
+            board[y] = [];
+            for (let x = 0; x < width; x++) {
+                board[y][x] = 0;
+            }
+        }
+        let value = -(mineCount * 2);
+        let isBetween = function (value, min, max) {
+            return (value >= min) && (value <= max);
+        };
+        for (let i = 0; i < mineCount; i++) {
+            let x, y;
+            while (true) {
+                x = Math.floor(Math.random() * width);
+                y = Math.floor(Math.random() * height);
+                if (0 <= board[y][x]) {
+                    break;
+                }
+            }
+            for (let m = -1; m < 2; m++) {
+                for (let n = -1; n < 2; n++) {
+                    if (n === 0 && m === 0) {
+                        board[y][x] = value;
+                    } else if (isBetween(y + n, 0, height - 1) &&
+                        isBetween(x + m, 0, width - 1)) {
+                        board[y + n][x + m]++;
+                    }
+                }
+            }
+        }
+        for (let y = 0; y < height; y++) {
+            for (let x = 0; x < width; x++) {
+                cells[cellIndex] = this.createCell(x, y, board[y][x], cellIndex);
+                cellIndex++;
+            }
+        }
+
+        return this.sortCells(cells);
+    }
+
     back() {
         this.props.parent.setState({ which: 0 });
     }
     won() {
         if (!this.state.won) {
             this.setState({ won: true });
-            this.stopClock();
+            if (this.scoreboard) {
+                this.scoreboard.handleStopClock();
             }
+        }
     }
     lost() {
         if (!this.state.lost) {
             this.setState({ lost: true });
-            this.stopClock();
+            if (this.scoreboard) {
+                this.scoreboard.handleStopClock();
+            }
         }
     }
     confirm() {
-        this.setState({
-            won: false,
-            lost: false
+        this.init({
+            difficulty: this.state.difficulty,
+            width: this.state.width,
+            height: this.state.height
         });
     }
-    updateClockValue() {
-        let elapsedMs = new Date().valueOf() - this.state.clock.date.valueOf();
-        let elapsed = new Date(elapsedMs).toISOString();
-        this.setState({ 
-            clock: {
-                date: this.state.clock.date,
-                value: elapsed.substring(elapsed.indexOf(':') + 1, elapsed.indexOf('.')),
-                isRunning: true,
-                intervalId: this.state.clock.intervalId
+
+    maybeStartClock() {
+        if (this.state.totalClickCount === 0) {
+            this.setState({ totalClickCount: this.state.totalClickCount + 1 });
+            if (this.scoreboard) {
+                this.scoreboard.handleStartClock();
             }
-        });
-    }
-    stopClock() {
-        if (this.state.clock.isRunning) {
-            clearInterval(this.state.clock.intervalId);
-            this.setState({ 
-                clock: {
-                    date: new Date(), 
-                    value: '00:00',
-                    isRunning: false,
-                    intervalId: null
-                }
-            });
         }
     }
-    startClock() {
-        if (!this.state.clock.isRunning) {
-            this.setState({ 
-                clock: {
-                    date: new Date(), 
-                    value: '00:00',
-                    isRunning: true,
-                    intervalId: setInterval(this.handleUpdateClock, 1000)
-                }
-            });
-        }
-    }
+
     render() {
         return (
             <div className="minesweeper">
                 <button onClick={this.handleBack}>Back</button>
                 <DifficultySelector
                     difficulty={this.state.difficulty}
-                    width={this.state.size.width}
-                    height={this.state.size.height}
+                    width={this.state.width}
+                    height={this.state.height}
                     difficultyChanged={this.handleDifficultyChanged}
                     widthChanged={this.handleWidthChanged}
                     heightChanged={this.handleHeightChanged} />
                 <Scoreboard
+                    ref={scoreboard => this.scoreboard = scoreboard}
                     minesRemaining={this.state.minesRemaining}
-                    clockValue={this.state.clock.value} />
+                    clockValue={this.state.clockValue} />
                 <MineBoard
                     won={this.state.won}
                     lost={this.state.lost}
-                    field={this.state.field}
-                    width={this.state.size.width}
-                    height={this.state.size.height}
+                    cells={this.state.cells}
+                    width={this.state.width}
+                    height={this.state.height}
                     minesRemainingChanged={this.handleMinesRemainingChanged}
+                    flagCell={this.handleFlagCell}
+                    revealCell={this.handleCellReveal}
+                    revealNearby={this.handleCellRevealNearby}
                     confirm={this.handleConfirm}
                     startClock={this.handleStartClock}>
                 </MineBoard>
@@ -173,5 +388,3 @@ class MynSweepr extends Component {
         );
     }
 }
-
-export default MynSweepr;
