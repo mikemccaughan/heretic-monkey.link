@@ -112,7 +112,6 @@ export default class MynSweepr extends Component {
             for (let cellY = startY; cellY <= stopY; cellY++) {
                 if (takeActionOnSelf || !(cellY === cell.y && cellX === cell.x)) {
                     let cell = cells.find((c) => c.x === cellX && c.y === cellY);
-                    console.log(`taking action on cell at ${cell.index}, x: ${cellX}, y: ${cellY}`);
                     if (conditional(cell)) {
                         cells = this.sortCells(action(cell, this.sortCells(cells)));
                     }
@@ -167,37 +166,28 @@ export default class MynSweepr extends Component {
             return this.sortCells(cells);
         }
         let cellState = this.sortCells(cells)[cell.index];
-        console.log(`cell at ${cell.index}: isHidden: ${cellState.hidden}, flag: ${cellState.flag}`);
         if (!cellState) {
-            console.error(`No cell at index ${cell.index} in cells:\n${JSON.stringify(cells, null, 2)}`);
             return this.sortCells(cells);
         }
         if (!cellState.hidden) {
-            console.warn(`cell at ${cell.index} is not hidden; bailing`);
             return this.sortCells(cells);
         }
         if (cellState.flag) {
-            console.warn(`cell at ${cell.index} is flagged; bailing`);
             return this.sortCells(cells);
         }
         if (cell.value < 0) {
-            console.error(`cell at ${cell.index} is a mine!`);
             cells = this.showCellInCells(cell, this.sortCells(cells));
             this.lost();
             if (!revealingAll) {
                 cells = this.revealAllCells(this.sortCells(cells));
             }
         } else if (cell.value === 0) {
-            console.log(`cell at ${cell.index} has no nearby mines...`);
             cells = this.showCellInCells(cell, this.sortCells(cells));
-            console.log(`cell at ${cell.index} (with value ${cell.value}) is hidden? ${cells[cell.index].hidden}`);
             if (!revealingAll) {
                 cells = this.revealAround(revealingAll, cell, this.sortCells(cells));
             }
         } else {
-            console.warn(`cell at ${cell.index} is getting shown...`);
             cells = this.showCellInCells(cell, this.sortCells(cells));
-            console.log(`cell at ${cell.index} (with value ${cell.value}) is hidden? ${cells[cell.index].hidden}`);
         }
 
         return this.sortCells(cells);
@@ -216,7 +206,6 @@ export default class MynSweepr extends Component {
             return cels;
         }, (cel) => !!cel, false, this.sortCells(cells));
 
-        console.log(`flagCount: ${flagCount}, cell.nearby: ${cell.value}`);
         if (flagCount !== cell.value) {
             return this.sortCells(cells);
         }
@@ -231,22 +220,18 @@ export default class MynSweepr extends Component {
 
     getFlaggedCells() {
         const count = Utility.count(this.state.cells, (cel) => cel.flag);
-        console.log(`flagged cell count: ${count}`);
         return count;
     }
     getHiddenCells() {
         const count = Utility.count(this.state.cells, (cel) => cel.hidden);
-        console.log(`hidden cell count: ${count}`);
         return count;
     }
     hasHiddenCells() {
         const count = Utility.count(this.state.cells, (cel) => cel.hidden && !cel.flag);
-        console.log(`hidden cell count: ${count}`);
         return count > 0;
     }
     getMinesRemaining() {
         const count = Utility.count(this.state.cells, (cel) => cel.value < 0 && !cel.flag);
-        console.log(`mines remaining: ${count}`);
         return count;
     }
     minesRemainingChanged() {
