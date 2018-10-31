@@ -36,12 +36,12 @@ body {
 .fieldset {
     border: 1px solid black;
     display: flex;
-    flex-flow: row nowrap;
+    flex-flow: row wrap;
     align-items: baseline;
     justify-content: center;
     position: relative;
-    padding: 0.5rem 1rem;
-    margin-top: 1rem;
+    padding: 2vh 1vw;
+    margin: 3vh 2vw;
 }
 
 .legend {
@@ -50,29 +50,34 @@ body {
     font-size: smaller;
     font-weight: 700;
     position: absolute;
-    top: -0.5rem;
-    left: 1rem;
-    padding: 0 4px;
+    top: -0.7rem;
+    left: 2vw;
+    padding: 0 1vw;
 }
 
 .radio {
     flex: 0 0 auto;
-    padding: 0 1rem;
+    margin: 1vh 1vw;
 }
 
-.scoreboard {
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: center;
-    margin: 1rem auto;
-}
-
-.scoreboard-unit {
-    margin: 0 0.5rem;
+.radio-size {
+    margin-left: 0.3rem;
+    white-space: nowrap;
 }
 
 .custom-unit {
     width: 3rem;
+}
+
+.scoreboard {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    margin: 2vh auto;
+}
+
+.scoreboard-unit {
+    margin: 0 1vw;
 }
 
 .board {
