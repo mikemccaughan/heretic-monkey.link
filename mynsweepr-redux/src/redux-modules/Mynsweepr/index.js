@@ -31,7 +31,7 @@ const initialState = {
   height: 9,
   time: '00:00',
   timeRunning: false,
-  remaining: board.filter(cell => cell.value < 0).length,
+  remaining: getRemaining(board),
   status: '',
   cells: board
 };
@@ -52,76 +52,99 @@ function handleNearbyClick(newState, newCells, cell) {
   return Object.assign({}, newState, {
     timeRunning: true,
     cells: newCells,
-    remaining: newCells.filter(cell => cell.value < 0).length,
+    remaining: getRemaining(newCells),
     status: ''
   });
 }
 
+function cellCanShow(cel, cell, clickedCell, state) {
+  if (!cel.hidden) {
+    return false;
+  }
+  const sameX = cel.x === cell.x;
+  const sameY = cel.y === cell.y;
+  const hasLeft = cell.x > 0;
+  const hasRight = cell.x < state.width;
+  const hasAbove = cell.y > 0;
+  const hasBelow = cell.y < state.height;
+  const isLeft = hasLeft && cel.x === cell.x - 1;
+  const isRight = hasRight && cel.x === cell.x + 1;
+  const isAbove = hasAbove && cel.y === cell.y - 1;
+  const isBelow = hasBelow && cel.y === cell.y + 1;
+  const cellBelow = sameX && isBelow;
+  const cellBelowLeft = isLeft && isBelow;
+  const cellBelowRight = isRight && isBelow;
+  const cellAbove = sameX && isAbove;
+  const cellAboveLeft = isLeft && isAbove;
+  const cellAboveRight = isRight && isAbove;
+  const cellLeft = isLeft && sameY;
+  const cellRight = isRight && sameY;
+
+  return (
+    cellLeft ||
+    cellRight ||
+    cellBelow ||
+    cellBelowLeft ||
+    cellBelowRight ||
+    cellAbove ||
+    cellAboveLeft ||
+    cellAboveRight
+  );
+}
+
 function handleEmptyClick(newState, newCells, cell, clickedCell) {
   let recursedCells = [];
-  let doRecurse = false;
+  console.log(
+    `handleEmptyClick: before map: hidden: ${
+      newCells.filter(cel => cel.hidden).length
+    }`
+  );
   newCells = newCells.map(cel => {
-    console.log('examining cell: ', JSON.stringify(cel));
-    if (cel.index === clickedCell.index) {
-      console.log('same cell: ', JSON.stringify(cel));
-      doRecurse = doRecurse || false;
+    if (cel.index === clickedCell.index && cel.hidden) {
       return Object.assign({}, cel, { hidden: false });
-    } else if (
-      cel.x === cell.x &&
-      cell.y > 0 &&
-      cel.y === cell.y - 1 &&
-      cel.index !== clickedCell.index
-    ) {
-      console.log('cell above: ', JSON.stringify(cel));
-      doRecurse = doRecurse || (cel.hidden && cel.value === 0);
-      if (cel.hidden && cel.value === 0) recursedCells.push(cel);
-      return Object.assign({}, cel, { hidden: false });
-    } else if (
-      cel.x === cell.x &&
-      cell.y < newState.height &&
-      cel.y === cell.y + 1 &&
-      cel.index !== clickedCell.index
-    ) {
-      console.log('cell below: ', JSON.stringify(cel));
-      doRecurse = doRecurse || (cel.hidden && cel.value === 0);
-      if (cel.hidden && cel.value === 0) recursedCells.push(cel);
-      return Object.assign({}, cel, { hidden: false });
-    } else if (
-      cel.y === cell.y &&
-      cell.x > 0 &&
-      cel.x === cell.x - 1 &&
-      cel.index !== clickedCell.index
-    ) {
-      console.log('cell left: ', JSON.stringify(cel));
-      doRecurse = doRecurse || (cel.hidden && cel.value === 0);
-      if (cel.hidden && cel.value === 0) recursedCells.push(cel);
-      return Object.assign({}, cel, { hidden: false });
-    } else if (
-      cel.y === cell.y &&
-      cell.x < newState.width &&
-      cel.x === cell.x + 1 &&
-      cel.index !== clickedCell.index
-    ) {
-      console.log('cell right: ', JSON.stringify(cel));
-      doRecurse = doRecurse || (cel.hidden && cel.value === 0);
-      if (cel.hidden && cel.value === 0) recursedCells.push(cel);
+    } else if (cellCanShow(cel, cell, clickedCell, newState)) {
+      if (cel.value === 0) recursedCells.push(cel);
       return Object.assign({}, cel, { hidden: false });
     }
+
     return cel;
   });
-  console.log('handleEmptyClick: newCells: ', JSON.stringify(newCells));
-  Object.assign(newState, {
+  console.log(
+    `handleEmptyClick: after map: hidden: ${
+      newCells.filter(cel => cel.hidden).length
+    }`
+  );
+  newState = Object.assign({}, newState, {
     cells: newCells,
-    remaining: newCells.filter(cell => cell.value < 0).length,
+    remaining: getRemaining(newCells),
     timeRunning: true
   });
-  console.log('handleEmptyClick: newState: ', JSON.stringify(newState));
-  console.log('handleEmptyClick: doRecurse: ', doRecurse);
-  if (doRecurse) {
-    console.log('handleEmptyClick: recursedCells: ', JSON.stringify(recursedCells));
-    newState = recursedCells.reduce((updatedState, cel) => handleEmptyClick(updatedState, newCells, cel, clickedCell), newState);
+  console.log(
+    `handleEmptyClick: before recurs: hidden: ${
+      newState.cells.filter(cel => cel.hidden).length
+    }`
+  );
+  if (recursedCells.length > 0) {
+    newState = recursedCells.reduce((updatedState, cel) => {
+      console.log(
+        `handleEmptyClick: inside recurs: hidden: ${
+          updatedState.cells.filter(cel => cel.hidden).length
+        }`
+      );
+      return handleEmptyClick(
+        updatedState,
+        updatedState.cells,
+        cel,
+        clickedCell
+      );
+    }, newState);
   }
 
+  console.log(
+    `handleEmptyClick: after recurs: hidden: ${
+      newState.cells.filter(cel => cel.hidden).length
+    }`
+  );
   return newState;
 }
 
@@ -135,10 +158,13 @@ function handleCellClick(state, action, { difficulty, height, width }) {
     time: state.time,
     timeRunning: true,
     cells: newCells,
-    remaining: newCells.filter(cell => cell.value < 0).length,
+    remaining: getRemaining(newCells),
     cell: action.cell
   };
-  console.log('handleCellClick: newState: ', JSON.stringify(newState));
+
+  if (!cell.hidden) {
+    return newState;
+  }
   if (cell.value < 0) {
     return handleMineClick(newState, newCells);
   } else if (cell.value === 0) {
@@ -147,8 +173,94 @@ function handleCellClick(state, action, { difficulty, height, width }) {
     return handleNearbyClick(newState, newCells, cell);
   }
 
-  console.log('handleCellClick: newState: ', JSON.stringify(newState));
+  if (hasWon(newState)) {
+    newState.timeRunning = false;
+    newState.status = 'won';
+  }
+
   return newState;
+}
+
+function handleCellRightClick(state, action, { difficulty, height, width }) {
+  let newCells = [...(action.cells || state.cells)].map(cel =>
+    cel.index === action.cell.index && cel.hidden
+      ? Object.assign({}, cel, { flag: !cel.flag })
+      : Object.assign({}, cel)
+  );
+  let newState = {
+    difficulty: difficulty,
+    height: height,
+    width: width,
+    time: state.time,
+    timeRunning: true,
+    cells: newCells,
+    remaining: getRemaining(newCells),
+    cell: action.cell
+  };
+
+  if (hasWon(newState)) {
+    newState.timeRunning = false;
+    newState.status = 'won';
+  }
+
+  return newState;
+}
+
+function handleCellDoubleClick(state, action, { difficulty, height, width }) {
+  let newCells = [...(action.cells || state.cells)];
+  let cell = newCells.find(cel => cel.index === action.cell.index);
+  let newState = {
+    difficulty: difficulty,
+    height: height,
+    width: width,
+    time: state.time,
+    timeRunning: true,
+    cells: newCells,
+    remaining: getRemaining(newCells),
+    cell: action.cell
+  };
+  if (cell.hidden || cell.flag || cell.value <= 0) {
+    return newState;
+  }
+  let lost = false;
+  let empty = null;
+  newCells = newCells.map(cel => {
+    if (cellCanShow(cel, cell, cell, newState) && !cel.flag) {
+      if (cel.value < 0) {
+        lost = true;
+      } else if (cel.value === 0) {
+        empty = cel;
+      }
+      return Object.assign({}, cel, { hidden: false });
+    }
+    return Object.assign({}, cel);
+  });
+  newState.cells = newCells;
+  newState.remaining = getRemaining(newCells);
+  if (lost) {
+    return handleMineClick(newState, newCells);
+  } else if (empty) {
+    return handleEmptyClick(newState, newCells, empty, empty);
+  }
+
+  if (hasWon(newState)) {
+    newState.timeRunning = false;
+    newState.status = 'won';
+  }
+
+  return newState;
+}
+
+function getRemaining(cells) {
+  let mines = cells.filter(cell => cell.value < 0 && !cell.flag);
+  console.log('mines remaining: ', JSON.stringify(mines));
+  return mines.length;
+}
+
+function hasWon(state) {
+  return (
+    state.remaining === 0 && !state.cells.some(cel => cel.hidden && !cel.flag)
+  );
 }
 
 export function mynreducer(state = initialState, action) {
@@ -172,7 +284,7 @@ export function mynreducer(state = initialState, action) {
         time: '00:00',
         timeRunning: false,
         cells: cells,
-        remaining: cells.filter(cell => cell.value < 0).length
+        remaining: getRemaining(cells)
       };
     case DIFFICULTY_WIDTH_CHANGE:
       return {
@@ -182,7 +294,7 @@ export function mynreducer(state = initialState, action) {
         time: '00:00',
         timeRunning: false,
         cells: cells,
-        remaining: cells.filter(cell => cell.value < 0).length
+        remaining: getRemaining(cells)
       };
     case DIFFICULTY_HEIGHT_CHANGE:
       return {
@@ -192,7 +304,7 @@ export function mynreducer(state = initialState, action) {
         time: '00:00',
         timeRunning: false,
         cells: cells,
-        remaining: cells.filter(cell => cell.value < 0).length
+        remaining: getRemaining(cells)
       };
     case REMAINING_CHANGE:
       return {
@@ -202,7 +314,7 @@ export function mynreducer(state = initialState, action) {
         time: state.time,
         timeRunning: state.timeRunning,
         cells: state.cells,
-        remaining: state.cells.filter(cell => cell.value < 0).length
+        remaining: getRemaining(state.cells)
       };
     case TIME_CHANGE:
       return {
@@ -212,46 +324,35 @@ export function mynreducer(state = initialState, action) {
         time: action.time,
         timeRunning: state.timeRunning,
         cells: state.cells,
-        remaining: state.cells.filter(cell => cell.value < 0).length
+        remaining: getRemaining(state.cells)
       };
     case CELL_CLICKED:
-      return handleCellClick((state = initialState), action, {
+      return handleCellClick(state, action, {
         difficulty,
         height,
         width
       });
     case CELL_DOUBLE_CLICKED:
-      return {
-        difficulty: difficulty,
-        height: height,
-        width: width,
-        time: action.time,
-        timeRunning: true,
-        cells: state.cells,
-        remaining: state.cells.filter(cell => cell.value < 0).length,
-        cell: action.cell
-      };
+      return handleCellDoubleClick(state, action, {
+        difficulty,
+        height,
+        width
+      });
     case CELL_RIGHT_CLICKED:
-      return {
-        difficulty: difficulty,
-        height: height,
-        width: width,
-        time: action.time,
-        timeRunning: true,
-        cells: state.cells,
-        remaining: state.cells.filter(cell => cell.value < 0).length,
-        cell: action.cell
-      };
+      return handleCellRightClick(state, action, {
+        difficulty,
+        height,
+        width
+      });
     case NOTIFICATION_CONFIRMED:
       return {
         difficulty: difficulty,
         height: height,
         width: width,
-        time: action.time,
-        timeRunning: state.timeRunning,
-        cells: state.cells,
-        remaining: state.cells.filter(cell => cell.value < 0).length,
-        cell: action.cell
+        time: '00:00',
+        timeRunning: false,
+        cells: cells,
+        remaining: getRemaining(cells)
       };
     case GAME_LOST:
       return Object.assign({}, state, {
