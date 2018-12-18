@@ -8,8 +8,8 @@ import { Provider } from 'react-redux';
 import { mynreducer } from './redux-modules/Mynsweepr/index';
 
 const store = createStore(
-  mynreducer,
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+  mynreducer/*,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()*/
 );
 
 ReactDOM.render(

@@ -9,7 +9,8 @@ import {
   CELL_RIGHT_CLICKED,
   GAME_LOST,
   GAME_WON,
-  NOTIFICATION_CONFIRMED
+  NOTIFICATION_CONFIRMED,
+  BUILD_BOARD
 } from './types';
 
 export function difficultyChanged(difficulty) {
@@ -37,11 +38,14 @@ export function cellRightClicked(cell) {
   return { type: CELL_RIGHT_CLICKED, cell };
 }
 export function gameLost() {
-  return { type: GAME_LOST };
+  return { type: GAME_LOST, status: 'lost' };
 }
 export function gameWon() {
-  return { type: GAME_WON };
+  return { type: GAME_WON, status: 'won' };
 }
 export function notificationConfirmed() {
   return { type: NOTIFICATION_CONFIRMED };
+}
+export function buildBoard(cells) {
+  return { type: BUILD_BOARD, cells };
 }

@@ -9,3 +9,4 @@ export const CELL_RIGHT_CLICKED = 'CELL_RIGHT_CLICKED';
 export const GAME_WON = 'GAME_WON';
 export const GAME_LOST = 'GAME_LOST';
 export const NOTIFICATION_CONFIRMED = 'NOTIFICATION_CONFIRMED';
+export const BUILD_BOARD = 'BUILD_BOARD';

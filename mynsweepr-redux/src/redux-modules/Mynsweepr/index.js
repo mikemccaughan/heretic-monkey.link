@@ -9,7 +9,8 @@ import {
   CELL_RIGHT_CLICKED,
   NOTIFICATION_CONFIRMED,
   GAME_LOST,
-  GAME_WON
+  GAME_WON,
+  BUILD_BOARD
 } from './types';
 import { BoardBuilder } from '../../boardBuilder';
 export {
@@ -21,19 +22,20 @@ export {
   cellClicked,
   cellDoubleClicked,
   cellRightClicked,
-  notificationConfirmed
+  notificationConfirmed,
+  buildBoard
 } from './actions';
 
-const board = BoardBuilder.initializeBoard(9, 9);
 const initialState = {
   difficulty: '9',
   width: 9,
   height: 9,
   time: '00:00',
   timeRunning: false,
-  remaining: getRemaining(board),
+  remaining: 0,
   status: '',
-  cells: board
+  buildBoard: true,
+  cells: []
 };
 
 function handleMineClick(newState, newCells) {
@@ -52,12 +54,12 @@ function handleNearbyClick(newState, newCells, cell) {
   return Object.assign({}, newState, {
     timeRunning: true,
     cells: newCells,
-    remaining: getRemaining(newCells),
+    remaining: BoardBuilder.getRemaining(newCells),
     status: ''
   });
 }
 
-function cellCanShow(cel, cell, clickedCell, state) {
+function cellCanShow(cel, cell, state) {
   if (!cel.hidden) {
     return false;
   }
@@ -94,43 +96,24 @@ function cellCanShow(cel, cell, clickedCell, state) {
 
 function handleEmptyClick(newState, newCells, cell, clickedCell) {
   let recursedCells = [];
-  console.log(
-    `handleEmptyClick: before map: hidden: ${
-      newCells.filter(cel => cel.hidden).length
-    }`
-  );
   newCells = newCells.map(cel => {
     if (cel.index === clickedCell.index && cel.hidden) {
       return Object.assign({}, cel, { hidden: false });
-    } else if (cellCanShow(cel, cell, clickedCell, newState)) {
+    } else if (cellCanShow(cel, cell, newState)) {
       if (cel.value === 0) recursedCells.push(cel);
       return Object.assign({}, cel, { hidden: false });
     }
 
     return cel;
   });
-  console.log(
-    `handleEmptyClick: after map: hidden: ${
-      newCells.filter(cel => cel.hidden).length
-    }`
-  );
+
   newState = Object.assign({}, newState, {
     cells: newCells,
-    remaining: getRemaining(newCells),
+    remaining: BoardBuilder.getRemaining(newCells),
     timeRunning: true
   });
-  console.log(
-    `handleEmptyClick: before recurs: hidden: ${
-      newState.cells.filter(cel => cel.hidden).length
-    }`
-  );
   if (recursedCells.length > 0) {
     newState = recursedCells.reduce((updatedState, cel) => {
-      console.log(
-        `handleEmptyClick: inside recurs: hidden: ${
-          updatedState.cells.filter(cel => cel.hidden).length
-        }`
-      );
       return handleEmptyClick(
         updatedState,
         updatedState.cells,
@@ -140,11 +123,6 @@ function handleEmptyClick(newState, newCells, cell, clickedCell) {
     }, newState);
   }
 
-  console.log(
-    `handleEmptyClick: after recurs: hidden: ${
-      newState.cells.filter(cel => cel.hidden).length
-    }`
-  );
   return newState;
 }
 
@@ -158,7 +136,7 @@ function handleCellClick(state, action, { difficulty, height, width }) {
     time: state.time,
     timeRunning: true,
     cells: newCells,
-    remaining: getRemaining(newCells),
+    remaining: BoardBuilder.getRemaining(newCells),
     cell: action.cell
   };
 
@@ -194,7 +172,7 @@ function handleCellRightClick(state, action, { difficulty, height, width }) {
     time: state.time,
     timeRunning: true,
     cells: newCells,
-    remaining: getRemaining(newCells),
+    remaining: BoardBuilder.getRemaining(newCells),
     cell: action.cell
   };
 
@@ -216,7 +194,7 @@ function handleCellDoubleClick(state, action, { difficulty, height, width }) {
     time: state.time,
     timeRunning: true,
     cells: newCells,
-    remaining: getRemaining(newCells),
+    remaining: BoardBuilder.getRemaining(newCells),
     cell: action.cell
   };
   if (cell.hidden || cell.flag || cell.value <= 0) {
@@ -225,7 +203,7 @@ function handleCellDoubleClick(state, action, { difficulty, height, width }) {
   let lost = false;
   let empty = null;
   newCells = newCells.map(cel => {
-    if (cellCanShow(cel, cell, cell, newState) && !cel.flag) {
+    if (cellCanShow(cel, cell, newState) && !cel.flag) {
       if (cel.value < 0) {
         lost = true;
       } else if (cel.value === 0) {
@@ -236,7 +214,7 @@ function handleCellDoubleClick(state, action, { difficulty, height, width }) {
     return Object.assign({}, cel);
   });
   newState.cells = newCells;
-  newState.remaining = getRemaining(newCells);
+  newState.remaining = BoardBuilder.getRemaining(newCells);
   if (lost) {
     return handleMineClick(newState, newCells);
   } else if (empty) {
@@ -251,12 +229,6 @@ function handleCellDoubleClick(state, action, { difficulty, height, width }) {
   return newState;
 }
 
-function getRemaining(cells) {
-  let mines = cells.filter(cell => cell.value < 0 && !cell.flag);
-  console.log('mines remaining: ', JSON.stringify(mines));
-  return mines.length;
-}
-
 function hasWon(state) {
   return (
     state.remaining === 0 && !state.cells.some(cel => cel.hidden && !cel.flag)
@@ -264,8 +236,6 @@ function hasWon(state) {
 }
 
 export function mynreducer(state = initialState, action) {
-  console.log('mynreducer state: ', JSON.stringify(state));
-  console.log('mynreducer action: ', JSON.stringify(action));
   const difficulty = action.difficulty || state.difficulty;
   const height =
     difficulty === '?'
@@ -274,7 +244,7 @@ export function mynreducer(state = initialState, action) {
       ? 16
       : +difficulty;
   const width = difficulty === '?' ? action.width || state.width : +difficulty;
-  const cells = BoardBuilder.initializeBoard(width, height);
+  const cells = [...(action.cells || state.cells)];
   switch (action.type) {
     case DIFFICULTY_CHANGE:
       return {
@@ -284,7 +254,7 @@ export function mynreducer(state = initialState, action) {
         time: '00:00',
         timeRunning: false,
         cells: cells,
-        remaining: getRemaining(cells)
+        remaining: BoardBuilder.getRemaining(cells)
       };
     case DIFFICULTY_WIDTH_CHANGE:
       return {
@@ -294,7 +264,7 @@ export function mynreducer(state = initialState, action) {
         time: '00:00',
         timeRunning: false,
         cells: cells,
-        remaining: getRemaining(cells)
+        remaining: BoardBuilder.getRemaining(cells)
       };
     case DIFFICULTY_HEIGHT_CHANGE:
       return {
@@ -304,7 +274,7 @@ export function mynreducer(state = initialState, action) {
         time: '00:00',
         timeRunning: false,
         cells: cells,
-        remaining: getRemaining(cells)
+        remaining: BoardBuilder.getRemaining(cells)
       };
     case REMAINING_CHANGE:
       return {
@@ -313,8 +283,8 @@ export function mynreducer(state = initialState, action) {
         width: width,
         time: state.time,
         timeRunning: state.timeRunning,
-        cells: state.cells,
-        remaining: getRemaining(state.cells)
+        cells: cells,
+        remaining: BoardBuilder.getRemaining(cells)
       };
     case TIME_CHANGE:
       return {
@@ -323,8 +293,8 @@ export function mynreducer(state = initialState, action) {
         width: width,
         time: action.time,
         timeRunning: state.timeRunning,
-        cells: state.cells,
-        remaining: getRemaining(state.cells)
+        cells: cells,
+        remaining: BoardBuilder.getRemaining(cells)
       };
     case CELL_CLICKED:
       return handleCellClick(state, action, {
@@ -351,8 +321,7 @@ export function mynreducer(state = initialState, action) {
         width: width,
         time: '00:00',
         timeRunning: false,
-        cells: cells,
-        remaining: getRemaining(cells)
+        buildBoard: true
       };
     case GAME_LOST:
       return Object.assign({}, state, {
@@ -369,6 +338,12 @@ export function mynreducer(state = initialState, action) {
         width,
         timeRunning: false,
         status: 'won'
+      });
+    case BUILD_BOARD:
+      return Object.assign({}, state, {
+        buildBoard: false,
+        cells: cells,
+        remaining: BoardBuilder.getRemaining(cells)
       });
     default:
       return state;

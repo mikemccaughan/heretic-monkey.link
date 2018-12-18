@@ -7,7 +7,6 @@ import DifficultySelector from '../components/difficultySelector';
 import { connect } from 'react-redux';
 
 const mapStateToProps = state => {
-  //console.log('DifficultySelector: mapStateToProps: state: ', JSON.stringify(state));
   return { difficulty: state.difficulty, width: state.width, height: state.height };
 };
 const mapDispatchToProps = dispatch => {

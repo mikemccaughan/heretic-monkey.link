@@ -1,9 +1,25 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import App from './App';
+import Enzyme, { shallow } from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
 
-it('renders without crashing', () => {
-  const div = document.createElement('div');
-  ReactDOM.render(<App />, div);
-  ReactDOM.unmountComponentAtNode(div);
+Enzyme.configure({ adapter: new Adapter() });
+
+function setup() {
+  const props = {};
+  const enzymeWrapper = shallow(<App />);
+  return {
+    props,
+    enzymeWrapper
+  }
+}
+
+describe('components', () => {
+  describe('App', () => {
+    it('should render itself', () => {
+      const { enzymeWrapper } = setup();
+      expect(enzymeWrapper).toBeDefined();
+      expect(enzymeWrapper.find('Mynsweepr')).not.toBeNull();
+    });
+  });
 });

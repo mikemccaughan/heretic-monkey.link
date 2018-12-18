@@ -39,6 +39,7 @@ const Mynsweepr = ({
       />
     </main>
   );
+
 Mynsweepr.displayName = 'Mynsweepr';
 Mynsweepr.propTypes = {
   difficulty: PropTypes.string,
