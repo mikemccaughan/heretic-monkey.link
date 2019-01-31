@@ -5,30 +5,34 @@ export {
   heightChanged,
   widthChanged,
   remainingChanged,
+  changeRemaining,
   timeChanged,
+  timerStart,
+  startTimer,
+  timerStop,
+  stopTimer,
   cellClicked,
   cellDoubleClicked,
   cellRightClicked,
-  notificationConfirmed
+  notificationConfirmed,
+  changeGameStatus
 } from "../actions/actions";
 export { difficultySelectorReducer } from "./difficultySelectorReducer";
 export { endGameReducer } from "./endGameReducer";
 export { mineBoardReducer } from "./mineBoardReducer";
 export { scoreboardReducer } from "./scoreboardReducer";
 
+export interface BoardDifficulty {
+  difficulty: string;
+  width: number | string;
+  height: number | string;
+}
+
 export function getDifficultyWidthHeight({
   difficulty,
   width,
   height
-}: {
-  difficulty: string;
-  width: string | number;
-  height: string | number;
-}): {
-  difficulty: string;
-  width: number;
-  height: number;
-} {
+}: BoardDifficulty): BoardDifficulty {
   const pheight =
     difficulty === "?" ? +height : difficulty === "30" ? 16 : +difficulty;
   const pwidth = difficulty === "?" ? +width : +difficulty;

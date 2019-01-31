@@ -1,10 +1,11 @@
 import {
   CELL_CLICKED,
   CELL_DOUBLE_CLICKED,
-  CELL_RIGHT_CLICKED
+  CELL_RIGHT_CLICKED,
+  NOTIFICATION_CONFIRMED
 } from "../actions/types";
 import { Board, IMineCell } from "../utils/board";
-import { getDifficultyWidthHeight, buildBoardState } from ".";
+import { getDifficultyWidthHeight, buildBoardState, BoardDifficulty } from ".";
 
 const initialState: any = {
   mineBoard: {
@@ -65,30 +66,22 @@ function handleNearbyClick(
     },
     endGame: {
       status: ""
-    }
+    },
+    cell
   };
 }
 
 function cellCanShow(cellToShow: IMineCell, cellTested: IMineCell, state: any) {
-  if (
+  const anyUndefined =
     cellToShow === undefined ||
     cellTested === undefined ||
     state === undefined ||
-    !cellToShow.hidden ||
     cellToShow.x === undefined ||
     cellTested.x === undefined ||
     cellToShow.y === undefined ||
-    cellTested.y === undefined
-  ) {
-    if (
-      cellToShow === undefined ||
-      cellTested === undefined ||
-      state === undefined ||
-      cellToShow.x === undefined ||
-      cellTested.x === undefined ||
-      cellToShow.y === undefined ||
-      cellTested.y === undefined
-    ) {
+    cellTested.y === undefined;
+  if (anyUndefined || !cellToShow.hidden) {
+    if (anyUndefined) {
       console.table([
         {
           message: "mineBoardReducer: cellCanShow: something undefined: "
@@ -112,6 +105,7 @@ function cellCanShow(cellToShow: IMineCell, cellTested: IMineCell, state: any) {
     }
     return false;
   }
+
   const board = state.mineBoard || state;
   const sameX = cellToShow.x === cellTested.x;
   const sameY = cellToShow.y === cellTested.y;
@@ -171,7 +165,8 @@ function handleEmptyClick(
     },
     endGame: {
       status: ""
-    }
+    },
+    cell: clickedCell
   };
   if (recursedCells.length > 0) {
     newState = recursedCells.reduce((updatedState, cel) => {
@@ -190,15 +185,7 @@ function handleEmptyClick(
 function handleCellClick(
   state: any,
   action: any,
-  {
-    difficulty,
-    height,
-    width
-  }: {
-    difficulty: string;
-    height: number;
-    width: number;
-  }
+  { difficulty, height, width }: BoardDifficulty
 ) {
   let newCells = [
     ...(action.cells || (state.mineBoard && state.mineBoard.cells) || [])
@@ -224,40 +211,46 @@ function handleCellClick(
     endGame: {
       status: ""
     },
-    cell: action.cell
+    cell
   };
 
   if (!cell.hidden) {
     return newState;
   }
+
+  let modifiedState: any = {
+    ...newState,
+    mineBoard: {
+      ...state.mineBoard
+    },
+    scoreboard: {
+      ...state.scoreboard
+    },
+    endGame: {
+      ...state.endGame
+    },
+    cell
+  };
   if (cell.value < 0) {
-    return handleMineClick(newState, newCells);
+    modifiedState = handleMineClick(newState, newCells);
   } else if (cell.value === 0) {
-    return handleEmptyClick(newState, newCells, cell, cell);
+    modifiedState = handleEmptyClick(newState, newCells, cell, cell);
   } else if (cell.value > 0) {
-    return handleNearbyClick(newState, newCells, cell);
+    modifiedState = handleNearbyClick(newState, newCells, cell);
   }
 
-  if (hasWon(newState)) {
-    newState.scoreboard.timeRunning = false;
-    newState.endGame.status = "won";
+  if (hasWon(modifiedState)) {
+    modifiedState.scoreboard.timeRunning = false;
+    modifiedState.endGame.status = "won";
   }
 
-  return newState;
+  return modifiedState;
 }
 
 function handleCellRightClick(
   state: any,
   action: any,
-  {
-    difficulty,
-    height,
-    width
-  }: {
-    difficulty: string;
-    height: number;
-    width: number;
-  }
+  { difficulty, height, width }: BoardDifficulty
 ) {
   let newCells = [
     ...(action.cells || (state && state.mineBoard && state.mineBoard.cells))
@@ -301,15 +294,7 @@ function handleCellRightClick(
 function handleCellDoubleClick(
   state: any,
   action: any,
-  {
-    difficulty,
-    height,
-    width
-  }: {
-    difficulty: string;
-    height: number;
-    width: number;
-  }
+  { difficulty, height, width }: BoardDifficulty
 ) {
   let newCells = [
     ...(action.cells || (state && state.mineBoard && state.mineBoard.cells))
@@ -417,7 +402,7 @@ function logState(
 
 export function mineBoardReducer(state = initialState, action: any) {
   console.log("mineBoardReducer", state, action);
-  const { boardFromState, newState } = buildBoardState(state, action);
+  let { boardFromState, newState } = buildBoardState(state, action);
   const { difficulty, height, width } = getDifficultyWidthHeight(
     boardFromState ? newState : newState.mineBoard
   );
@@ -447,6 +432,14 @@ export function mineBoardReducer(state = initialState, action: any) {
       });
       logState("cell right clicked", wholeState, rightState, action);
       return boardFromState ? rightState.mineBoard : rightState;
+    case NOTIFICATION_CONFIRMED:
+      if (boardFromState) {
+        newState.cells = [];
+      } else {
+        newState.mineBoard.cells = [];
+      }
+      const bState = buildBoardState(newState, action);
+      return bState.newState;
     default:
       if (boardFromState && newState.difficulty !== state.difficulty) {
         return newState;

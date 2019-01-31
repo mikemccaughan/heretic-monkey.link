@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>My implementations of Project Euler problems</title>
+        <style>
+summary {
+    font-size: larger;
+}
+
+cite {
+    margin-left: 1.3rem;
+}
+cite::before {
+    content: "(";
+}
+cite::after {
+    content: ")";
+}
+
+blockquote {
+    margin: 0.5rem 0 0 1.3rem;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid;
+}
+
+pre {
+    margin: 0 0 0.5rem 1.3rem;
+}
+pre > code {
+    padding: 0.25rem 0.5rem;
+}
+
+button {
+    margin-left: 1.3rem;
+}
+
+ul.debug {
+    margin: 0.5rem 0 0 1.3rem;
+    padding: 0.25rem 1.25rem;
+    text-indent: 0;
+    border: 1px solid #ccc;
+    max-width: 50%;
+}    
+.debug li {
+    list-style-type: none;
+    margin: 0.5rem 0;
+    font-family: monospace;
+    white-space: pre-wrap;
+}
+        </style>
+        <script>
+            class DebugConsole {
+                constructor(selector) {
+                    this.element = document.querySelector(selector);
+                }
+                log(...args) {
+                    const line = document.createElement('li');
+                    line.innerHTML = args.join(' ');
+                    this.element.appendChild(line);
+                }
+                table(obj) {
+                    const arr = obj;
+                    if (Array.isArray(obj)) {
+                        // columns will be the union of all property lists
+                        
+                    }
+                    const line = document.createElement('li');
+                    const table = document.createElement('table');
+                    const head = document.createElement('thead');
+                    const headerRow = document.createElement('tr');
+                    const keys = Object.keys(obj);
+                    for (let key of keys) {
+                        const headCell = document.createElement('th');
+                        headCell.textContent = key;
+                        headerRow.appendChild(headCell);
+                    }
+                    head.appendChild(headerRow);
+                    table.appendChild(head);
+                    const body = document.createElement('tbody');
+                    
+                    line.innerHTML = args.join(' ');
+                    this.element.appendChild(line);
+                }
+                clear() {
+                    for (let i = this.element.children.length; i > -1; i--) {
+                        this.element.removeChild(this.element.children[i]);
+                    }
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <ol>
+            <li class="euler1">
+                <details>
+                    <summary>Multiples of 3 and 5</summary>
+                    <cite><a href="https://projecteuler.net/problem=1">Problem 1</a></cite>
+                    <blockquote>
+                        <p>If we list all the natural numbers below 10 that are multiples of 3 or 5, we get 3, 5, 6 and 9. The sum of these
+                        multiples is 23.</p>
+                        <p>Find the sum of all the multiples of 3 or 5 below 1000.</p>
+                    </blockquote>
+                    <pre><code>
+// One liner using ECMAScript 2015 features
+let sum = Array(999).fill(1).map((v, i) => v + i).filter(v => v % 3 === 0 || v % 5 === 0).reduce((a, c) => a + c);
+debug.log(sum);
+
+// More "classic" JavaScript method
+sum = 0;
+for (let i = 1; i < 1000; i++) {
+    if (i % 3 === 0 || i % 5 === 0) {
+        sum += i;
+    }
+}
+debug.log('sum: ', sum);
+                    </code></pre>
+                    <button>Run</button>
+                    <ul class="debug">
+                        
+                    </ul>
+                    <script>
+                        document.querySelector('.euler1 button').addEventListener('click', function (e) {
+                            const debug = new DebugConsole('.euler1 .debug');
+                            e.preventDefault();
+                            // One liner
+                            let start = performance.now();
+                            let sum = Array(999).fill(1).map((v, i) => v + i).filter(v => v % 3 === 0 || v % 5 === 0).reduce((a, c) => a + c);
+                            let stop = performance.now();
+                            debug.log('sum: ', sum, ' perf: ', stop - start);
+                            // More readable
+                            start = performance.now();
+                            sum = 0;
+                            for (let i = 1; i < 1000; i++) {
+                                if (i % 3 === 0 || i % 5 === 0) {
+                                    sum += i;
+                                }
+                            }
+                            stop = performance.now();
+                            debug.log('sum: ', sum, ' perf: ', stop - start);
+                        });
+                    </script>
+                </details>
+            </li>
+        </ol>
+    </body>
+</html>

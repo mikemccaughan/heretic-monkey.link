@@ -2,7 +2,14 @@ import {
   cellClicked,
   cellDoubleClicked,
   cellRightClicked,
-  notificationConfirmed
+  notificationConfirmed,
+  timerStart,
+  startTimer,
+  timerStop,
+  stopTimer,
+  remainingChanged,
+  changeRemaining,
+  changeGameStatus
 } from "../reducers";
 import MineBoard, { MineBoardProps } from "./MineBoard";
 import { IMineCell } from "../utils/board";
@@ -19,17 +26,26 @@ const mapDispatchToProps = (dispatch: any) => {
     handleCellClicked: (cell: IMineCell) => {
       return () => {
         dispatch(cellClicked(cell));
+        dispatch(changeRemaining());
+        dispatch(timerStart());
+        dispatch(changeGameStatus());
       };
     },
     handleCellDoubleClicked: (cell: IMineCell) => {
       return () => {
         dispatch(cellDoubleClicked(cell));
+        dispatch(changeRemaining());
+        dispatch(timerStart());
+        dispatch(changeGameStatus());
       };
     },
     handleCellRightClicked: (cell: IMineCell) => {
       return (event: SyntheticEvent<HTMLButtonElement>) => {
         event.preventDefault();
         dispatch(cellRightClicked(cell));
+        dispatch(changeRemaining());
+        dispatch(timerStart());
+        dispatch(changeGameStatus());
       };
     }
   };

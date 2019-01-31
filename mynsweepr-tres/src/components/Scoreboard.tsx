@@ -25,7 +25,7 @@ const Scoreboard: React.FunctionComponent<ScoreboardProps> = ({ time, remaining 
 );
 Scoreboard.displayName = 'Scoreboard';
 Scoreboard.defaultProps = {
-  time: '00:00',
+  time: '00:00:00',
   remaining: 0
 };
 

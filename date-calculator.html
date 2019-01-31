@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Date/Time Calculator</title>
+        <style>
+            input[type="date"], input[type="datetime-local"] { width: 200px; }
+        </style>
+    </head>
+    <body>
+        <form>
+            <fieldset>
+                <legend>Start Date/Time</legend>
+                <div class="set">
+                    <label for="start">Start (local to your time zone):</label>
+                    <input id="start" type="datetime-local">
+                    <label for="dateonly">Date only</label>
+                    <input id="dateonly" type="checkbox" >
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Calculations</legend>
+                <div class="set">
+                    <label for="calc">Calculation:</label>
+                    <select id="calc">
+                        <option value="+">add</option>
+                        <option value="-">subtract</option>
+                    </select>
+                </div>
+                <div class="set">
+                    <label for="count">Count:</label>
+                    <input id="count" type="number">
+                </div>
+                <div class="set">
+                    <label for="unit">Unit:</label>
+                    <select id="unit">
+                        <option value="m">Minute</option>
+                        <option value="h">Hour</option>
+                        <option value="d">Day</option>
+                        <option value="w">Week</option>
+                        <option value="M">Month</option>
+                        <option value="Q">Quarter</option>
+                        <option value="y">Year</option>
+                    </select>
+                </div>
+            </fieldset>
+            <button id="go" type="button">Calculate</button>
+        </form>
+        <div id="result">
+
+        </div>
+        <sub>Calculations performed by the <a href="https://moment.github.io/luxon/index.html">Luxon</a> library.</sub>
+        <script>
+            let result;
+            const dateTimeFormat = new Intl.DateTimeFormat('en-US', {
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                hour12: false
+            });
+            function pad(val, char, len) {
+                if (len > 0) {
+                    return (Array(len).fill(char).join('') + val).slice(-len);
+                } else {
+                    return (val + Array(len).fill(char).join('')).slice(len);
+                }
+            }
+            function formatDateToISO(date, dateOnly = false) {
+                const parts = dateTimeFormat.formatToParts(date);
+                const year = parts.find(part => part.type === 'year').value;
+                const month = pad(parts.find(part => part.type === 'month').value, '0', 2);
+                const day = pad(parts.find(part => part.type === 'day').value, '0', 2);
+                const hour = pad(parts.find(part => part.type === 'hour').value, '0', 2);
+                const minute = pad(parts.find(part => part.type === 'minute').value, '0', 2);
+                const formatted = `${year}-${month}-${day}${dateOnly ? '' : `T${hour}:${minute}`}`;
+                return formatted;
+            }
+            function normalizeValue(value) {
+                if (typeof value === 'string') {
+                    if (/\d{4}-\d{2}-\d{2}/.test(value) && !value.includes('T')) {
+                        value += 'T12:00';
+                    }
+                    value = new Date(value);
+                }
+                if (typeof value === 'number') {
+                    value = new Date(value);
+                }
+                return value;
+            }
+            function add(date, count, unit) {
+                console.log('add', date);
+                switch (unit) {
+                    case 'm':
+                        date = date.setMinutes(date.getMinutes() + count);
+                        break;
+                    case 'h':
+                        date.setHours(date.getHours() + count);
+                        break;
+                    case 'd':
+                        date.setDate(date.getDate() + count);
+                        break;
+                    case 'w':
+                        date.setDate(date.getDate() + count * 7);
+                        break;
+                    case 'M':
+                        date.setMonth(date.getMonth() + count);
+                        break;
+                    case 'Q':
+                        date.setMonth(date.getMonth() + count * 3);
+                        break;
+                    case 'y':
+                        date.setFullYear(date.getFullYear() + count);
+                        break;
+                }
+console.log('added', date);
+                return new Date(date);
+            }
+            function subtract(date, count, unit) {
+                switch (unit) {
+                    case 'm':
+                        date.setMinutes(date.getMinutes() - count);
+                        break;
+                    case 'h':
+                        date.setHours(date.getHours() - count);
+                        break;
+                    case 'd':
+                        date.setDate(date.getDate() - count);
+                        break;
+                    case 'w':
+                        date.setDate(date.getDate() - count * 7);
+                        break;
+                    case 'M':
+                        date.setMonth(date.getMonth() - count);
+                        break;
+                    case 'Q':
+                        date.setMonth(date.getMonth() - count * 3);
+                        break;
+                    case 'y':
+                        date.setFullYear(date.getFullYear() - count);
+                        break;
+                }
+
+                return new Date(date);
+            }
+            window.addEventListener('load', () => {
+                result = document.getElementById('result');
+                const now = new Date();
+                now.setHours(0)
+                const today = formatDateToISO();
+                const startEl = document.getElementById('start');
+                startEl.defaultValue = today;
+                const dateonly = document.getElementById('dateonly');
+                dateonly.addEventListener('click', (e) => {
+                    let value = startEl.value;
+                    if (!value || value.length === 0) {
+                        value = startEl.defaultValue;
+                    }
+                    console.log('dateonly', value);
+                    value = new Date(value);
+                    console.log('dateonly', value);
+
+                    if (dateonly.checked) {
+                        startEl.value = '';
+                        startEl.type = 'date';
+                        startEl.value = formatDateToISO(value, true);
+                    } else {
+                        startEl.value = '';
+                        startEl.type = 'datetime-local';
+                        startEl.value = formatDateToISO(value, false);
+                    }
+                })
+                const calculate = document.getElementById('go');
+                calculate.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const operator = document.getElementById('calc').value;
+                    const count = +document.getElementById('count').value;
+                    const unit = document.getElementById('unit').value;
+                    console.log('calculate', normalizeValue(document.getElementById('start').value));
+                    const date = new Date(normalizeValue(document.getElementById('start').value));
+                    console.log('calculate', date);
+                    if (isNaN(count)) {
+                        return;
+                    }
+                    if (isNaN(date)) {
+                        return;
+                    }
+                    let value = null;
+                    switch (operator) {
+                        case '+':
+                            value = add(date, count, unit);
+                            break;
+                        case '-':
+                            value = subtract(date, count, unit);
+                            break;
+                    }
+                    console.log('calculate', dateonly.checked, value);
+                    if (value) {
+                        value = new Date(value);
+                        value = dateonly.checked ? value.toLocaleDateString() : value.toLocaleString();
+                    }
+                    console.log('calculate', dateonly.checked, value);
+                    result.textContent = value;
+                });
+            });
+        </script>
+    </body>
+</html>

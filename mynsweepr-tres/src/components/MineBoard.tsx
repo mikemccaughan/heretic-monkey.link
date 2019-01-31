@@ -25,10 +25,14 @@ const MineBoard: React.FunctionComponent<MineBoardProps> = ({
   handleCellClicked,
   handleCellDoubleClicked,
   handleCellRightClicked
-}) => (
+}) => { 
+  console.log(endGame);
+  return (
   <div
     data-width={mineBoard && mineBoard.width}
-      className={"board" + (endGame && endGame.status ? ` ${endGame.status}` : "")}
+    className={
+      "board" + (endGame && endGame.status ? ` ${endGame.status}` : "")
+    }
     style={{ width: `${+((mineBoard && mineBoard.width) || 9) * 42}px` }}
   >
     <div className="dialog won">
@@ -72,10 +76,10 @@ const MineBoard: React.FunctionComponent<MineBoardProps> = ({
         />
       ))}
   </div>
-);
+); };
 MineBoard.displayName = "MineBoard";
 MineBoard.defaultProps = {
-  endGame: {status: ""},
+  endGame: { status: "" },
   mineBoard: { difficulty: "9", width: 9, height: 9, cells: [] }
 };
 
