@@ -105,6 +105,13 @@ function cellCanShow(cellToShow: IMineCell, cellTested: IMineCell, state: any) {
     }
     return false;
   }
+  if (
+    cellTested === undefined ||
+    cellTested.x === undefined ||
+    cellTested.y === undefined
+  ) {
+    return false;
+  }
 
   const board = state.mineBoard || state;
   const sameX = cellToShow.x === cellTested.x;

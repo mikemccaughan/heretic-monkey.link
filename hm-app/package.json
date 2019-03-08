@@ -1,13 +1,13 @@
 {
   "name": "hm-app",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
-  "homepage": "http://heretic-monkeydotlink.azurewebsites.net/hm-app/build/",
+  "homepage": "http://heretic-monkey.link/hm-app/build/",
   "dependencies": {
     "memoize-one": "^4.0.2",
     "react": "^16.6.0",
     "react-dom": "^16.6.0",
-    "react-scripts": "^2.1.1"
+    "react-scripts": "^2.1.8"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -17,5 +17,11 @@
   },
   "devDependencies": {
     "ajv": "^6.5.4"
-  }
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }

@@ -2,6 +2,7 @@
   "name": "mynsweepr-tres",
   "version": "0.1.0",
   "private": true,
+  "homepage": "http://heretic-monkey.link/mynsweepr-tres/build/",
   "dependencies": {
     "@types/jest": "23.3.12",
     "@types/node": "10.12.18",
@@ -12,7 +13,7 @@
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-redux": "^6.0.0",
-    "react-scripts": "2.1.3",
+    "react-scripts": "^2.1.8",
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",
     "typescript": "3.2.2"
