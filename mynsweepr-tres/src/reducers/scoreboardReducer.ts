@@ -13,7 +13,9 @@ const initialState: any = {
 };
 
 export function scoreboardReducer(state = initialState, action: any) {
-  console.log("scoreboardReducer", state, action);
+  if (action.type !== TIME_CHANGE) {
+    console.log("scoreboardReducer", state, action);
+  }
   const scoreboardFromState = state.hasOwnProperty("time");
   let scoreboard = scoreboardFromState ? state : state.scoreboard;
   switch (action.type) {
@@ -30,10 +32,10 @@ export function scoreboardReducer(state = initialState, action: any) {
     case TIME_CHANGE:
       return scoreboardFromState
         ? {
-          ...scoreboard, 
-          time: action.time,
-          timeRunning: true 
-        }
+            ...scoreboard,
+            time: action.time,
+            timeRunning: true
+          }
         : {
             ...state,
             endGame: {
@@ -48,11 +50,11 @@ export function scoreboardReducer(state = initialState, action: any) {
           };
     case TIMER_START:
       return scoreboardFromState
-        ? { 
-          ...scoreboard, 
-          timeRunning: true, 
-          timerId: action.timerId 
-        }
+        ? {
+            ...scoreboard,
+            timeRunning: true,
+            timerId: action.timerId
+          }
         : {
             ...state,
             scoreboard: {

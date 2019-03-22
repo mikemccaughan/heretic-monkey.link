@@ -11,11 +11,13 @@ import {
   GAME_WON,
   NOTIFICATION_CONFIRMED,
   TIMER_START,
-  TIMER_STOP
+  TIMER_STOP,
+  SAVE_CLICKED,
+  LOAD_CLICKED,
+  BOARD_CLICKED
 } from "./types";
 import { IMineCell, Board } from "../utils/board";
 import { Timer } from "..";
-import { stat } from "fs";
 
 export function difficultyChanged(difficulty: string | undefined) {
   return { type: DIFFICULTY_CHANGE, difficulty };
@@ -25,6 +27,15 @@ export function widthChanged(width: number | string | undefined) {
 }
 export function heightChanged(height: number | string | undefined) {
   return { type: DIFFICULTY_HEIGHT_CHANGE, height };
+}
+export function saveClicked(mineBoard?: Board) {
+  return { type: SAVE_CLICKED, mineBoard };
+}
+export function loadClicked(mineBoard?: Board) {
+  return { type: LOAD_CLICKED, mineBoard };
+}
+export function boardLoad(key: { key: string }) {
+  return { type: BOARD_CLICKED, key };
 }
 export function remainingChanged(remaining: number | undefined) {
   return { type: REMAINING_CHANGE, remaining };
@@ -106,7 +117,9 @@ export function changeGameStatus(status?: string) {
     status = status || state.endGame.status;
     if (
       !status &&
-      !state.mineBoard.cells.some((cell: IMineCell) => cell.hidden && !cell.flag)
+      !state.mineBoard.cells.some(
+        (cell: IMineCell) => cell.hidden && !cell.flag
+      )
     ) {
       status = remainFromState === 0 ? "won" : "lost";
     }

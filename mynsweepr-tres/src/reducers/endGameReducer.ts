@@ -1,7 +1,8 @@
 import {
   NOTIFICATION_CONFIRMED,
   GAME_LOST,
-  GAME_WON
+  GAME_WON,
+  TIME_CHANGE
 } from "../actions/types";
 
 const initialState: any = {
@@ -9,7 +10,9 @@ const initialState: any = {
 };
 
 export function endGameReducer(state = initialState, action: any) {
-  console.log('endGameReducer', state, action);
+  if (action.type !== TIME_CHANGE) {
+    console.log("endGameReducer", state, action);
+  }
   switch (action.type) {
     case NOTIFICATION_CONFIRMED:
       return {

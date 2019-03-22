@@ -1,12 +1,21 @@
-import { difficultyChanged, heightChanged, widthChanged } from "../reducers";
+import {
+  difficultyChanged,
+  heightChanged,
+  widthChanged,
+  saveClicked,
+  loadClicked
+} from "../reducers";
 import DifficultySelector, {
   DifficultySelectorProps
 } from "./DifficultySelector";
 import { connect } from "react-redux";
 import { SyntheticEvent } from "react";
+import { Board } from "../utils/board";
+import { boardLoad } from "../actions/actions";
 
 const mapStateToProps = (state: any) => {
-  const difficultySelectorState = state.mineBoard || state;
+  const difficultySelectorState =
+    state.difficultySelector || state.mineBoard || state;
   return <Partial<DifficultySelectorProps>>{
     ...difficultySelectorState
   };
@@ -18,7 +27,19 @@ const mapDispatchToProps = (dispatch: any) => {
     handleHeightChanged: (event: SyntheticEvent<HTMLInputElement>) =>
       dispatch(heightChanged(event.currentTarget.value)),
     handleWidthChanged: (event: SyntheticEvent<HTMLInputElement>) =>
-      dispatch(widthChanged(event.currentTarget.value))
+      dispatch(widthChanged(event.currentTarget.value)),
+    handleSaveClicked: (
+      mineBoard: Board,
+      event: SyntheticEvent<HTMLButtonElement>
+    ) => dispatch(saveClicked(mineBoard)),
+    handleLoadClicked: (
+      mineBoard: Board,
+      event: SyntheticEvent<HTMLButtonElement>
+    ) => dispatch(loadClicked(mineBoard)),
+    handleBoardLoad: (
+      key: { key: string },
+      event: SyntheticEvent<HTMLButtonElement>
+    ) => dispatch(boardLoad(key))
   };
 };
 

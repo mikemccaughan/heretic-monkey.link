@@ -2,7 +2,9 @@ import {
   CELL_CLICKED,
   CELL_DOUBLE_CLICKED,
   CELL_RIGHT_CLICKED,
-  NOTIFICATION_CONFIRMED
+  NOTIFICATION_CONFIRMED,
+  TIME_CHANGE,
+  BOARD_CLICKED
 } from "../actions/types";
 import { Board, IMineCell } from "../utils/board";
 import { getDifficultyWidthHeight, buildBoardState, BoardDifficulty } from ".";
@@ -408,7 +410,9 @@ function logState(
 }
 
 export function mineBoardReducer(state = initialState, action: any) {
-  console.log("mineBoardReducer", state, action);
+  if (action.type !== TIME_CHANGE) {
+    console.log("mineBoardReducer", state, action);
+  }
   let { boardFromState, newState } = buildBoardState(state, action);
   const { difficulty, height, width } = getDifficultyWidthHeight(
     boardFromState ? newState : newState.mineBoard
@@ -447,9 +451,17 @@ export function mineBoardReducer(state = initialState, action: any) {
       }
       const bState = buildBoardState(newState, action);
       return bState.newState;
+    case BOARD_CLICKED:
+      if (boardFromState) {
+        newState.cells = [];
+      } else {
+        newState.mineBoard.cells = [];
+      }
+      const cState = buildBoardState(newState, action);
+      return cState.newState;
     default:
-      if (boardFromState && newState.difficulty !== state.difficulty) {
-        return newState;
+      if (action.type !== TIME_CHANGE) {
+        console.log("mineBoardReducer: default: ", state, action);
       }
       return { ...state };
   }

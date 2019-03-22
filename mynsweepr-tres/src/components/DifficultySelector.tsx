@@ -1,26 +1,34 @@
-import React from "react";
+import React, { SyntheticEvent } from "react";
 
-import { SyntheticEventHandler } from "../utils/events";
+import {
+  SyntheticEventHandler,
+  SyntheticEventWithDataHandler
+} from "../utils/events";
 import { IBoard } from "../utils/board";
 
 export interface DifficultySelectorProps {
   mineBoard?: IBoard;
-  difficulty?: string;
-  width?: string | number;
-  height?: string | number;
+  boards?: { key: string }[];
   handleDifficultyChanged?: SyntheticEventHandler<HTMLInputElement>;
   handleHeightChanged?: SyntheticEventHandler<HTMLInputElement>;
   handleWidthChanged?: SyntheticEventHandler<HTMLInputElement>;
+  handleSaveClicked?: SyntheticEventWithDataHandler<HTMLButtonElement, IBoard>;
+  handleLoadClicked?: SyntheticEventWithDataHandler<HTMLButtonElement, IBoard>;
+  handleBoardLoad?: SyntheticEventWithDataHandler<
+    HTMLButtonElement,
+    { key: string }
+  >;
 }
 
 const DifficultySelector: React.FunctionComponent<DifficultySelectorProps> = ({
   mineBoard,
-  difficulty,
-  width,
-  height,
+  boards,
   handleDifficultyChanged,
   handleWidthChanged,
-  handleHeightChanged
+  handleHeightChanged,
+  handleSaveClicked,
+  handleLoadClicked,
+  handleBoardLoad
 }) => (
   <form>
     <div className="fieldset">
@@ -80,8 +88,8 @@ const DifficultySelector: React.FunctionComponent<DifficultySelectorProps> = ({
             type="number"
             name="custom-width"
             className="custom-unit"
-              value={mineBoard && mineBoard.width}
-              disabled={mineBoard && mineBoard.difficulty !== "?"}
+            value={mineBoard && mineBoard.width}
+            disabled={mineBoard && mineBoard.difficulty !== "?"}
             onChange={handleWidthChanged}
             maxLength={3}
           />
@@ -90,14 +98,49 @@ const DifficultySelector: React.FunctionComponent<DifficultySelectorProps> = ({
             type="number"
             name="custom-height"
             className="custom-unit"
-              value={mineBoard && mineBoard.height}
-              disabled={mineBoard && mineBoard.difficulty !== "?"}
+            value={mineBoard && mineBoard.height}
+            disabled={mineBoard && mineBoard.difficulty !== "?"}
             onChange={handleHeightChanged}
             maxLength={3}
           />
           )
         </span>
       </label>
+    </div>
+    <div className="buttons">
+      <button
+        id="save"
+        type="button"
+        onClick={e => {
+          handleSaveClicked && handleSaveClicked(mineBoard!, e);
+        }}
+      >
+        Save Board
+      </button>
+      <button
+        id="load"
+        type="button"
+        onClick={e => {
+          handleLoadClicked && handleLoadClicked(mineBoard!, e);
+        }}
+      >
+        Load Board
+      </button>
+      <dialog style={{ display: boards && boards.length ? "flex" : "none" }}>
+        <ul>
+          {boards &&
+            boards.map((b: { key: string }) => (
+              <li key={b.key}>
+                <button
+                  type="button"
+                  onClick={e => handleBoardLoad && handleBoardLoad(b, e)}
+                >
+                  {b.key}
+                </button>
+              </li>
+            ))}
+        </ul>
+      </dialog>
     </div>
   </form>
 );
@@ -106,11 +149,8 @@ DifficultySelector.defaultProps = {
   mineBoard: {
     difficulty: "9",
     width: 9,
-    height: 9, 
+    height: 9,
     cells: []
-  },
-  difficulty: "9",
-  width: 9,
-  height: 9
+  }
 };
 export default DifficultySelector;

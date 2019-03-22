@@ -24,6 +24,12 @@ interface MynsweeprProps {
   handleCellRightClicked?: (
     cell: IMineCell
   ) => SyntheticEventHandler<HTMLButtonElement>;
+  handleSaveClicked?: (
+    mineBoard: IBoard
+  ) => SyntheticEventHandler<HTMLButtonElement>;
+  handleLoadClicked?: (
+    mineBoard: IBoard
+  ) => SyntheticEventHandler<HTMLButtonElement>;
 }
 
 const MynsweeprDefaultProps = {};
@@ -37,17 +43,19 @@ const Mynsweepr: React.FunctionComponent<MynsweeprProps> = ({
   scoreboard,
   handleCellClicked,
   handleCellDoubleClicked,
-  handleCellRightClicked
+  handleCellRightClicked,
+  handleSaveClicked,
+  handleLoadClicked
 }) => {
   return (
     <main>
       <DifficultySelector
-        difficulty={mineBoard && mineBoard.difficulty}
-        width={mineBoard && mineBoard.width}
-        height={mineBoard && mineBoard.height}
+        mineBoard={mineBoard}
         handleDifficultyChanged={handleDifficultyChanged}
         handleHeightChanged={handleHeightChanged}
         handleWidthChanged={handleWidthChanged}
+        handleSaveClicked={handleSaveClicked}
+        handleLoadClicked={handleLoadClicked}
       />
       <Scoreboard
         time={scoreboard && scoreboard.time}

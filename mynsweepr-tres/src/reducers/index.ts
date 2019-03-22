@@ -1,4 +1,5 @@
 import { Board } from "../utils/board";
+import { TIME_CHANGE } from "../actions/types";
 
 export {
   difficultyChanged,
@@ -15,12 +16,33 @@ export {
   cellDoubleClicked,
   cellRightClicked,
   notificationConfirmed,
-  changeGameStatus
+  changeGameStatus,
+  saveClicked,
+  loadClicked,
+  boardLoad
 } from "../actions/actions";
 export { difficultySelectorReducer } from "./difficultySelectorReducer";
 export { endGameReducer } from "./endGameReducer";
 export { mineBoardReducer } from "./mineBoardReducer";
 export { scoreboardReducer } from "./scoreboardReducer";
+
+export function logCells(cells: any): void {
+  if (cells && cells.mineBoard && cells.mineBoard.cells) {
+    return logCells(cells.mineBoard.cells);
+  }
+  if (cells && cells.cells) {
+    return logCells(cells.cells);
+  }
+  if (Array.isArray(cells) && cells.length) {
+    console.table(cells);
+  }
+}
+
+const originalLog = console.log;
+console.log = (...args: any[]) => {
+  originalLog.apply(null, ["", ...args.filter(arg => typeof arg !== "object")]);
+  args.filter(arg => typeof arg === "object").forEach(arg => logCells(arg));
+};
 
 export interface BoardDifficulty {
   difficulty: string;
@@ -47,7 +69,7 @@ export function buildBoardState(
   state: any,
   action: any
 ): { boardFromState: boolean; newState: any } {
-  const board = action.mineBoard || state.mineBoard || state;
+  let board = action.mineBoard || state.mineBoard || state;
   const boardFromState = !action.mineBoard && !state.mineBoard;
   const { difficulty, width, height } = getDifficultyWidthHeight({
     difficulty: (action && action.difficulty) || (board && board.difficulty),
@@ -60,8 +82,32 @@ export function buildBoardState(
     newBoard.buildBoard();
     cells = newBoard.cells;
   }
-  const newState = boardFromState
-    ? { ...state, difficulty, height, width, cells }
-    : { ...state, mineBoard: { ...board, difficulty, height, width, cells } };
+  const stateFromBoard = {
+    ...state,
+    cells,
+    mineBoard: {
+      ...state.mineBoard,
+      cells
+    }
+  };
+  const boardState = {
+    ...state,
+    cells,
+    mineBoard: {
+      difficulty,
+      width,
+      height,
+      cells
+    }
+  };
+  if (action.type !== TIME_CHANGE) {
+    console.log(
+      "buildBoardState: ",
+      boardFromState,
+      { ...stateFromBoard, cells: [],  },
+      boardState
+    );
+  }
+  const newState = boardFromState ? stateFromBoard : boardState;
   return { boardFromState, newState };
 }
