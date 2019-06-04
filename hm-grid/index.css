@@ -1,0 +1,31 @@
+.hm-grid-container {
+    display: flex;
+}
+.hm-grid-container table {
+    display: flex;
+    flex-flow: column wrap;
+    border-spacing: 0;
+    border: 1px solid black;
+}
+.hm-grid-container thead {
+    flex: 1 1 auto;
+    font-weight: normal;
+    text-align: left;
+}
+.hm-grid-container th {
+    flex: 1 1 auto;
+}
+.hm-grid-container tr {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+}
+.hm-grid-container thead tr th {
+    flex: auto;
+}
+.hm-grid-container tbody {
+    flex: 2 2 auto;
+}
+.hm-grid-container tfoot {
+    flex: 1 1 auto;
+}

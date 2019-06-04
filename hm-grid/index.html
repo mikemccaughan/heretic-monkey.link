@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Yet another grid component</title>
+        <link rel="stylesheet" href="index.css">
+        <script type="module" src="index.js"></script>
+    </head>
+    <body>
+        <div class="hm-grid-container">
+            <table>
+                <col>
+                    <col class="hm-display hm-text hm-w100">
+                    <col class="hm-edit hm-text hm-ml100">
+                    <col class="hm-display hm-number hm-d2 hm-local">
+                    <col class="hm-edit hm-number hm-s_01">
+                    <col class="hm-display hm-date hm-local hm-short">
+                    <col class="hm-edit hm-date hm-local">
+                    <col class="hm-display hm-bool hm-yn">
+                    <col class="hm-edit hm-bool hm-chk">
+                    <col class="hm-edit hm-bool hm-rad hm-scope-grid">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>Text display with max width of 100</th>
+                        <th>Text edit with maxlength 100</th>
+                        <th>Number display with two decimals local format</th>
+                        <th>Number edit with step of 0.01</th>
+                        <th>Date display with local short format</th>
+                        <th>Date edit with local</th>
+                        <th>Boolean display with Y/N</th>
+                        <th>Boolean edit with checkbox</th>
+                        <th>Boolean edit with radio buttom over all rows</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="2">Aggregations</td>
+                        <td class="hm-display hm-number hm-agg-sum hm-d2 hm-local"></td>
+                        <td class="hm-display hm-number hm-agg-avg hm-d2 hm-local"></td>
+                        <td class="hm-display hm-date hm-agg-min hm-local hm-short"></td>
+                        <td class="hm-display hm-date hm-agg-max hm-local hm-short"></td>
+                        <td colspan="3"></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </body>
+</html>
