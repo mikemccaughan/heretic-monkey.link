@@ -8,7 +8,7 @@ export default class Util {
                     fn(v);
                 };
             })(e), ms);
-        }
+        };
     }
     static ensureMap() {
         if (!this.datamap) {
@@ -32,7 +32,7 @@ export default class Util {
         if (parent.matches(selector)) {
             return parent;
         }
-        if (parent == document.documentElement) {
+        if (parent === document.documentElement) {
             return null;
         }
 

@@ -1,15 +1,37 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2010
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3645A698-F789-4C3C-B6C1-E787790904C5}"
-	ProjectSection(SolutionItems) = preProject
-		calculator.html = calculator.html
-		index.html = index.html
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "heretic-monkey.link", ".", "{592313AD-F196-4A7A-ABB4-0A7838F58E48}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_63872"
+		Debug.AspNetCompiler.PhysicalPath = "..\heretic-monkey.link\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_63872\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_63872"
+		Release.AspNetCompiler.PhysicalPath = "..\heretic-monkey.link\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_63872\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "63872"
+		SlnRelativePath = "..\heretic-monkey.link\"
 	EndProjectSection
 EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{592313AD-F196-4A7A-ABB4-0A7838F58E48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{592313AD-F196-4A7A-ABB4-0A7838F58E48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
