@@ -1,0 +1,30 @@
+<form name="mynsweepr">
+  <app-difficulty [difficulty]="state.difficulty"></app-difficulty>
+  <app-scoreboard [scoreboard]="state.scoreboard"></app-scoreboard>
+  <app-mineboard [mineboard]="state.mineboard"></app-mineboard>
+</form>
+<app-dialog [id]="'won'" [title]="'You won!'" [classes]="{ won: true }">
+  <p class="dialog-content" role="img" aria-label="#winning">🎉</p>
+  <footer class="dialog-buttons">
+    <button type="button"
+            class="confirm"
+            role="button"
+            aria-label="indicates winning, closes dialog"
+            (click)="closeDialog('won')">
+      Super!
+    </button>
+  </footer>
+</app-dialog>
+<app-dialog [id]="'lost'" [title]="'You lost!'" [classes]="{ lost: true }">
+  <p class="dialog-content" role="img" aria-label="#loser">😞</p>
+  <footer class="dialog-buttons">
+    <button type="button"
+            class="confirm"
+            role="button"
+            aria-label="indicates losing, closes dialog"
+            (click)="closeDialog('lost')">
+      Fake News!
+    </button>
+  </footer>
+</app-dialog>
+

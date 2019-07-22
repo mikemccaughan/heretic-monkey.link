@@ -1,0 +1,7 @@
+<dialog [id]="id" role="dialog" aria-modal="true" [ngClass]="classes">
+  <header>
+    <h1>{{ this.title }}</h1>
+    <button class="close" (click)="close()">🗙</button>
+  </header>
+  <ng-content></ng-content>
+</dialog>

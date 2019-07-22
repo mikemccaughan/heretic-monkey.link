@@ -1,0 +1,46 @@
+button.cell 
+    display: flex
+    width: 32px
+    height: 32px
+    flex-flow: column nowrap
+    overflow: hidden
+    white-space: nowrap
+    background: transparent
+    border: 1px solid transparent
+    line-height: 2
+    text-align: center
+    padding: 0
+    cursor: pointer
+    span 
+        width: 32px
+        text-align: center
+        height: 32px
+        line-height: 32px
+    &.hidden
+        background: lightblue
+        border-color: darkblue
+        span
+            display: none
+    &.flag, &.hidden.flag
+        background: palegoldenrod
+        border-color: goldenrod
+        .flag
+            display: inline-block
+    &:not(.hidden).mine
+        background: mistyrose
+        border-color: red
+        .mine
+            display: inline-block
+    &:not(.hidden).nearby
+        background: aliceblue
+        border-color: lightgray
+        .nearby
+            display: inline-block
+    &:not(.flag) span.flag
+        display: none
+    &:not(.mine) span.mine
+        display: none
+    &:not(.nearby) span.nearby
+        display: none
+
+

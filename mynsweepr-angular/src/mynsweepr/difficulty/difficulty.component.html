@@ -1,0 +1,24 @@
+<fieldset>
+  <legend>Select difficulty</legend>
+  <ul>
+    <li>
+      <label for="easy">Easy <span class="size">(<span class="w">9</span>x<span class="h">9</span>)</span></label>
+      <input type="radio" id="easy" name="difficulty" [(ngModel)]="difficulty.type" value="9" />
+    </li>
+    <li>
+      <label for="medium">Medium  <span class="size">(<span class="w">16</span>x<span class="h">16</span>)</span></label>
+      <input type="radio" id="medium" name="difficulty" [(ngModel)]="difficulty.type" value="16" />
+    </li>
+    <li>
+      <label for="hard">Hard  <span class="size">(<span class="w">30</span>x<span class="h">16</span>)</span></label>
+      <input type="radio" id="hard" name="difficulty" [(ngModel)]="difficulty.type" value="30" />
+    </li>
+    <li>
+      <label for="custom">Custom <span class="size">(
+        <span class="w"><input type="number" [(ngModel)]="difficulty.width" [disabled]="difficulty.type !== '?'" /></span>x
+        <span class="h"><input type="number" [(ngModel)]="difficulty.height" [disabled]="difficulty.type !== '?'" /></span>)
+      </span></label>
+      <input type="radio" id="custom" name="difficulty" [(ngModel)]="difficulty.type" value="?" />
+    </li>
+  </ul>
+</fieldset>

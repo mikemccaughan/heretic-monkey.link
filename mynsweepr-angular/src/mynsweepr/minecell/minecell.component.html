@@ -1,0 +1,12 @@
+<button [ngClass]="cell.classes"
+        role="button"
+        aria-label="a cell in the mine field"
+        tabindex="{{cell.index}}"
+        (keyup)="cellKeyup($event, cell)"
+        (click)="cellClick($event, cell)"
+        (dblclick)="cellDblClick($event, cell)"
+        (contextmenu)="cellRightClick($event, cell)">
+  <span class="nearby">{{cell.nearby}}</span>
+  <span class="mine">💣</span>
+  <span class="flag">🚩</span>
+</button>
