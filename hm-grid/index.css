@@ -26,6 +26,12 @@
 .hm-grid-container tbody {
     flex: 2 2 auto;
 }
+.hm-grid-container tbody tr td {
+    flex: auto;
+}
 .hm-grid-container tfoot {
     flex: 1 1 auto;
+}
+.hm-type-number {
+    text-align: right;
 }
