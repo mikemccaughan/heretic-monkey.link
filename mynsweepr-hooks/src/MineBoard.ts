@@ -15,9 +15,9 @@ export interface IBoard {
   cells: IMineCell[];
 }
 export class MineBoard implements IBoard {
-  difficulty: string;
-  width: number;
-  height: number;
+  private _difficulty: string = "9";
+  private _width: number = 9;
+  private _height: number = 9;
   cells: IMineCell[];
   private preboard: number[][] = [];
   constructor();
@@ -48,6 +48,34 @@ export class MineBoard implements IBoard {
     this.width = board.width;
     this.height = board.height;
     this.cells = board.cells;
+  }
+  get difficulty(): string {
+    return this._difficulty;
+  }
+  set difficulty(value: string) {
+    if (this._difficulty !== value) {
+      this._difficulty = value;
+      if (value !== '?') {
+        this.width = +value;
+        this.height = value === '30' ? 16 : +value;
+      }
+    }
+  }
+  get width(): number {
+    return this._width;
+  }
+  set width(value: number) {
+    if (this._width !== value) {
+      this._width = value;
+    }
+  }
+  get height(): number {
+    return this._height;
+  }
+  set height(value: number) {
+    if (this._height !== value) {
+      this._height = value;
+    }
   }
   exportBoard(): string {
     return JSON.stringify(this);
@@ -142,12 +170,16 @@ export class MineBoard implements IBoard {
       }
     }
   }
-  public buildBoard(): void {
+  public buildBoard(callback?: (cells: IMineCell[]) => void): void {
+    console.log(`building ${this.width}x${this.height} board...`);
     this.cells = [];
     this.initPreboard();
     this.populatePreboard();
     this.buildCells();
     this.sortCells();
+    if (typeof callback === 'function') {
+      callback(this.cells);
+    }
   }
   public static getRemaining(cells: IMineCell[]): number {
     let mines = cells.filter(cell => (cell.val || 0) < 0 && !cell.flag);

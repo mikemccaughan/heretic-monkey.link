@@ -1,13 +1,15 @@
-import React, { ChangeEvent } from 'react';
+import React, { MouseEvent, ChangeEventHandler, EventHandler } from 'react';
 import PropTypes from 'prop-types';
 
 interface DifficultyProps {
   difficulty?: string;
   width?: number;
   height?: number;
-  difficultyChanged?: (e: ChangeEvent<HTMLInputElement>) => void;
-  widthChanged?: (e: ChangeEvent<HTMLInputElement>) => void;
-  heightChanged?: (e: ChangeEvent<HTMLInputElement>) => void;
+  difficultyChanged?: EventHandler<
+    MouseEvent<HTMLInputElement, globalThis.MouseEvent>
+  >;
+  widthChanged?: ChangeEventHandler;
+  heightChanged?: ChangeEventHandler;
 }
 
 const Difficulty: React.FC<DifficultyProps> = ({
@@ -29,7 +31,7 @@ const Difficulty: React.FC<DifficultyProps> = ({
               name="difficulty"
               value="9"
               defaultChecked={difficulty === '9'}
-              onChange={difficultyChanged}
+              onClick={difficultyChanged}
             />
             <span>Easy</span>
             <span>(9 x 9)</span>
@@ -42,7 +44,7 @@ const Difficulty: React.FC<DifficultyProps> = ({
               name="difficulty"
               value="16"
               defaultChecked={difficulty === '16'}
-              onChange={difficultyChanged}
+              onClick={difficultyChanged}
             />
             <span>Medium</span>
             <span>(16 x 16)</span>
@@ -55,7 +57,7 @@ const Difficulty: React.FC<DifficultyProps> = ({
               name="difficulty"
               value="30"
               defaultChecked={difficulty === '30'}
-              onChange={difficultyChanged}
+              onClick={difficultyChanged}
             />
             <span>Hard</span>
             <span>(30 x 16)</span>
@@ -68,7 +70,7 @@ const Difficulty: React.FC<DifficultyProps> = ({
               name="difficulty"
               value="?"
               defaultChecked={difficulty === '?'}
-              onChange={difficultyChanged}
+              onClick={difficultyChanged}
             />
             <span>Custom</span>
             <span>
@@ -76,7 +78,8 @@ const Difficulty: React.FC<DifficultyProps> = ({
               <input
                 type="number"
                 id="width"
-                defaultValue={width}
+                title="columns (width)"
+                value={width}
                 min="1"
                 step="1"
                 maxLength={5}
@@ -86,7 +89,8 @@ const Difficulty: React.FC<DifficultyProps> = ({
               <input
                 type="number"
                 id="height"
-                defaultValue={height}
+                title="rows (height)"
+                value={height}
                 min="1"
                 maxLength={5}
                 step="1"
