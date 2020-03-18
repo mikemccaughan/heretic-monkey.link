@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { EventHandler, SyntheticEvent } from 'react';
 
 export interface CellProps {
   val?: number;
@@ -7,6 +7,9 @@ export interface CellProps {
   y?: number;
   hidden?: boolean;
   flag?: boolean;
+  cellClick?: EventHandler<SyntheticEvent>;
+  cellDoubleClick?: EventHandler<SyntheticEvent>;
+  cellRightClick?: EventHandler<SyntheticEvent>;
 }
 
 const Cell: React.FC<CellProps> = ({
@@ -15,7 +18,10 @@ const Cell: React.FC<CellProps> = ({
   x,
   y,
   hidden,
-  flag
+  flag,
+  cellClick,
+  cellDoubleClick,
+  cellRightClick
 }: CellProps) => {
   const classes = ['cell'];
   if (hidden) {
@@ -30,6 +36,9 @@ const Cell: React.FC<CellProps> = ({
       id={`cell${index}`}
       className={classes.join(' ')}
       data-val={val}
+      onClick={cellClick}
+      onDoubleClick={cellDoubleClick}
+      onContextMenu={cellRightClick}
     ></button>
   );
 };

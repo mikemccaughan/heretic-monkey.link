@@ -1,11 +1,19 @@
-import React from 'react';
+import React, { EventHandler, SyntheticEvent } from 'react';
 import Cell, { CellProps } from './Cell';
 
 interface BoardProps {
   cells: CellProps[];
+  cellClick: EventHandler<SyntheticEvent>;
+  cellDoubleClick: EventHandler<SyntheticEvent>;
+  cellRightClick: EventHandler<SyntheticEvent>;
 }
 
-const Board: React.FC<BoardProps> = ({ cells }: BoardProps) => {
+const Board: React.FC<BoardProps> = ({
+  cells,
+  cellClick,
+  cellDoubleClick,
+  cellRightClick
+}: BoardProps) => {
   return (
     <div className="board">
       {cells.map(({ val, index, x, y, hidden, flag }) => (
@@ -17,6 +25,9 @@ const Board: React.FC<BoardProps> = ({ cells }: BoardProps) => {
           y={y}
           hidden={hidden}
           flag={flag}
+          cellClick={cellClick}
+          cellDoubleClick={cellDoubleClick}
+          cellRightClick={cellRightClick}
         ></Cell>
       ))}
     </div>

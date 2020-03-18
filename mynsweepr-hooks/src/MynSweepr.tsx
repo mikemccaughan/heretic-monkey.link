@@ -4,14 +4,15 @@ import React, {
   ChangeEvent,
   ChangeEventHandler,
   MouseEvent,
-  useEffect
+  useEffect,
+  EventHandler,
+  SyntheticEvent
 } from 'react';
 import { MineBoard, IMineCell } from './MineBoard';
 import Difficulty from './Difficulty';
 import Board from './Board';
 
 const MynSweepr: React.FC = () => {
-  
   const [difficulty, setDifficulty] = useState('9');
   const [width, setWidth] = useState(9);
   const [height, setHeight] = useState(9);
@@ -74,6 +75,23 @@ const MynSweepr: React.FC = () => {
     setRows();
   };
 
+  const handleCellClick: EventHandler<SyntheticEvent> = (e: SyntheticEvent) => {
+    console.log('click', e);
+  };
+
+  const handleCellDoubleClick: EventHandler<SyntheticEvent> = (
+    e: SyntheticEvent
+  ) => {
+    console.log('double-click', e);
+  };
+
+  const handleCellRightClick: EventHandler<SyntheticEvent> = (
+    e: SyntheticEvent
+  ) => {
+    e.preventDefault();
+    console.log('right-click', e);
+  };
+
   return (
     <Fragment>
       <header>
@@ -87,7 +105,12 @@ const MynSweepr: React.FC = () => {
         ></Difficulty>
       </header>
       <main>
-        <Board cells={cells}></Board>
+        <Board
+          cells={cells}
+          cellClick={handleCellClick}
+          cellDoubleClick={handleCellDoubleClick}
+          cellRightClick={handleCellRightClick}
+        ></Board>
       </main>
       <footer></footer>
     </Fragment>
