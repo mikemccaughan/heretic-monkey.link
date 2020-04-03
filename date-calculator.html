@@ -75,10 +75,9 @@
         </sub>
       </aside>
     </footer>
-    <script src="temporal.js"></script>
+    <script type="module" src="temporal.mjs"></script>
     <script>
       document.addEventListener('readystatechange', e => {
-        console.log(e.target.readyState);
         if (e.target.readyState === 'complete') {
           setDefaultDate();
         }
