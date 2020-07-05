@@ -18,7 +18,7 @@
   "homepage": "https://github.com/mikemccaughan/heretic-monkey.link#readme",
   "dependencies": {
     "azure-storage": "^2.10.3",
-    "express": "^4.16.3",
+    "express": "^4.17.1",
     "jquery": "^3.5.1"
   },
   "devDependencies": {

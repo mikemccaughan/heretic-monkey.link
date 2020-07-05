@@ -1,0 +1,73 @@
+:root {
+  --columns: 9;
+  --rows: 9;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  flex-flow: column nowrap;
+  min-height: 100vh;
+}
+
+header {
+  flex: 0 1 10vh;
+  margin-bottom: 1rem;
+  padding: 1rem;
+}
+
+main {
+  flex: 1 1 80vh;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+}
+
+footer {
+  flex: 0 1 10vh;
+}
+
+header ul {
+  margin: 0;
+  padding: 0;
+  text-indent: 0;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+header li {
+  display: flex;
+  list-style-type: none;
+}
+
+header label span {
+  margin: 0 0.25rem;
+}
+
+.board {
+  margin: 0 auto;
+  height: 100%;
+  width: fit-content;
+  display: grid;
+  grid-template-columns: repeat(var(--columns), 1fr);
+  grid-template-rows: repeat(var(--rows), 1fr);
+}
+
+.cell {
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border: 1px solid;
+  border-radius: 0;
+  background-color: lightblue;
+  margin: 0;
+  padding: 0;
+  transition: transform 250ms ease-out;
+}
+.cell:hover {
+  transform: scale(1.25);
+}
+.cell.hidden:active {
+  background-color: orange;
+}

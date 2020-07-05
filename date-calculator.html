@@ -1,208 +1,180 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Date/Time Calculator</title>
-        <style>
-            input[type="date"], input[type="datetime-local"] { width: 200px; }
-        </style>
-    </head>
-    <body>
-        <form>
-            <fieldset>
-                <legend>Start Date/Time</legend>
-                <div class="set">
-                    <label for="start">Start (local to your time zone):</label>
-                    <input id="start" type="datetime-local">
-                    <label for="dateonly">Date only</label>
-                    <input id="dateonly" type="checkbox" >
-                </div>
-            </fieldset>
-            <fieldset>
-                <legend>Calculations</legend>
-                <div class="set">
-                    <label for="calc">Calculation:</label>
-                    <select id="calc">
-                        <option value="+">add</option>
-                        <option value="-">subtract</option>
-                    </select>
-                </div>
-                <div class="set">
-                    <label for="count">Count:</label>
-                    <input id="count" type="number">
-                </div>
-                <div class="set">
-                    <label for="unit">Unit:</label>
-                    <select id="unit">
-                        <option value="m">Minute</option>
-                        <option value="h">Hour</option>
-                        <option value="d">Day</option>
-                        <option value="w">Week</option>
-                        <option value="M">Month</option>
-                        <option value="Q">Quarter</option>
-                        <option value="y">Year</option>
-                    </select>
-                </div>
-            </fieldset>
-            <button id="go" type="button">Calculate</button>
-        </form>
-        <div id="result">
-
-        </div>
-        <sub>Calculations performed by the <a href="https://moment.github.io/luxon/index.html">Luxon</a> library.</sub>
-        <script>
-            let result;
-            const dateTimeFormat = new Intl.DateTimeFormat('en-US', {
-                year: 'numeric',
-                month: 'numeric',
-                day: 'numeric',
-                hour: 'numeric',
-                minute: 'numeric',
-                hour12: false
-            });
-            function pad(val, char, len) {
-                if (len > 0) {
-                    return (Array(len).fill(char).join('') + val).slice(-len);
-                } else {
-                    return (val + Array(len).fill(char).join('')).slice(len);
-                }
-            }
-            function formatDateToISO(date, dateOnly = false) {
-                const parts = dateTimeFormat.formatToParts(date);
-                const year = parts.find(part => part.type === 'year').value;
-                const month = pad(parts.find(part => part.type === 'month').value, '0', 2);
-                const day = pad(parts.find(part => part.type === 'day').value, '0', 2);
-                const hour = pad(parts.find(part => part.type === 'hour').value, '0', 2);
-                const minute = pad(parts.find(part => part.type === 'minute').value, '0', 2);
-                const formatted = `${year}-${month}-${day}${dateOnly ? '' : `T${hour}:${minute}`}`;
-                return formatted;
-            }
-            function normalizeValue(value) {
-                if (typeof value === 'string') {
-                    if (/\d{4}-\d{2}-\d{2}/.test(value) && !value.includes('T')) {
-                        value += 'T12:00';
-                    }
-                    value = new Date(value);
-                }
-                if (typeof value === 'number') {
-                    value = new Date(value);
-                }
-                return value;
-            }
-            function add(date, count, unit) {
-                console.log('add', date);
-                switch (unit) {
-                    case 'm':
-                        date = date.setMinutes(date.getMinutes() + count);
-                        break;
-                    case 'h':
-                        date.setHours(date.getHours() + count);
-                        break;
-                    case 'd':
-                        date.setDate(date.getDate() + count);
-                        break;
-                    case 'w':
-                        date.setDate(date.getDate() + count * 7);
-                        break;
-                    case 'M':
-                        date.setMonth(date.getMonth() + count);
-                        break;
-                    case 'Q':
-                        date.setMonth(date.getMonth() + count * 3);
-                        break;
-                    case 'y':
-                        date.setFullYear(date.getFullYear() + count);
-                        break;
-                }
-console.log('added', date);
-                return new Date(date);
-            }
-            function subtract(date, count, unit) {
-                switch (unit) {
-                    case 'm':
-                        date.setMinutes(date.getMinutes() - count);
-                        break;
-                    case 'h':
-                        date.setHours(date.getHours() - count);
-                        break;
-                    case 'd':
-                        date.setDate(date.getDate() - count);
-                        break;
-                    case 'w':
-                        date.setDate(date.getDate() - count * 7);
-                        break;
-                    case 'M':
-                        date.setMonth(date.getMonth() - count);
-                        break;
-                    case 'Q':
-                        date.setMonth(date.getMonth() - count * 3);
-                        break;
-                    case 'y':
-                        date.setFullYear(date.getFullYear() - count);
-                        break;
-                }
-
-                return new Date(date);
-            }
-            window.addEventListener('load', () => {
-                result = document.getElementById('result');
-                const now = new Date();
-                now.setHours(0)
-                const today = formatDateToISO();
-                const startEl = document.getElementById('start');
-                startEl.defaultValue = today;
-                const dateonly = document.getElementById('dateonly');
-                dateonly.addEventListener('click', (e) => {
-                    let value = startEl.value;
-                    if (!value || value.length === 0) {
-                        value = startEl.defaultValue;
-                    }
-                    console.log('dateonly', value);
-                    value = new Date(value);
-                    console.log('dateonly', value);
-
-                    if (dateonly.checked) {
-                        startEl.value = '';
-                        startEl.type = 'date';
-                        startEl.value = formatDateToISO(value, true);
-                    } else {
-                        startEl.value = '';
-                        startEl.type = 'datetime-local';
-                        startEl.value = formatDateToISO(value, false);
-                    }
-                })
-                const calculate = document.getElementById('go');
-                calculate.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const operator = document.getElementById('calc').value;
-                    const count = +document.getElementById('count').value;
-                    const unit = document.getElementById('unit').value;
-                    console.log('calculate', normalizeValue(document.getElementById('start').value));
-                    const date = new Date(normalizeValue(document.getElementById('start').value));
-                    console.log('calculate', date);
-                    if (isNaN(count)) {
-                        return;
-                    }
-                    if (isNaN(date)) {
-                        return;
-                    }
-                    let value = null;
-                    switch (operator) {
-                        case '+':
-                            value = add(date, count, unit);
-                            break;
-                        case '-':
-                            value = subtract(date, count, unit);
-                            break;
-                    }
-                    console.log('calculate', dateonly.checked, value);
-                    if (value) {
-                        value = new Date(value);
-                        value = dateonly.checked ? value.toLocaleDateString() : value.toLocaleString();
-                    }
-                    console.log('calculate', dateonly.checked, value);
-                    result.textContent = value;
-                });
-            });
-        </script>
-    </body>
+  <head>
+    <title>Date/Time Calculator</title>
+    <style>
+      input[type='date'],
+      input[type='datetime-local'] {
+        width: 200px;
+      }
+      html {
+        min-height: 100%;
+      }
+      body {
+        display: flex;
+        flex-flow: column nowrap;
+        min-height: 100%;
+      }
+      main {
+        flex: 1 1 auto;
+      }
+      footer {
+        flex: 0 0 1vh;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <form>
+        <fieldset>
+          <legend>Start Date/Time</legend>
+          <div class="set">
+            <label for="start">Start (local to your time zone):</label>
+            <input id="start" type="datetime-local" required />
+            <label for="dateonly">Date only</label>
+            <input id="dateonly" type="checkbox" />
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Calculations</legend>
+          <div class="set">
+            <label for="calc">Calculation:</label>
+            <select id="calc">
+              <option value="+">add</option>
+              <option value="-">subtract</option>
+            </select>
+          </div>
+          <div class="set">
+            <label for="count">Count:</label>
+            <input id="count" type="number" value="1" required />
+          </div>
+          <div class="set">
+            <label for="unit">Unit:</label>
+            <select id="unit">
+              <option data-type="datetime" value="m">Minute</option>
+              <option data-type="datetime" value="h">Hour</option>
+              <option data-type="date" value="d">Day</option>
+              <option data-type="date" value="w">Week</option>
+              <option data-type="date" value="M">Month</option>
+              <option data-type="date" value="Q">Quarter</option>
+              <option data-type="date" value="y">Year</option>
+            </select>
+          </div>
+        </fieldset>
+        <button id="go" type="button">Calculate</button>
+      </form>
+      <div id="result">&nbsp;</div>
+    </main>
+    <footer>
+      <aside>
+        <sub>
+          Currently using the polyfill for the
+          <a href="https://github.com/tc39/proposal-temporal"
+            >Temporal proposal for ECMAScript</a
+          >.
+        </sub>
+      </aside>
+    </footer>
+    <script type="module" src="temporal.mjs"></script>
+    <script>
+      document.addEventListener('readystatechange', e => {
+        if (e.target.readyState === 'complete') {
+          setDefaultDate();
+        }
+      });
+      function setDefaultDate() {
+        const temporal = document.querySelector('#dateonly').checked
+          ? Temporal.now.date()
+          : Temporal.now.dateTime();
+        document.querySelector('#start').value = temporal
+          .toString()
+          .substring(0, 16);
+      }
+      document.querySelector('#dateonly').addEventListener(
+        'change',
+        e => {
+          document.querySelector('#start').type = e.target.checked
+            ? 'date'
+            : 'datetime-local';
+          setDefaultDate();
+          Array.from(document.querySelector('#unit').options).forEach(
+            option =>
+              (option.hidden =
+                e.target.checked &&
+                option.getAttribute('data-type') === 'datetime')
+          );
+          if (
+            document.querySelector('#unit').options[
+              document.querySelector('#unit').selectedIndex
+            ].hidden
+          ) {
+            Array.from(document.querySelector('#unit').options).filter(
+              option => !option.hidden
+            )[0].selected = true;
+          }
+        },
+        false
+      );
+      const symbolToFunction = {
+        m: {
+          '+': (dt, c) => dt.plus({ minutes: c }),
+          '-': (dt, c) => dt.minus({ minutes: c })
+        },
+        h: {
+          '+': (dt, c) => dt.plus({ hours: c }),
+          '-': (dt, c) => dt.minus({ hours: c })
+        },
+        d: {
+          '+': (dt, c) => dt.plus({ days: c }),
+          '-': (dt, c) => dt.minus({ days: c })
+        },
+        w: {
+          '+': (dt, c) => dt.plus({ days: c * 7 }),
+          '-': (dt, c) => dt.minus({ days: c * 7 })
+        },
+        M: {
+          '+': (dt, c) => dt.plus({ months: c }),
+          '-': (dt, c) => dt.minus({ months: c })
+        },
+        Q: {
+          '+': (dt, c) => dt.plus({ months: c * 3 }),
+          '-': (dt, c) => dt.minus({ months: c * 3 })
+        },
+        y: {
+          '+': (dt, c) => dt.plus({ years: c }),
+          '-': (dt, c) => dt.minus({ years: c })
+        }
+      };
+      document.querySelector('#go').addEventListener(
+        'click',
+        e => {
+          if (
+            !Array.from(document.querySelectorAll('[required]')).every(input =>
+              input.checkValidity()
+            )
+          ) {
+            return;
+          }
+          const isDateOnly = document.querySelector('#dateonly').checked;
+          let originalTemporal;
+          if (isDateOnly) {
+            originalTemporal = Temporal.Date.from(
+              document.querySelector('#start').value
+            );
+          } else {
+            originalTemporal = Temporal.DateTime.from(
+              document.querySelector('#start').value
+            );
+          }
+          const unit = document.querySelector('#unit').value;
+          const operation = document.querySelector('#calc').value;
+          const number = document.querySelector('#count').valueAsNumber;
+          const fn = symbolToFunction[unit][operation];
+          const result = fn(originalTemporal, number);
+          document.querySelector('#result').textContent = result.toString();
+        },
+        false
+      );
+    </script>
+  </body>
 </html>
