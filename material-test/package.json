@@ -1,0 +1,40 @@
+{
+  "name": "material-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server",
+    "build": "webpack"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.10.2",
+    "@babel/preset-env": "^7.10.2",
+    "autoprefixer": "^9.8.0",
+    "babel-loader": "^8.1.0",
+    "css-loader": "^3.5.3",
+    "extract-loader": "^5.1.0",
+    "file-loader": "^6.0.0",
+    "postcss-loader": "^3.0.0",
+    "sass": "^1.26.8",
+    "sass-loader": "^8.0.2",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.11.0"
+  },
+  "dependencies": {
+    "@material/auto-init": "^6.0.0",
+    "@material/button": "^6.0.0",
+    "@material/drawer": "^6.0.0",
+    "@material/icon-button": "^6.0.0",
+    "@material/menu": "^6.0.0",
+    "@material/ripple": "^6.0.0",
+    "@material/select": "^6.0.0",
+    "@material/textfield": "^6.0.0",
+    "@material/theme": "^6.0.0",
+    "@material/top-app-bar": "^6.0.0"
+  }
+}

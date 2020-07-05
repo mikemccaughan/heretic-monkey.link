@@ -71,18 +71,30 @@ export class HmGrid {
         }, {});
         return Object.assign({}, pathInfo, props);
     }
+    getExtraClasses(pathInfo) {
+        if (!pathInfo.extras) {
+            return [];
+        }
+        const classes = pathInfo.extras.reduce((agg, cur) => {
+            switch(cur) {
+                case 'w100': 
+                    agg = [...agg, 'hm-has-max-width'];
+                    break;
+            }
+            return agg;
+        }, []);
+        return classes;
+    }
     getStyles(pathInfo) {
         if (!pathInfo.extras) {
             return {};
         }
+        let maxWidth = this.element.clientWidth / cols.length;
         const styles = pathInfo.extras.reduce((agg, cur) => {
             switch(cur) {
                 case 'w100': 
                     Object.assign(agg, {
-                        'max-width': '100ch',
-                        'overflow': 'hidden',
-                        'text-overflow': 'ellipsis',
-                        'white-space': 'nowrap'
+                        'max-width': '20ch'
                     });
                     break;
             }
@@ -136,7 +148,7 @@ export class HmGrid {
             [
                 ...agg, 
                 '<td class="', 
-                `hm-type-${pathInfo.type}`, 
+                [...this.getExtraClasses(pathInfo), `hm-type-${pathInfo.type}`].join(' '), 
                 '" style="', this.getStylesAsStyleString(this.getStyles(pathInfo)) , '">', 
                 pathInfo.mode === 'display' ? 
                     this.getDisplay(dataRow, pathInfo) : 
@@ -161,11 +173,11 @@ export class HmGrid {
         }, new Map())
 
         const headers = Array.from(this.element.querySelectorAll('th'));
-        const maxWidth = this.element.clientWidth / cols.length;
+        let maxWidth = this.element.clientWidth / cols.length;
         Array.from(this.columns.entries()).forEach(([col, pathInfo], index) => {
             headers[index].className = col.className;
             const styles = this.getStyles(pathInfo);
-            styles['max-width'] = `${maxWidth}px`;
+            styles['max-width'] = styles['max-width'] || `${maxWidth}px`;
             headers[index].setAttribute('style', this.getStylesAsStyleString(styles));
             headers[index].setAttribute('title', headers[index].textContent);
         });

@@ -3,7 +3,7 @@
 }
 .hm-grid-container table {
     display: flex;
-    flex-flow: column wrap;
+    flex-flow: column nowrap;
     border-spacing: 0;
     border: 1px solid black;
 }
@@ -17,7 +17,7 @@
 }
 .hm-grid-container tr {
     display: flex;
-    flex-flow: row wrap;
+    flex-flow: row nowrap;
     justify-content: space-evenly;
 }
 .hm-grid-container thead tr th {
@@ -34,4 +34,9 @@
 }
 .hm-type-number {
     text-align: right;
+}
+.hm-has-max-width {
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }

@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta
+      content="initial-scale=1, shrink-to-fit=no, width=device-width"
+      name="viewport"
+    />
+    <meta charset="utf-8" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link href="bundle.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <header class="mdc-top-app-bar">
+      <div class="mdc-top-app-bar__row">
+        <section
+          class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start"
+        >
+          <button
+            class="mdc-top-app-bar__navigation-icon mdc-icon-button"
+            type="button"
+            aria-controls="navdrawerMain"
+            aria-expanded="false"
+            aria-label="Toggle drawer"
+            aria-pressed="false"
+            data-mdc-auto-init="MDCRipple"
+            id="navdrawerMain-toggle"
+          >
+            <i class="material-icons mdc-icon-button__icon">menu</i>
+          </button>
+          <a class="mdc-top-app-bar__title" href="./">Material Test</a>
+        </section>
+        <section
+          class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end"
+          role="toolbar"
+        >
+          <button
+            type="button"
+            class="mdc-icon-button mdc-top-app-bar__action-item material-icons mdc-menu-surface--anchor"
+            id="alt-menu"
+          >
+            more_vert
+          </button>
+          <nav class="mdc-menu mdc-menu-surface" id="navbarContent">
+            <ul
+              class="mdc-list"
+              role="menu"
+              aria-hidden="true"
+              aria-orientation="vertical"
+              tabindex="-1"
+            >
+              <li class="mdc-list-item" role="menuitem">
+                <span class="mdc-list-item__text">Account Settings</span>
+              </li>
+              <li class="mdc-list-item" role="menuitem">
+                <span class="mdc-list-item__text">Services</span>
+              </li>
+              <li class="mdc-list-divider" role="separator"></li>
+              <li>
+                <ul class="mdc-menu__selection-group">
+                  <li
+                    class="mdc-list-item mdc-menu-item--selected"
+                    role="menuitem"
+                  >
+                    <span
+                      class="mdc-list-item__graphic mdc-menu__selection-group-icon"
+                      ><i class="material-icons">done</i></span
+                    >
+                    <span class="mdc-list-item__text">English</span>
+                  </li>
+                  <li class="mdc-list-item" role="menuitem">
+                    <span
+                      class="mdc-list-item__graphic mdc-menu__selection-group-icon"
+                      ><i class="material-icons">done</i></span
+                    >
+                    <span class="mdc-list-item__text">Español</span>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </nav>
+        </section>
+      </div>
+    </header>
+    <main class="mdc-top-app-bar--fixed-adjust">
+      <div
+        class="mdc-drawer mdc-drawer--dismissible"
+        id="navdrawerMain"
+        tabindex="-1"
+      >
+        <div class="mdc-drawer__content">
+          <nav class="mdc-list">
+            <a
+              class="mdc-list-item mdc-list-item--activated"
+              href="#"
+              data-toggle="navdrawer"
+              data-target="#navdrawerMain"
+            >
+              <i class="material-icons">credit_card</i>
+              <span class="label">Make Payment</span>
+              <span class="sr-only">(current)</span>
+            </a>
+            <a
+              class="mdc-list-item"
+              href="#"
+              data-toggle="navdrawer"
+              data-target="#navdrawerMain"
+            >
+              <i class="material-icons">schedule</i>
+              <span class="label">Scheduled</span>
+            </a>
+            <a
+              class="mdc-list-item"
+              href="#"
+              data-toggle="navdrawer"
+              data-target="#navdrawerMain"
+            >
+              <i class="material-icons">cached</i>
+              <span class="label">Recurring</span>
+            </a>
+            <a
+              class="mdc-list-item"
+              href="#"
+              data-toggle="navdrawer"
+              data-target="#navdrawerMain"
+            >
+              <i class="material-icons">snooze</i>
+              <span class="label">Auto Pay</span>
+            </a>
+            <a
+              class="mdc-list-item"
+              href="#"
+              data-toggle="navdrawer"
+              data-target="#navdrawerMain"
+            >
+              <i class="material-icons">account_balance_wallet</i>
+              <span class="label">Wallet</span>
+            </a>
+            <a
+              class="mdc-list-item"
+              href="#"
+              data-toggle="navdrawer"
+              data-target="#navdrawerMain"
+            >
+              <i class="material-icons">account_box</i>
+              <span class="label">Profile</span>
+            </a>
+          </nav>
+        </div>
+      </div>
+      <div class="mdc-drawer-scrim"></div>
+      <div class="mdc-drawer-app-content navrail-and-content">
+        <nav class="navrail">
+          <ul class="rail">
+            <li class="rail-item active">
+              <button type="button" class="mdc-button">
+                <i class="material-icons mdc-button__icon">credit_card</i>
+                <span class="mdc-button__label">Make Payment</span>
+                <span class="sr-only">(current)</span>
+              </button>
+            </li>
+            <li class="rail-divider">
+              <hr />
+            </li>
+            <li class="rail-item">
+              <button type="button" class="mdc-button">
+                <i class="material-icons mdc-button__icon">schedule</i>
+                <span class="mdc-button__label">Scheduled</span>
+              </button>
+            </li>
+            <li class="rail-divider">
+              <hr />
+            </li>
+            <li class="rail-item">
+              <button type="button" class="mdc-button">
+                <i class="material-icons mdc-button__icon">cached</i>
+                <span class="mdc-button__label">Recurring</span>
+              </button>
+            </li>
+            <li class="rail-divider">
+              <hr />
+            </li>
+            <li class="rail-item">
+              <button type="button" class="mdc-button">
+                <i class="material-icons mdc-button__icon">snooze</i>
+                <span class="mdc-button__label">Auto Pay</span>
+              </button>
+            </li>
+          </ul>
+        </nav>
+        <section class="content">
+          <form>
+            <div class="mdc-select mdc-select--fullwidth mdc-select--filled">
+              <div
+                class="mdc-select__anchor"
+                role="button"
+                aria-haspopup="listbox"
+                aria-labelledby="method-label method-selected-text"
+              >
+                <span class="mdc-select__ripple"></span>
+                <span id="method-selected-text" class="mdc-select__selected-text"
+                  >Choose payment method...</span
+                >
+                <span class="mdc-select__dropdown-icon">
+                  <svg
+                    class="mdc-select__dropdown-icon-graphic"
+                    viewBox="7 10 10 5"
+                  >
+                    <polygon
+                      class="mdc-select__dropdown-icon-inactive"
+                      stroke="none"
+                      fill-rule="evenodd"
+                      points="7 10 12 15 17 10"
+                    ></polygon>
+                    <polygon
+                      class="mdc-select__dropdown-icon-active"
+                      stroke="none"
+                      fill-rule="evenodd"
+                      points="7 15 12 10 17 15"
+                    ></polygon>
+                  </svg>
+                </span>
+                <span
+                  id="method-label"
+                  class="mdc-floating-label mdc-floating-label--float-above"
+                  >Using</span
+                >
+                <span class="mdc-line-ripple"></span>
+              </div>
+
+              <div
+                class="mdc-select__menu mdc-menu mdc-menu-surface"
+                role="listbox"
+              >
+                <ul class="mdc-list">
+                    <li class="mdc-list-item mdc-list-item--selected mdc-list-item--disabled" aria-disabled="true" aria-selected="true" data-value="" role="option">
+                        <span class="mdc-list-item__text">Choose payment method...</span>
+                    </li>
+                    <li class="mdc-list-item" data-value="123456" role="option" data-method-type="card">
+                        <span class="mdc-list-item__text">VISA *1234</span>
+                    </li>
+                    <li class="mdc-list-item" data-value="789012" role="option" data-method-type="card">
+                        <span class="mdc-list-item__text">Mastercard *5678</span>
+                    </li>
+                    <li class="mdc-list-item" data-value="345678" role="option" data-method-type="ach">
+                        <span class="mdc-list-item__text">Checking *9012</span>
+                    </li>
+                    <li class="mdc-list-item" data-value="card" role="option" data-method-type="card" data-toggle="drawer" data-target="#navdrawerForm" data-drawer-which="card">
+                        <span class="mdc-list-item__text">Card...</span>
+                    </li>
+                    <li class="mdc-list-item" data-value="ach" role="option" data-method-type="ach" data-toggle="drawer" data-target="#navdrawerForm" data-drawer-which="ach">
+                        <span class="mdc-list-item__text">Bank Account...</span>
+                    </li>
+                    <li class="mdc-list-item" data-value="more" role="option" data-method-type="other" data-toggle="drawer" data-target="#navdrawerForm" data-drawer-which="more">
+                        <span class="mdc-list-item__text">More...</span>
+                    </li>
+                </ul>
+              </div>
+            </div>
+          </form>
+        </section>
+      </div>
+      <div class="form-drawer" id="navdrawerForm" tabindex="-1">
+        <div class="navdrawer-content">
+          <div class="navdrawer-header">
+            <div class="js-header js-header-card">
+              <h4>Enter Card Information</h4>
+              <p>Blah blah blah</p>
+            </div>
+            <div class="js-header js-header-ach">
+              <h4>Enter Checking Information</h4>
+              <p>Blah blah blah</p>
+            </div>
+            <div class="js-header js-header-more">
+              <h4>Select Digital Payment Method</h4>
+              <p>Blah blah blah</p>
+            </div>
+          </div>
+          <div class="js-content js-content-card">
+            <div class="form-group form-group-lg">
+              <div class="floating-label">
+                <label for="card-number">Card Number</label>
+                <div class="input-group has-append">
+                  <input
+                    type="text"
+                    class="form-control"
+                    required
+                    pattern="^\d{13}$"
+                    maxlength="13"
+                  />
+                  <button
+                    type="button"
+                    class="btn btn-icon"
+                    data-toggle="tooltip"
+                  >
+                    <i class="material-icons">info</i>
+                  </button>
+                </div>
+              </div>
+              <div class="validation-message">
+                <span class="field-validation-error"></span>
+              </div>
+            </div>
+            <ul class="supported-cards">
+              <li class="logos visa"></li>
+              <li class="logos mast"></li>
+              <li class="logos disc"></li>
+              <li class="logos amex"></li>
+            </ul>
+            <div class="form-group expiration-date">
+              <div class="floating-label has-value">
+                <label for="month">Expiration Date</label>
+                <div class="input-group dropdown">
+                  <button
+                    type="button"
+                    class="form-control custom-control custom-select"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    id="month"
+                  >
+                    ...
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="month">
+                    <a href="#month-null" data-value="" class="dropdown-item"
+                      >...</a
+                    >
+                    <a href="#month-01" data-value="1" class="dropdown-item"
+                      >01</a
+                    >
+                    <a href="#month-02" data-value="2" class="dropdown-item"
+                      >02</a
+                    >
+                    <a href="#month-03" data-value="3" class="dropdown-item"
+                      >03</a
+                    >
+                    <a href="#month-04" data-value="4" class="dropdown-item"
+                      >04</a
+                    >
+                    <a href="#month-05" data-value="5" class="dropdown-item"
+                      >05</a
+                    >
+                    <a href="#month-06" data-value="6" class="dropdown-item"
+                      >06</a
+                    >
+                    <a href="#month-07" data-value="7" class="dropdown-item"
+                      >07</a
+                    >
+                    <a href="#month-08" data-value="8" class="dropdown-item"
+                      >08</a
+                    >
+                    <a href="#month-09" data-value="9" class="dropdown-item"
+                      >09</a
+                    >
+                    <a href="#month-10" data-value="10" class="dropdown-item"
+                      >10</a
+                    >
+                    <a href="#month-11" data-value="11" class="dropdown-item"
+                      >11</a
+                    >
+                    <a href="#month-12" data-value="12" class="dropdown-item"
+                      >12</a
+                    >
+                  </div>
+                </div>
+                <div class="input-group dropdown">
+                  <button
+                    type="button"
+                    class="form-control custom-control custom-select"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    id="year"
+                  >
+                    ...
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="year">
+                    <a href="#year-null" data-value="" class="dropdown-item"
+                      >...</a
+                    >
+                    <a href="#year-2020" data-value="1" class="dropdown-item"
+                      >2020</a
+                    >
+                    <a href="#year-2021" data-value="2" class="dropdown-item"
+                      >2021</a
+                    >
+                    <a href="#year-2022" data-value="3" class="dropdown-item"
+                      >2022</a
+                    >
+                    <a href="#year-2023" data-value="4" class="dropdown-item"
+                      >2023</a
+                    >
+                    <a href="#year-2024" data-value="5" class="dropdown-item"
+                      >2024</a
+                    >
+                    <a href="#year-2025" data-value="6" class="dropdown-item"
+                      >2025</a
+                    >
+                    <a href="#year-2026" data-value="7" class="dropdown-item"
+                      >2026</a
+                    >
+                    <a href="#year-2027" data-value="8" class="dropdown-item"
+                      >2027</a
+                    >
+                    <a href="#year-2028" data-value="9" class="dropdown-item"
+                      >2028</a
+                    >
+                    <a href="#year-2029" data-value="10" class="dropdown-item"
+                      >2029</a
+                    >
+                    <a href="#year-2030" data-value="11" class="dropdown-item"
+                      >2030</a
+                    >
+                    <a href="#year-2031" data-value="12" class="dropdown-item"
+                      >2031</a
+                    >
+                  </div>
+                </div>
+              </div>
+              <div class="validation-message">
+                <span class="field-validation-error"></span>
+              </div>
+            </div>
+            <div class="form-group form-group-sm">
+              <div class="floating-label">
+                <label for="security-code">Security Code</label>
+                <div class="input-group has-append">
+                  <input
+                    type="text"
+                    class="form-control"
+                    pattern="^\d{3,4}$"
+                    maxlength="4"
+                  />
+                  <button
+                    type="button"
+                    class="btn btn-icon"
+                    data-toggle="tooltip"
+                  >
+                    <i class="material-icons">info</i>
+                  </button>
+                </div>
+              </div>
+              <div class="validation-message">
+                <span class="field-validation-error"></span>
+              </div>
+            </div>
+            <div class="form-group form-group-sm">
+              <div class="floating-label">
+                <label for="zip-code">ZIP Code</label>
+                <div class="input-group has-append">
+                  <input
+                    type="text"
+                    class="form-control"
+                    pattern="^\d{5}(\-\d{4})*$"
+                    maxlength="10"
+                  />
+                  <button
+                    type="button"
+                    class="btn btn-icon"
+                    data-toggle="tooltip"
+                  >
+                    <i class="material-icons">info</i>
+                  </button>
+                </div>
+              </div>
+              <div class="validation-message">
+                <span class="field-validation-error"></span>
+              </div>
+            </div>
+            <div class="form-group form-group-sm">
+              <div class="custom-control custom-checkbox">
+                <input
+                  type="checkbox"
+                  id="add-to-wallet-card"
+                  class="custom-control-input"
+                />
+              </div>
+              <label for="add-to-wallet-card">Add to Wallet</label>
+            </div>
+            <div class="form-buttons">
+              <button
+                type="button"
+                class="btn btn-link"
+                data-toggle="navdrawer"
+                data-target="#navdrawerForm"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                data-toggle="navdrawer"
+                data-target="#navdrawerForm"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+          <div class="js-content js-content-ach">
+            <div class="row">
+              <div class="form-group form-group-sm">
+                <div class="floating-label has-value">
+                  <label for="ach-account-type">Account Type</label>
+                  <div class="input-group dropdown">
+                    <button
+                      type="button"
+                      class="form-control custom-control custom-select"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false"
+                      id="ach-account-type"
+                    >
+                      ...
+                    </button>
+                    <div
+                      class="dropdown-menu"
+                      aria-labelledby="ach-account-type"
+                    >
+                      <a
+                        href="#ach-account-type-null"
+                        data-value=""
+                        class="dropdown-item"
+                        >...</a
+                      >
+                      <a
+                        href="#ach-account-type-checking"
+                        data-value="checking"
+                        class="dropdown-item"
+                        >Checking</a
+                      >
+                      <a
+                        href="#ach-account-type-savings"
+                        data-value="savings"
+                        class="dropdown-item"
+                        >Savings</a
+                      >
+                    </div>
+                  </div>
+                </div>
+                <div class="validation-message">
+                  <span class="field-validation-error"></span>
+                </div>
+              </div>
+              <div class="form-group form-group-sm">
+                <div class="floating-label has-value">
+                  <label for="ach-use-type">Account Type</label>
+                  <div class="input-group dropdown">
+                    <button
+                      type="button"
+                      class="form-control custom-control custom-select"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false"
+                      id="ach-use-type"
+                    >
+                      ...
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="ach-use-type">
+                      <a
+                        href="#ach-use-type-null"
+                        data-value=""
+                        class="dropdown-item"
+                        >...</a
+                      >
+                      <a
+                        href="#ach-use-type-personal"
+                        data-value="personal"
+                        class="dropdown-item"
+                        >Personal</a
+                      >
+                      <a
+                        href="#ach-use-type-business"
+                        data-value="business"
+                        class="dropdown-item"
+                        >Business</a
+                      >
+                    </div>
+                  </div>
+                </div>
+                <div class="validation-message">
+                  <span class="field-validation-error"></span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group form-group-lg">
+              <div class="floating-label">
+                <label for="fname">First Name</label>
+                <div class="input-group">
+                  <input
+                    type="text"
+                    class="form-control"
+                    maxlength="50"
+                    id="fname"
+                  />
+                </div>
+              </div>
+              <div class="validation-message">
+                <span class="field-validation-error"></span>
+              </div>
+            </div>
+            <div class="form-group form-group-lg">
+              <div class="floating-label">
+                <label for="lname">Last Name (Or Company Name)</label>
+                <div class="input-group">
+                  <input
+                    type="text"
+                    class="form-control"
+                    maxlength="50"
+                    id="lname"
+                  />
+                </div>
+              </div>
+              <div class="validation-message">
+                <span class="field-validation-error"></span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-group form-group-sm">
+                <div class="floating-label">
+                  <label for="routing">Routing Number</label>
+                  <div class="input-group has-append">
+                    <input
+                      type="text"
+                      class="form-control"
+                      pattern="^\d{10}$"
+                      maxlength="10"
+                      id="routing"
+                    />
+                    <button
+                      type="button"
+                      class="btn btn-icon"
+                      data-toggle="tooltip"
+                    >
+                      <i class="material-icons">info</i>
+                    </button>
+                  </div>
+                </div>
+                <div class="validation-message">
+                  <span class="field-validation-error"></span>
+                </div>
+              </div>
+              <div class="form-group form-group-sm">
+                <div class="floating-label">
+                  <label for="account">Account Number</label>
+                  <div class="input-group">
+                    <input
+                      type="text"
+                      class="form-control"
+                      pattern="^\d+$"
+                      maxlength="30"
+                      id="account"
+                    />
+                    <button
+                      type="button"
+                      class="btn btn-icon"
+                      data-toggle="tooltip"
+                    >
+                      <i class="material-icons">info</i>
+                    </button>
+                  </div>
+                </div>
+                <div class="validation-message">
+                  <span class="field-validation-error"></span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group form-group-sm">
+              <div class="custom-control custom-checkbox">
+                <input
+                  type="checkbox"
+                  id="add-to-wallet-card"
+                  class="custom-control-input"
+                />
+              </div>
+              <label for="add-to-wallet-card">Add to Wallet</label>
+            </div>
+            <div class="form-buttons">
+              <button
+                type="button"
+                class="btn btn-link"
+                data-toggle="navdrawer"
+                data-target="#navdrawerForm"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                data-toggle="navdrawer"
+                data-target="#navdrawerForm"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+          <div class="js-content js-content-more">
+            <ul class="more-buttons">
+              <li>
+                <button
+                  type="button"
+                  class="btn btn-image js-google-pay"
+                  data-toggle="navdrawer"
+                  data-target="#navdrawerForm"
+                >
+                  <img class="more-pay-btn" src="images/google-pay-mark.png" />
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  class="btn btn-image js-apple-pay"
+                  data-toggle="navdrawer"
+                  data-target="#navdrawerForm"
+                >
+                  <img
+                    class="more-pay-btn"
+                    src="images/Apple_Pay_Mark_RGB_041619.svg"
+                  />
+                </button>
+              </li>
+            </ul>
+          </div>
+          <div class="navdrawer-footer">
+            Footer
+          </div>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <p>&copy; Mike McCaughan</p>
+    </footer>
+    <!-- Required Material Web JavaScript library -->
+    <script src="bundle.js"></script>
+  </body>
+</html>

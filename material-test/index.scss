@@ -1,0 +1,222 @@
+@use "@material/theme" with (
+    $primary: #ff6600,
+    $secondary: #256fa1,
+    $on-primary: #ffffff,
+    $on-secondary: #ffffff,
+);
+
+@use "@material/button/mdc-button";
+@use "@material/button";
+@use "@material/drawer/mdc-drawer";
+@use "@material/list/mdc-list";
+@use "@material/icon-button";
+@use "@material/top-app-bar/mdc-top-app-bar";
+@use "@material/menu-surface/mdc-menu-surface";
+@use "@material/menu/mdc-menu";
+@use "@material/select/mdc-select";
+
+@include icon-button.core-styles;
+@import "utility.scss";
+@import "mdc-overrides.scss";
+
+html {
+  background-color: #666666;
+  display: flex;
+  min-height: 100%;
+}
+
+body {
+  background-color: white;
+  margin: auto;
+  max-width: 1440px;
+  min-height: 900px;
+  box-shadow: 0 0 32px 60px rgba(0, 0, 0, 0.22);
+  position: relative;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+header {
+  flex-basis: 3.5rem;
+  max-width: 1440px;
+}
+
+main {
+  position: relative;
+  width: 100vw;
+  max-width: 1440px;
+  max-height: calc(100vh - 20rem);
+  flex-basis: calc(900px - 10rem);
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+@media (min-width: 1440.02px) {
+  body {
+    max-width: 1440px;
+    min-height: 900px;
+    box-shadow: 0 0 32px 60px rgba(0, 0, 0, 0.22);
+  }
+  header {
+    max-width: 1440px;
+  }
+  main {
+    max-width: 1440px;
+    max-height: calc(100vh - 20rem);
+    flex-basis: calc(900px - 10rem);
+  }
+}
+
+@media (max-height: 1074px) {
+    body {
+        min-height: 900px;
+    }
+    main {
+        max-height: none;
+    }
+}
+
+@media (min-height: 1073.98px) and (max-height: 900px) {
+    body {
+        min-height: 900px;
+    }
+    main {
+        flex-basis: 900px;
+    }
+}
+
+@media (max-height: 899.98px) {
+    body {
+        min-height: min-content;
+        box-shadow: none;
+    }
+}
+
+@media (max-width: 1440px) {
+
+}
+
+@media (min-width: 768.02px) {
+    #navdrawerMain-toggle {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        max-width: none;
+        min-height: auto;
+        box-shadow: none;
+    }
+    main {
+        max-height: none;
+        flex-basis: calc(100vh - 8.5rem);
+    }
+    .navrail {
+        display: none;
+    }
+    #navdrawerMain-toggle {
+        display: flex;
+    }
+    .mdc-drawer, .mdc-drawer-scrim {
+        height: calc(100% - 56px);
+    }
+    .mdc-drawer-scrim {
+        top: 56px;
+    }
+}
+
+
+.navrail-and-content {
+  display: flex;
+  flex-flow: row nowrap;
+  min-height: calc(100% - 64px);
+  position: absolute;
+}
+
+.content {
+  padding: 1rem 0.5rem 1rem 0.75rem;
+}
+
+footer {
+  background-color: #ececec;
+  flex-basis: 5rem;
+}
+
+.navrail {
+  max-width: 74px;
+  border-right: 1px solid;
+  @include theme.prop(border-right-color, primary)
+}
+
+.rail {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 8px 0 0;
+  text-indent: 0;
+}
+
+.rail > li {
+  list-style-type: none;
+}
+
+.rail-divider {
+  height: 1px;
+  width: 72px;
+  text-align: center;
+}
+
+.rail-divider hr {
+  width: 75%;
+  margin: 0 auto;
+  padding: 0;
+  height: 1px;
+}
+
+.rail-item {
+  display: flex;
+  height: 72px;
+  width: 72px;
+  text-align: center;
+}
+
+.rail-item button {
+  @include button.container-fill-color(on-primary);
+  @include button.ink-color(primary);
+  border-radius: 0;
+  border-style: none;
+  height: 72px;
+  width: 72px;
+  min-width: 72px;
+  max-width: 72px;
+  padding: 0;
+  margin: 0;
+  white-space: normal;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  text-transform: none;
+}
+
+.rail-item.active button {
+    @include button.container-fill-color(primary);
+    @include button.ink-color(on-primary);
+  }
+
+.rail-item button .material-icons {
+  display: block;
+  height: 24px;
+  width: 24px;
+  margin-bottom: 0.25em;
+}
+
+button.form-control.custom-select {
+  text-align: left;
+}
+
+.form-drawer {
+  display: none;
+}
