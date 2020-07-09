@@ -13,6 +13,8 @@
 # For more information on GitHub Actions for Azure, refer to https://github.com/Azure/Actions
 # For more samples to get started with GitHub Action workflows to deploy to Azure, refer to https://github.com/Azure/actions-workflow-samples
 on:
+  push:
+    branches: [master]
   release:
     types: [created]
 
@@ -31,13 +33,68 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ env.NODE_VERSION }}
-    - name: npm install, build, and test
+    - name: npm install, build, and test - main folder
       run: |
         # Build and test the project, then
         # deploy to Azure Web App.
         npm install
         npm run build --if-present
-        npm run test --if-present
+    - name: npm install, build, and test - hm-walls
+      run: |
+        # Build and test the project, then
+        # deploy to Azure Web App.
+        cd hm-walls
+        npm install
+        npm run build --if-present
+        cd ..
+    - name: npm install, build, and test - hm-walls-api
+      run: |
+        # Build and test the project, then
+        # deploy to Azure Web App.
+        cd hm-walls-api
+        npm install
+        npm run build --if-present
+        cd ..
+    - name: npm install, build, and test - material-test
+      run: |
+        # Build and test the project, then
+        # deploy to Azure Web App.
+        cd material-test
+        npm install
+        npm run build --if-present
+        cd ..
+    - name: npm install, build, and test - mynsweepr-angular
+      run: |
+        # Build and test the project, then
+        # deploy to Azure Web App.
+        cd mynsweepr-angular
+        npm install
+        npm run build --if-present
+        cd ..
+    - name: npm install, build, and test - mynsweepr-hooks
+      run: |
+        # Build and test the project, then
+        # deploy to Azure Web App.
+        cd mynsweepr-hooks
+        npm install
+        npm run build --if-present
+        cd ..
+    - name: npm install, build, and test - mynsweepr-tres
+      run: |
+        # Build and test the project, then
+        # deploy to Azure Web App.
+        cd mynsweepr-tres
+        npm install
+        npm run build --if-present
+        cd ..
+    - name: npm install, build, and test - mynsweepr-vue
+      run: |
+        # Build and test the project, then
+        # deploy to Azure Web App.
+        cd mynsweepr-vue
+        npm install
+        npm run build --if-present
+        cd ..
     - name: 'Deploy to Azure WebApp'
       uses: azure/webapps-deploy@v2
       with:
