@@ -40,6 +40,7 @@ jobs:
         npm install
         npm run build --if-present
     - name: npm install, build, and test - hm-walls
+      continue-on-error: true
       run: |
         # Build and test the project, then
         # deploy to Azure Web App.
@@ -48,6 +49,7 @@ jobs:
         npm run build --if-present
         cd ..
     - name: npm install, build, and test - hm-walls-api
+      continue-on-error: true
       run: |
         # Build and test the project, then
         # deploy to Azure Web App.
@@ -56,6 +58,7 @@ jobs:
         npm run build --if-present
         cd ..
     - name: npm install, build, and test - material-test
+      continue-on-error: true
       run: |
         # Build and test the project, then
         # deploy to Azure Web App.
@@ -64,6 +67,7 @@ jobs:
         npm run build --if-present
         cd ..
     - name: npm install, build, and test - mynsweepr-angular
+      continue-on-error: true
       run: |
         # Build and test the project, then
         # deploy to Azure Web App.
@@ -72,6 +76,7 @@ jobs:
         npm run build --if-present
         cd ..
     - name: npm install, build, and test - mynsweepr-hooks
+      continue-on-error: true
       run: |
         # Build and test the project, then
         # deploy to Azure Web App.
@@ -80,6 +85,7 @@ jobs:
         npm run build --if-present
         cd ..
     - name: npm install, build, and test - mynsweepr-tres
+      continue-on-error: true
       run: |
         # Build and test the project, then
         # deploy to Azure Web App.
@@ -88,6 +94,7 @@ jobs:
         npm run build --if-present
         cd ..
     - name: npm install, build, and test - mynsweepr-vue
+      continue-on-error: true
       run: |
         # Build and test the project, then
         # deploy to Azure Web App.
