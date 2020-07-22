@@ -21,7 +21,5 @@
     "express": "^4.17.1",
     "jquery": "^3.5.1"
   },
-  "devDependencies": {
-    "@angular/cli": "^9.1.7"
-  }
+  "devDependencies": {}
 }
