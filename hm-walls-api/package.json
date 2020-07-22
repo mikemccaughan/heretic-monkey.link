@@ -47,24 +47,24 @@
     "!*/__tests__"
   ],
   "dependencies": {
-    "@loopback/boot": "^1.2.7",
-    "@loopback/context": "^1.15.0",
-    "@loopback/core": "^1.7.0",
-    "@loopback/openapi-v3": "^1.3.11",
-    "@loopback/repository": "^1.5.5",
-    "@loopback/rest": "^1.11.2",
-    "@loopback/rest-explorer": "^1.1.22",
-    "@loopback/service-proxy": "^1.1.10",
+    "@loopback/boot": "^2.3.5",
+    "@loopback/context": "^3.9.2",
+    "@loopback/core": "^2.9.1",
+    "@loopback/openapi-v3": "^3.4.5",
+    "@loopback/repository": "^2.9.0",
+    "@loopback/rest": "^5.2.0",
+    "@loopback/rest-explorer": "^2.2.6",
+    "@loopback/service-proxy": "^2.3.4",
     "azure-storage": "^2.10.3",
-    "loopback-connector-rest": "^3.4.1"
+    "loopback-connector-rest": "^3.7.0"
   },
   "devDependencies": {
-    "@loopback/build": "^3.1.1",
-    "@loopback/testlab": "^1.10.3",
+    "@loopback/build": "^6.1.0",
+    "@loopback/testlab": "^3.2.0",
     "@loopback/tslint-config": "^2.1.0",
-    "@types/node": "^10.17.17",
-    "mocha": "^6.2.2",
+    "@types/node": "^14.0.22",
+    "mocha": "^8.0.1",
     "tslint": "^5.20.1",
-    "typescript": "^3.8.3"
+    "typescript": "^3.9.6"
   }
 }

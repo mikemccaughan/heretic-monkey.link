@@ -1,0 +1,276 @@
+@use "@material/theme" with (
+    $primary: #ff6600,
+    $secondary: #256fa1,
+    $on-primary: #ffffff,
+    $on-secondary: #ffffff,
+);
+
+@use "@material/button/mdc-button";
+@use "@material/button";
+@use "@material/drawer/mdc-drawer";
+@use "@material/list/mdc-list";
+@use "@material/icon-button";
+@use "@material/top-app-bar/mdc-top-app-bar";
+@use "@material/menu-surface/mdc-menu-surface";
+@use "@material/menu/mdc-menu";
+@use "@material/select/mdc-select";
+@use "@material/card";
+@use "utility";
+@use "mdc-overrides";
+
+@include icon-button.core-styles;
+@include card.core-styles;
+
+:root {
+  --fs-theme-html-background: #666666;
+  --fs-theme-body-box-shadow: 0 0 4vmax rgba(0, 0, 0, 0.22);
+  --fs-theme-max-width: 1440px;
+  --fs-theme-header-box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.22);
+  --fs-theme-rail-item-width: 72px;
+  --fs-theme-rail-item-height: var(--fs-theme-rail-item-width);
+  --fs-theme-rail-item-align: center;
+}
+
+html {
+  background-color: var(--mdc-theme-html-background);
+  display: flex;
+  min-height: 100%;
+}
+
+body {
+  background-color: var(--mdc-theme-background);
+  margin: auto;
+  max-width: var(--fs-theme-max-width);
+  box-shadow: var(--fs-theme-body-box-shadow);
+  position: relative;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+body > header {
+  flex-basis: 3.5rem;
+  max-width: var(--fs-theme-max-width);
+  box-shadow: var(--fs-theme-header-box-shadow);
+}
+
+main {
+  display: flex;
+  position: relative;
+  width: 100vw;
+  max-width: var(--fs-theme-max-width);
+  flex-basis: calc(100% - 10rem);
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+@media (min-width: 1024.02px) {
+  body {
+    max-width: var(--fs-theme-max-width);
+    min-height: 92vh;
+    max-height: calc(1024px - 8vh);
+    margin: 4vh auto;
+    box-shadow: var(--fs-theme-body-box-shadow);
+  }
+  body > header {
+    max-width: var(--fs-theme-max-width);
+  }
+  main {
+    max-width: var(--fs-theme-max-width);
+    flex-basis: calc(var(--fs-theme-min-height) - 10rem);
+  }
+}
+
+@media (min-width: 768.02px) {
+  #navdrawerMain-toggle {
+    display: none;
+  }
+}
+
+@media (max-width: 1024px) {
+  body {
+    max-width: 100vw;
+    min-height: 100vh;
+    box-shadow: none;
+  }
+  main {
+    max-height: none;
+    flex-basis: calc(100vh - 8.5rem);
+  }
+  .navrail {
+    display: none;
+  }
+  #navdrawerMain-toggle {
+    display: flex;
+  }
+  .mdc-drawer,
+  .mdc-drawer-scrim {
+    height: calc(100% - 56px);
+  }
+  .mdc-drawer-scrim {
+    top: 56px;
+  }
+}
+
+.navrail-and-content {
+  display: flex;
+  flex-flow: row nowrap;
+  min-height: calc(100% - 64px);
+  position: absolute;
+  width: 100%;
+}
+
+.content {
+  padding: 1rem 0.5rem 1rem 0.75rem;
+  flex: 1 0 auto;
+}
+
+footer {
+  background-color: #ececec;
+  flex-basis: 5rem;
+}
+
+.navrail {
+  max-width: calc(var(--fs-theme-rail-item-width) + 2px);
+  border-right: 1px solid;
+  @include theme.prop(border-right-color, primary);
+}
+
+.rail {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  text-indent: 0;
+}
+
+.rail > li {
+  list-style-type: none;
+}
+
+.rail-divider {
+  height: 1px;
+  width: var(--fs-theme-rail-item-width);
+  text-align: center;
+}
+
+.rail-divider hr {
+  width: 75%;
+  margin: 0 auto;
+  padding: 0;
+  height: 1px;
+}
+
+.rail-item {
+  display: flex;
+  height: var(--fs-theme-rail-item-height);
+  width: var(--fs-theme-rail-item-width);
+  text-align: var(--fs-theme-rail-item-align);
+}
+
+.rail-item button {
+  @include button.container-fill-color(on-primary);
+  @include button.ink-color(primary);
+  border-radius: 0;
+  border-style: none;
+  height: var(--fs-theme-rail-item-height);
+  width: var(--fs-theme-rail-item-width);
+  min-width: var(--fs-theme-rail-item-width);
+  max-width: var(--fs-theme-rail-item-width);
+  padding: 0 12.5%;
+  margin: 0;
+  white-space: normal;
+  display: flex;
+  flex-direction: column;
+  justify-content: var(--fs-theme-rail-item-align);
+  align-items: center;
+  font-size: 12px;
+  text-transform: none;
+}
+
+.rail-item.active button {
+  @include button.container-fill-color(primary);
+  @include button.ink-color(on-primary);
+}
+
+.rail-item button .material-icons {
+  display: block;
+  height: 24px;
+  width: 24px;
+  margin: 0 0 0.25em 0;
+}
+
+button.form-control.custom-select {
+  text-align: left;
+}
+
+.form-drawer {
+  display: none;
+}
+
+.account-info {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  width: 100%;
+  background-color: #ececec;
+  margin: -1rem -0.5rem -1rem -0.75rem;
+  padding: 1rem 0.5rem 1rem 0.75rem;
+}
+
+.account-info h5 {
+  font-size: 1.5rem;
+}
+
+.account-info-cards {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.account-info-cards .mdc-card {
+  margin-left: 20px;
+  padding: 1rem;
+  border-color: #999999;
+  border-style: none none none solid;
+  border-radius: 0;
+  background-color: #ececec;
+}
+
+.fs-card-title {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.fs-card-content {
+  margin: 0.5rem 0 0;
+  font-size: 1.4rem;
+}
+
+.fs-card-jewels {
+  margin: 0;
+  padding: 0;
+  text-indent: 0;
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.fs-card-jewels li {
+  list-style-type: none;
+}
+
+.auto-pay {
+  display: inline-block;
+  position: relative;
+  width: 24px;
+  height: 24px;
+}
+.auto-pay i.material-icons {
+  position: absolute;
+}
+.auto-pay b {
+  display: inline-block;
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  text-align: center;
+}

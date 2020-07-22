@@ -1,16 +1,22 @@
-.mdc-drawer { height: calc(100% - 64px);}
+.mdc-drawer {
+  height: calc(100% - 64px);
+}
 .mdc-drawer-scrim {
-    background-color: rgba(0,0,0,0.20);
-    position: absolute;
-    top: 64px;
-    height: calc(100% - 64px);
+  background-color: rgba(0, 0, 0, 0.2);
+  position: absolute;
+  top: 64px;
+  height: calc(100% - 64px);
 }
 header.mdc-top-app-bar {
-    position: absolute;
-    z-index: 7;
+  position: absolute;
+  z-index: 7;
 }
-.mdc-top-app-bar__section { position: relative; }
+.mdc-top-app-bar__section {
+  position: relative;
+}
 a.mdc-top-app-bar__title {
-    color: white;
+  color: white;
 }
-.mdc-select__dropdown-icon-active { display: none; }
+.mdc-select__dropdown-icon-active {
+  display: none;
+}
