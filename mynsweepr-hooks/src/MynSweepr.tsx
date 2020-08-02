@@ -8,25 +8,31 @@ import React, {
   EventHandler,
   SyntheticEvent
 } from 'react';
-import { MineBoard, IMineCell } from './MineBoard';
 import Difficulty from './Difficulty';
 import Board from './Board';
+import { 
+  Cell,
+  fnArgs, 
+  clearAround, 
+  flagCell, 
+  generateBoard, 
+  revealCell, 
+  showAllCells, 
+  clearAroundArgs, 
+  revealCellArgs 
+} from './fn-mineboard';
 
 const MynSweepr: React.FC = () => {
   const [difficulty, setDifficulty] = useState('9');
   const [width, setWidth] = useState(9);
   const [height, setHeight] = useState(9);
-  const [cells, setCells] = useState([] as IMineCell[]);
+  const [cells, setCells] = useState([] as Cell[]);
+  const [mineCount, setMineCount] = useState(0);
 
-  useEffect(() => {
-    const board = new MineBoard(width, height);
-    board.buildBoard(setCells);
-  }, [width, height]);
-
-  const setRowsAndColumns = () => {
-    setRows();
-    setColumns();
-  };
+  // const setRowsAndColumns = () => {
+  //   setRows();
+  //   setColumns();
+  // };
 
   const setRows = () => {
     document.documentElement.style.setProperty('--rows', height.toString());
@@ -36,27 +42,55 @@ const MynSweepr: React.FC = () => {
     document.documentElement.style.setProperty('--columns', width.toString());
   };
 
+  useEffect(() => {
+    let prevDifficulty = '9';
+    let difficultySet = false;
+    setDifficulty(prev => {
+      if (difficulty !== prevDifficulty) {
+        prevDifficulty = difficulty;
+        difficultySet = true;
+      }
+      return difficulty;
+    });
+    if (difficultySet) {
+      setWidth(w => difficulty === '?' ? w : +difficulty);
+      setHeight(h => difficulty === '?' ? h : difficulty === '30' ? 16 : +difficulty);
+    }
+  }, [difficulty]);
+
+  useEffect(() => {
+    let prevWidth = 9;
+    setWidth(_ => {
+      if (width !== prevWidth) {
+        prevWidth = width;
+        setColumns();
+      }
+      return width;
+    });
+  }, [width]);
+
+  useEffect(() => {
+    let prevHeight = 9;
+    setHeight(prev => {
+      if (height !== prevHeight) {
+        prevHeight = height;
+        setRows();
+      }
+      return height;
+    });
+  }, [height]);
+
+  useEffect(() => {
+    const board = generateBoard(width, height, 1 / 6);
+    setCells(() => board.cells);
+    setMineCount(() => board.mineCount);
+  }, [width, height]);
+
   const handleDifficultyChange = (
     e: MouseEvent<HTMLInputElement, globalThis.MouseEvent>
   ) => {
     const culty = e && (e.target as HTMLInputElement).value;
     setDifficulty(culty);
-    switch (culty) {
-      case '9':
-      case '16':
-        setWidth(+culty);
-        setHeight(+culty);
-        break;
-      case '30':
-        setWidth(30);
-        setHeight(16);
-        break;
-      case '?':
-        setWidth(width);
-        setHeight(height);
-        break;
-    }
-    setRowsAndColumns();
   };
 
   const handleWidthChange: ChangeEventHandler<HTMLInputElement> = (
@@ -64,7 +98,6 @@ const MynSweepr: React.FC = () => {
   ) => {
     const dth = +e.target.value;
     setWidth(dth);
-    setColumns();
   };
 
   const handleHeightChange: ChangeEventHandler<HTMLInputElement> = (
@@ -72,17 +105,80 @@ const MynSweepr: React.FC = () => {
   ) => {
     const ght = +e.target.value;
     setHeight(ght);
-    setRows();
   };
 
   const handleCellClick: EventHandler<SyntheticEvent> = (e: SyntheticEvent) => {
     console.log('click', e);
+    let args: fnArgs = {
+      cells,
+      mineCount,
+      index: +((e.target as HTMLElement)?.dataset?.index ?? 0),
+      hadOverlay: (e.target as HTMLElement)?.classList?.contains('hidden') ?? false,
+      wasClicked: true,
+      onBlank: (args: fnArgs) => {
+        args = clearAround(args as clearAroundArgs);
+        setCells(args.cells);
+        setMineCount(args.mineCount);
+        console.log('onBlank: ', args);
+      },
+      onLose: (args: fnArgs) => {
+        setCells(showAllCells(args.cells));
+        setMineCount(0);
+        // TODO: show dialog
+        console.log('onLose: ', args);
+      },
+      onNearby: (args: fnArgs) => {
+        console.log('onNearby: ', args);
+      },
+      onReveal: (args: fnArgs) => {
+        console.log('onReveal: ', args);
+      },
+      onWin: (args: fnArgs) => {
+        // TODO: show dialog
+        console.log('onWin: ', args);
+      }
+    };
+    const result = revealCell(args as revealCellArgs);
+    setCells(result.cells);
+    setMineCount(result.mineCount);
   };
 
   const handleCellDoubleClick: EventHandler<SyntheticEvent> = (
     e: SyntheticEvent
   ) => {
     console.log('double-click', e);
+    let args: fnArgs = {
+      cells,
+      mineCount,
+      index: +((e.target as HTMLElement)?.dataset?.index ?? 0),
+      hadOverlay: (e.target as HTMLElement)?.classList?.contains('hidden') ?? false,
+      wasClicked: true,
+      onBlank: (args: fnArgs) => {
+        args = clearAround(args as clearAroundArgs);
+        setCells(args.cells);
+        setMineCount(args.mineCount);
+        console.log('onBlank: ', args);
+      },
+      onLose: (args: fnArgs) => {
+        setCells(showAllCells(args.cells));
+        setMineCount(0);
+        // TODO: show dialog
+        console.log('onLose: ', args);
+      },
+      onNearby: (args: fnArgs) => {
+        console.log('onNearby: ', args);
+      },
+      onReveal: (args: fnArgs) => {
+        console.log('onReveal: ', args);
+      },
+      onWin: (args: fnArgs) => {
+        // TODO: show dialog
+        console.log('onWin: ', args);
+      }
+    };
+    const result = clearAround(args as clearAroundArgs);
+    setCells(result.cells);
+    setMineCount(result.mineCount);
   };
 
   const handleCellRightClick: EventHandler<SyntheticEvent> = (
@@ -90,6 +186,38 @@ const MynSweepr: React.FC = () => {
   ) => {
     e.preventDefault();
     console.log('right-click', e);
+    let args: fnArgs = {
+      cells,
+      mineCount,
+      index: +((e.target as HTMLElement)?.dataset?.index ?? 0),
+      hadOverlay: (e.target as HTMLElement)?.classList?.contains('hidden') ?? false,
+      wasClicked: true,
+      onBlank: (args: fnArgs) => {
+        args = clearAround(args as clearAroundArgs);
+        setCells(args.cells);
+        setMineCount(args.mineCount);
+        console.log('onBlank: ', args);
+      },
+      onLose: (args: fnArgs) => {
+        setCells(showAllCells(args.cells));
+        setMineCount(0);
+        // TODO: show dialog
+        console.log('onLose: ', args);
+      },
+      onNearby: (args: fnArgs) => {
+        console.log('onNearby: ', args);
+      },
+      onReveal: (args: fnArgs) => {
+        console.log('onReveal: ', args);
+      },
+      onWin: (args: fnArgs) => {
+        // TODO: show dialog
+        console.log('onWin: ', args);
+      }
+    };
+    const result = flagCell(args as clearAroundArgs);
+    setCells(result.cells);
+    setMineCount(result.mineCount);
   };
 
   return (

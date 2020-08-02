@@ -36,6 +36,7 @@ const Cell: React.FC<CellProps> = ({
       id={`cell${index}`}
       className={classes.join(' ')}
       data-val={val}
+      data-index={index}
       onClick={cellClick}
       onDoubleClick={cellDoubleClick}
       onContextMenu={cellRightClick}
