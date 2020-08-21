@@ -62,3 +62,11 @@ api-docs/
 
 # Transpiled JavaScript files from Typescript
 /dist
+
+# tests
+src/__tests__/
+
+# compilation output
+*.d.ts
+*.js
+*.js.map
