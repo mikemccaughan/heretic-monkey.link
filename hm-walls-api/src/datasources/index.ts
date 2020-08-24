@@ -1,1 +1,1 @@
-export * from '../repositories/datasources/wall.datasource';
+export * from './wall.datasource';

@@ -5,8 +5,8 @@ import {
   DataObject,
 } from '@loopback/repository';
 import {Wall} from '../models/wall.model';
-import {WallDataSource} from './datasources/wall.datasource';
-import {WallAzureTableConnector} from './datasources/wallAzureTableConnector';
+import {WallDataSource} from '../datasources/wall.datasource';
+import {WallAzureTableConnector} from '../datasources/wallAzureTableConnector';
 
 export class WallRepository extends CrudRepositoryImpl<
   Wall,
