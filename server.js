@@ -1,8 +1,9 @@
+/*
 const appInsights = require('applicationinsights');
 appInsights
   .setup('InstrumentationKey=d7d2ae6a-6c2f-4fa0-ae80-600ac14d63d0')
   .start();
-
+*/
 const express = require('express');
 const app = express();
 app.use(express.static('./'));
