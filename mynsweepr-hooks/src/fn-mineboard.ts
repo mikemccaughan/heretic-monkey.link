@@ -11,20 +11,22 @@ export interface Cell {
     wasClicked?: boolean;
 };
 
-function getRandomX(randomValues: Int32Array, maxX: number) {
-    const minVal = Math.min.apply(null, randomValues);
+function getRandom(maxValue: number) {
+    let max = Number.MAX_SAFE_INTEGER;
+    let randomValue = window.crypto.getRandomValues(new Uint32Array(1))[0] / max;
+    return Math.floor(randomValue * maxValue);
 }
 
 export function generateBoard(width: number, height: number, density: number): { cells: Cell[], mineCount: number } {
     width = width ?? 9;
     height = height ?? 9;
-    density = density ?? (1/6);
+    density = density ?? (1 / 6);
     if (width < 2) throw new Error(`width must be >= 1, got ${width}`);
     if (height < 2) throw new Error(`height must be >= 1, got ${height}`);
     if (density <= 0 || density >= 1) throw new Error(`density must be > 0 and < 1, got ${density}`);
     let cells = new Array(width * height);
     let mineCount = Math.floor(width * height * density);
-    const isBetween = (value: number, min: number, max: number): boolean => value >=  min && value <= max;
+    const isBetween = (value: number, min: number, max: number): boolean => value >= min && value <= max;
     let boardCells = new Array(height).fill(new Array(width).fill(0));
     let value = -(mineCount * 2);
     let randomValues = new Int32Array(cells.length);
@@ -32,8 +34,8 @@ export function generateBoard(width: number, height: number, density: number): {
     for (let i = 0; i < mineCount; i++) {
         let x, y;
         while (true) {
-            x = Math.floor(Math.random() * width);
-            y = Math.floor(Math.random() * height);
+            x = getRandom(width); // Math.floor(Math.random() * width);
+            y = getRandom(height); // Math.floor(Math.random() * height);
             if (0 <= boardCells[y][x]) {
                 break;
             }
@@ -66,7 +68,7 @@ export function generateBoard(width: number, height: number, density: number): {
         }
     }
 
-    return {cells,mineCount};
+    return { cells, mineCount };
 }
 
 export interface fnArgs {
@@ -207,5 +209,5 @@ export function showAllCells(cells: Cell[]) {
             ...c,
             hidden: false
         }))
-    ].sort((a,b) => a.index - b.index);
+    ].sort((a, b) => a.index - b.index);
 }

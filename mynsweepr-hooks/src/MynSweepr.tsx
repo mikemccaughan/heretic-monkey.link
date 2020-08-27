@@ -6,20 +6,20 @@ import React, {
   MouseEvent,
   useEffect,
   EventHandler,
-  SyntheticEvent
+  SyntheticEvent,
 } from 'react';
 import Difficulty from './Difficulty';
 import Board from './Board';
-import { 
+import {
   Cell,
-  fnArgs, 
-  clearAround, 
-  flagCell, 
-  generateBoard, 
-  revealCell, 
-  showAllCells, 
-  clearAroundArgs, 
-  revealCellArgs 
+  fnArgs,
+  clearAround,
+  flagCell,
+  generateBoard,
+  revealCell,
+  showAllCells,
+  clearAroundArgs,
+  revealCellArgs,
 } from './fn-mineboard';
 
 const MynSweepr: React.FC = () => {
@@ -45,7 +45,7 @@ const MynSweepr: React.FC = () => {
   useEffect(() => {
     let prevDifficulty = '9';
     let difficultySet = false;
-    setDifficulty(prev => {
+    setDifficulty((prev) => {
       if (difficulty !== prevDifficulty) {
         prevDifficulty = difficulty;
         difficultySet = true;
@@ -53,31 +53,35 @@ const MynSweepr: React.FC = () => {
       return difficulty;
     });
     if (difficultySet) {
-      setWidth(w => difficulty === '?' ? w : +difficulty);
-      setHeight(h => difficulty === '?' ? h : difficulty === '30' ? 16 : +difficulty);
+      setWidth((w) => (difficulty === '?' ? w : +difficulty));
+      setHeight((h) =>
+        difficulty === '?' ? h : difficulty === '30' ? 16 : +difficulty
+      );
     }
   }, [difficulty]);
 
   useEffect(() => {
     let prevWidth = 9;
-    setWidth(_ => {
+    setWidth((_) => {
       if (width !== prevWidth) {
         prevWidth = width;
         setColumns();
       }
       return width;
     });
+    // eslint-disable-next-line
   }, [width]);
 
   useEffect(() => {
     let prevHeight = 9;
-    setHeight(prev => {
+    setHeight((prev) => {
       if (height !== prevHeight) {
         prevHeight = height;
         setRows();
       }
       return height;
     });
+    // eslint-disable-next-line
   }, [height]);
 
   useEffect(() => {
@@ -113,7 +117,8 @@ const MynSweepr: React.FC = () => {
       cells,
       mineCount,
       index: +((e.target as HTMLElement)?.dataset?.index ?? 0),
-      hadOverlay: (e.target as HTMLElement)?.classList?.contains('hidden') ?? false,
+      hadOverlay:
+        (e.target as HTMLElement)?.classList?.contains('hidden') ?? false,
       wasClicked: true,
       onBlank: (args: fnArgs) => {
         args = clearAround(args as clearAroundArgs);
@@ -136,7 +141,7 @@ const MynSweepr: React.FC = () => {
       onWin: (args: fnArgs) => {
         // TODO: show dialog
         console.log('onWin: ', args);
-      }
+      },
     };
     const result = revealCell(args as revealCellArgs);
     setCells(result.cells);
@@ -151,7 +156,8 @@ const MynSweepr: React.FC = () => {
       cells,
       mineCount,
       index: +((e.target as HTMLElement)?.dataset?.index ?? 0),
-      hadOverlay: (e.target as HTMLElement)?.classList?.contains('hidden') ?? false,
+      hadOverlay:
+        (e.target as HTMLElement)?.classList?.contains('hidden') ?? false,
       wasClicked: true,
       onBlank: (args: fnArgs) => {
         args = clearAround(args as clearAroundArgs);
@@ -174,7 +180,7 @@ const MynSweepr: React.FC = () => {
       onWin: (args: fnArgs) => {
         // TODO: show dialog
         console.log('onWin: ', args);
-      }
+      },
     };
     const result = clearAround(args as clearAroundArgs);
     setCells(result.cells);
@@ -190,7 +196,8 @@ const MynSweepr: React.FC = () => {
       cells,
       mineCount,
       index: +((e.target as HTMLElement)?.dataset?.index ?? 0),
-      hadOverlay: (e.target as HTMLElement)?.classList?.contains('hidden') ?? false,
+      hadOverlay:
+        (e.target as HTMLElement)?.classList?.contains('hidden') ?? false,
       wasClicked: true,
       onBlank: (args: fnArgs) => {
         args = clearAround(args as clearAroundArgs);
@@ -213,7 +220,7 @@ const MynSweepr: React.FC = () => {
       onWin: (args: fnArgs) => {
         // TODO: show dialog
         console.log('onWin: ', args);
-      }
+      },
     };
     const result = flagCell(args as clearAroundArgs);
     setCells(result.cells);
