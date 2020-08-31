@@ -27,9 +27,9 @@ export class MynsweeprService {
 
   moveActiveCell(board: BoardState, direction: Direction): void {
     const coords = board.mineboard.activeCoords;
-    if (!coords) return;
+    if (!coords) { return; }
     const diff = board.difficulty;
-    if (!diff) return;
+    if (!diff) { return; }
     const maxX = diff.width;
     const maxY = diff.height;
     switch (direction) {
@@ -60,16 +60,14 @@ export class MynsweeprService {
   }
 
   activateCell(board: BoardState, cell: Minecell): void {
-    if (cell.isActive) {
-      return;
-    }
-
+    board.mineboard.cells.forEach(cel => cel.isActive = false);
     cell.isActive = true;
     this.setActiveCell(board, cell.x, cell.y);
     this.setBoard(board);
   }
 
   showCell(board: BoardState, cell: Minecell): void {
+    board.timerId = board.timer.start();
     if (!cell.isHidden) {
       return;
     }
@@ -91,12 +89,16 @@ export class MynsweeprService {
   checkForWin(board: BoardState) {
     if (board.mineboard.cells.every(cell => (cell.hasFlag && cell.hasMine && cell.isHidden) || (!cell.isHidden && !cell.hasMine))) {
       board.status = 'won';
+      board.timer.stop(board.timerId);
+      board.scoreboard.saveElapsed(board.difficulty);
+      this.setBoard(board);
     }
   }
 
   epicFail(board: BoardState): void {
     board.mineboard.cells.filter(cell => cell.isHidden).forEach(cell => cell.isHidden = false);
-    board.status = "lost";
+    board.status = 'lost';
+    board.timer.stop(board.timerId);
     this.setBoard(board);
   }
 
@@ -105,6 +107,7 @@ export class MynsweeprService {
       board.mineboard.buildBoard();
     }
 
+    board.timer.reset();
     board.status = null;
     this.setBoard(board);
   }
@@ -164,34 +167,34 @@ export class MynsweeprService {
   }
 
   up(board: BoardState, x: number, y: number): Minecell | undefined {
-    return board.mineboard.cellsByCoords[x][y - 1];
+    return board.mineboard.cellsByCoords[x]?.[y - 1];
   }
 
   down(board: BoardState, x: number, y: number): Minecell | undefined {
-    return board.mineboard.cellsByCoords[x][y + 1];
+    return board.mineboard.cellsByCoords[x]?.[y + 1];
   }
 
   left(board: BoardState, x: number, y: number): Minecell | undefined {
-    return board.mineboard.cellsByCoords[x - 1] && board.mineboard.cellsByCoords[x - 1][y];
+    return board.mineboard.cellsByCoords[x - 1]?.[y];
   }
 
   right(board: BoardState, x: number, y: number): Minecell | undefined {
-    return board.mineboard.cellsByCoords[x + 1] && board.mineboard.cellsByCoords[x + 1][y];
+    return board.mineboard.cellsByCoords[x + 1]?.[y];
   }
 
   upRight(board: BoardState, x: number, y: number): Minecell | undefined {
-    return board.mineboard.cellsByCoords[x + 1] && board.mineboard.cellsByCoords[x + 1][y - 1];
+    return board.mineboard.cellsByCoords[x + 1]?.[y - 1];
   }
 
   upLeft(board: BoardState, x: number, y: number): Minecell | undefined {
-    return board.mineboard.cellsByCoords[x - 1] && board.mineboard.cellsByCoords[x - 1][y - 1];
+    return board.mineboard.cellsByCoords[x - 1]?.[y - 1];
   }
 
   downRight(board: BoardState, x: number, y: number): Minecell | undefined {
-    return board.mineboard.cellsByCoords[x + 1] && board.mineboard.cellsByCoords[x + 1][y + 1];
+    return board.mineboard.cellsByCoords[x + 1]?.[y + 1];
   }
 
   downLeft(board: BoardState, x: number, y: number): Minecell | undefined {
-    return board.mineboard.cellsByCoords[x - 1] && board.mineboard.cellsByCoords[x - 1][y + 1];
+    return board.mineboard.cellsByCoords[x - 1]?.[y + 1];
   }
 }

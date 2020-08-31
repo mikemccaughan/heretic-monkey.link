@@ -5,6 +5,7 @@ export interface ITimer {
   elapsed: Observable<string>;
   start(): number;
   stop(id: number): void;
+  reset(): void;
 }
 
 @Injectable({
@@ -17,6 +18,7 @@ export class Timer implements ITimer {
   private offsetAtEpoch: number = new Date(0).getTimezoneOffset() * 60000;
   private zeroTime: string;
   private started: number = Date.now();
+  private timerId = -1;
   constructor() {
     this.timeFormatter = new Intl.DateTimeFormat('en-US', {
       hour12: false,
@@ -24,20 +26,29 @@ export class Timer implements ITimer {
       minute: '2-digit',
       second: '2-digit'
     } as Intl.DateTimeFormatOptions);
-    this.zeroTime = this.timeFormatter.format(this.offsetAtEpoch);
+    this.zeroTime = this.timeFormatter.format(this.offsetAtEpoch).replace(/^24/, '00');
     this.elapsedSource = new BehaviorSubject<string>(this.zeroTime);
     this.elapsed = this.elapsedSource.asObservable();
   }
   start(): number {
-    this.started = Date.now();
-    return window.setInterval(() => this.updateElapsed(), 500);
+    if (this.timerId === -1) {
+      this.started = Date.now();
+      this.timerId = window.setInterval(() => this.updateElapsed(), 500);
+    }
+    return this.timerId;
   }
   updateElapsed(): void {
     const elapsedMs = Date.now() - this.started;
-    this.elapsedSource.next(this.timeFormatter.format(this.offsetAtEpoch + elapsedMs));
+    this.elapsedSource.next(this.timeFormatter.format(this.offsetAtEpoch + elapsedMs).replace(/^24/, '00'));
   }
   stop(timerId: number): void {
     window.clearInterval(timerId);
+    this.timerId = -1;
+  }
+  reset(): void {
+    if (this.timerId !== -1) {
+      this.stop(this.timerId);
+    }
     this.elapsedSource.next(this.zeroTime);
   }
 }

@@ -2,37 +2,37 @@ import { EventEmitter } from '@angular/core';
 
 export class Difficulty {
   typeChanged: EventEmitter<string>;
-  private _type: string;
+  private typeField: string;
   public get type(): string {
-    return this._type;
+    return this.typeField;
   }
   public set type(value: string) {
-    if (this._type !== value) {
-      this._type = value;
+    if (this.typeField !== value) {
+      this.typeField = value;
       this.typeChanged.emit(value);
     }
   }
 
   widthChanged: EventEmitter<number>;
-  private _width: number;
+  private widthField: number;
   public get width(): number {
-    return this._width;
+    return this.widthField;
   }
   public set width(value: number) {
-    if (this._width !== value) {
-      this._width = value;
+    if (this.widthField !== value) {
+      this.widthField = value;
       this.widthChanged.emit(value);
     }
   }
 
   heightChanged: EventEmitter<number>;
-  private _height: number;
+  private heightField: number;
   public get height(): number {
-    return this._height;
+    return this.heightField;
   }
   public set height(value: number) {
-    if (this._height !== value) {
-      this._height = value;
+    if (this.heightField !== value) {
+      this.heightField = value;
       this.heightChanged.emit(value);
     }
   }
@@ -41,5 +41,13 @@ export class Difficulty {
     this.typeChanged = new EventEmitter<string>();
     this.widthChanged = new EventEmitter<number>();
     this.heightChanged = new EventEmitter<number>();
+  }
+
+  toJSON() {
+    return JSON.stringify({
+      type: this.type,
+      width: this.width,
+      height: this.height
+    });
   }
 }

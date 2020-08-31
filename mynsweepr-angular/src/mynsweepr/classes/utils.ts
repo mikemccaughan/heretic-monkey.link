@@ -13,18 +13,22 @@ export class Utils {
   static defineClass(className: string, cssText: string): void {
     const style = document.createElement('style');
     style.textContent = `.${className} { ${cssText} }`;
-    document.getElementsByTagName('head')[0].appendChild(style);
+    document.head.appendChild(style);
     Utils.selectors.push(`.${className}`);
   }
   static redefineClass(className: string, cssText: string): void {
     if (Utils.isClassDefined(className)) {
-      const styleSheet = Array.from(document.styleSheets).filter((ss: StyleSheet) => !!(ss as CSSStyleSheet).cssRules).find((ss: CSSStyleSheet) => Array.from(ss.cssRules).filter(rule => rule.type === rule.STYLE_RULE).find(rule => (rule as CSSStyleRule).selectorText === `.${className}`) != null);
+      const styleSheet = Array.from(document.styleSheets)
+        .filter((ss: StyleSheet) => !!(ss as CSSStyleSheet).cssRules)
+        .find((ss: CSSStyleSheet) => Array.from(ss.cssRules)
+          .filter(rule => rule.type === rule.STYLE_RULE)
+          .find(rule => (rule as CSSStyleRule).selectorText === `.${className}`) != null);
       const ssNode = styleSheet.ownerNode;
       ssNode.parentNode.removeChild(ssNode);
     }
     const style = document.createElement('style');
     style.textContent = `.${className} { ${cssText} }`;
-    document.getElementsByTagName('head')[0].appendChild(style);
+    document.head.appendChild(style);
     Utils.selectors.push(`.${className}`);
   }
 }

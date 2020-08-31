@@ -10,7 +10,7 @@ import { MynsweeprService } from '../mynsweepr.service';
 export class ScoreboardComponent implements OnInit {
   @Input()
   public scoreboard: Scoreboard;
-
+  public highscore: string;
   private board: BoardState;
 
   constructor(private boardSvc: MynsweeprService) {

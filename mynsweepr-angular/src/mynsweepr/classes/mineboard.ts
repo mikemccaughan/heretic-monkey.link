@@ -5,35 +5,40 @@ import { Coords } from './coords';
 
 export class Mineboard {
   remainingChanged: EventEmitter<number>;
+  activeCoordsChanged: EventEmitter<Coords>;
   cells: Minecell[];
   cellsByCoords?: Minecell[][];
   difficulty: Partial<Difficulty>;
-  private _activeCoords: Coords;
+  private activeCoordsField: Coords;
   public get activeCoords(): Coords {
-    return this._activeCoords;
+    return this.activeCoordsField;
   }
   public set activeCoords(value: Coords) {
-    if (this._activeCoords.x !== value.x || this._activeCoords.y !== value.y) {
-      this._activeCoords.x = value.x;
-      this._activeCoords.y = value.y;
+    if (this.activeCoordsField.x !== value.x || this.activeCoordsField.y !== value.y) {
+      this.activeCoordsField.x = value.x;
+      this.activeCoordsField.y = value.y;
+      if (this.activeCoordsChanged) {
+        this.activeCoordsChanged.emit(this.activeCoords);
+      }
     }
   }
-  private _cells: number[][];
+  private cellsField: number[][];
   constructor() {
     this.remainingChanged = new EventEmitter<number>();
-    this._activeCoords = new Coords();
+    this.activeCoordsField = new Coords();
+    this.activeCoordsChanged = new EventEmitter<Coords>();
   }
   private initialize(): void {
     const maxY = this.difficulty.height || 9;
     const maxX = this.difficulty.width || 9;
-    this._cells = [];
+    this.cellsField = [];
     this.cellsByCoords = [];
     for (let y = 0; y < maxY; y++) {
-      this._cells[y] = [];
+      this.cellsField[y] = [];
       for (let x = 0; x < maxX; x++) {
-        this._cells[y][x] = 0;
-        this.cellsByCoords[x] = this.cellsByCoords[x] || [];
-        this.cellsByCoords[x][y] = this.cellsByCoords[x][y] || null;
+        this.cellsField[y][x] = 0;
+        this.cellsByCoords[x] = this.cellsByCoords[x] ?? [];
+        this.cellsByCoords[x][y] = this.cellsByCoords[x][y] ?? null;
       }
     }
   }
@@ -50,16 +55,16 @@ export class Mineboard {
       while (true) {
         x = Math.floor(Math.random() * maxX);
         y = Math.floor(Math.random() * maxY);
-        if (0 <= this._cells[y][x]) {
+        if (0 <= this.cellsField[y][x]) {
           break;
         }
       }
       for (let m = -1; m < 2; m++) {
         for (let n = -1; n < 2; n++) {
           if (n === 0 && m === 0) {
-            this._cells[y][x] = value;
+            this.cellsField[y][x] = value;
           } else if (isBetween(y + n, 0, maxY - 1) && isBetween(x + m, 0, maxX - 1)) {
-            this._cells[y + n][x + m]++;
+            this.cellsField[y + n][x + m]++;
           }
         }
       }
@@ -75,7 +80,7 @@ export class Mineboard {
         const cell = this.createCell({
           x,
           y,
-          value: this._cells[y][x],
+          value: this.cellsField[y][x],
           index: cellIndex
         });
         this.cells[cellIndex] = cell;

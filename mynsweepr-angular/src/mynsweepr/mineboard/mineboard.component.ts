@@ -16,7 +16,7 @@ export class MineboardComponent implements OnInit {
 
   get classes(): { [key: string]: boolean } {
     const classes = {
-      'mineboard': true,
+      mineboard: true,
       'type-9': false,
       'type-16': false,
       'type-30': false

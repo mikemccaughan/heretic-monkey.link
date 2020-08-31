@@ -15,10 +15,21 @@ export class MinecellComponent implements OnInit {
   private board: BoardState;
 
   constructor(private boardSvc: MynsweeprService) {
-    this.boardSvc.board.subscribe(board => this.board = board);
+    this.boardSvc.board.subscribe(board => { this.board = board; this.updateState(); });
   }
 
   ngOnInit() {
+  }
+
+  updateState() {
+    // get currrent cell
+    if (this.cell) {
+      if (this.board.mineboard.activeCoords.x === this.cell.x &&
+        this.board.mineboard.activeCoords.y === this.cell.y &&
+        !this.cell.isActive) {
+        this.boardSvc.activateCell(this.board, this.cell);
+      }
+    }
   }
 
   cellClick(event: MouseEvent, cell: Minecell) {
@@ -36,7 +47,9 @@ export class MinecellComponent implements OnInit {
   cellRightClick(event: MouseEvent, cell: Minecell) {
     event.preventDefault();
     this.boardSvc.activateCell(this.board, cell);
-    this.boardSvc.flagCell(this.board, cell);
+    if (cell.isHidden) {
+      this.boardSvc.flagCell(this.board, cell);
+    }
   }
 
   cellKeyup(event: KeyboardEvent, cell: Minecell) {
@@ -51,7 +64,9 @@ export class MinecellComponent implements OnInit {
       case 'f':
       case 'F':
       case 'Add':
-        this.boardSvc.flagCell(this.board, cell);
+        if (cell.isHidden) {
+          this.boardSvc.flagCell(this.board, cell);
+        }
         break;
       case 'r':
       case 'R':

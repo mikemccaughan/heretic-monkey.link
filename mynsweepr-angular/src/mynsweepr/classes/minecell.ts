@@ -2,26 +2,30 @@ import { EventEmitter } from '@angular/core';
 
 export class Minecell {
   isHiddenChanged: EventEmitter<Minecell>;
-  private _isHidden: boolean;
+  private isHiddenField: boolean;
   public get isHidden(): boolean {
-    return this._isHidden;
+    return this.isHiddenField;
   }
   public set isHidden(value: boolean) {
-    if (this._isHidden !== value) {
-      this._isHidden = value;
-      this.isHiddenChanged && this.isHiddenChanged.emit(this);
+    if (this.isHiddenField !== value) {
+      this.isHiddenField = value;
+      if (this.isHiddenChanged) {
+        this.isHiddenChanged.emit(this);
+      }
     }
   }
 
   hasFlagChanged: EventEmitter<Minecell>;
-  private _hasFlag: boolean;
+  private hasFlagField: boolean;
   public get hasFlag(): boolean {
-    return this._hasFlag;
+    return this.hasFlagField;
   }
   public set hasFlag(value: boolean) {
-    if (this._hasFlag !== value) {
-      this._hasFlag = value;
-      this.hasFlagChanged && this.hasFlagChanged.emit(this);
+    if (this.hasFlagField !== value) {
+      this.hasFlagField = value;
+      if (this.hasFlagChanged) {
+        this.hasFlagChanged.emit(this);
+      }
     }
   }
 
