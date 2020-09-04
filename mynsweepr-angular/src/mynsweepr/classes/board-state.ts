@@ -24,6 +24,7 @@ export class BoardState {
         ...this.mineboard.difficulty,
         height
       };
+      this.timer.reset();
       this.loadHighScore();
       this.mineboard.buildBoard();
     });
@@ -32,6 +33,7 @@ export class BoardState {
         ...this.mineboard.difficulty,
         width
       };
+      this.timer.reset();
       this.loadHighScore();
       this.mineboard.buildBoard();
     });
@@ -45,19 +47,14 @@ export class BoardState {
       };
       this.difficulty.width = w;
       this.difficulty.height = h;
+      this.timer.reset();
       this.loadHighScore();
       this.mineboard.buildBoard();
     });
   }
   loadHighScore() {
     this.scoreboard.loadScores();
-    if (this.scoreboard.highScores?.size) {
-      const highScore = Array.from(this.scoreboard.highScores.entries()).find(([diff, _]) =>
-        (
-          (diff.type !== '?' && diff.type === this.difficulty.type) ||
-          (diff.type === '?' && diff.width === this.difficulty.width && diff.height === this.difficulty.height)
-        ));
-      this.scoreboard.highScore = highScore?.[1];
-    }
+    const difficulty = JSON.stringify(JSON.stringify(this.mineboard.difficulty));
+    this.scoreboard.highScore = this.scoreboard.highScores[difficulty] ?? '--:--:--';
   }
 }
