@@ -54,20 +54,34 @@ header label span {
   grid-template-rows: repeat(var(--rows), 1fr);
 }
 
+.cell:hover {
+  transform: scale(1.25);
+}
 .cell {
   cursor: pointer;
   width: 32px;
   height: 32px;
   border: 1px solid;
   border-radius: 0;
-  background-color: lightblue;
   margin: 0;
   padding: 0;
   transition: transform 250ms ease-out;
 }
-.cell:hover {
-  transform: scale(1.25);
+.cell.hidden {
+  background-color: lightblue;
 }
 .cell.hidden:active {
   background-color: orange;
+}
+.cell.flag {
+  background-color: lightgoldenrodyellow;
+}
+.cell.flag::before {
+  content: '🚩';
+}
+.cell.mine:not(.hidden):not(.flag) {
+  background-color: red;
+}
+.cell.mine:not(.hidden):not(.flag)::before {
+  content: '💣';
 }

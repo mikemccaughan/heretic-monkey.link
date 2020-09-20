@@ -4,12 +4,15 @@ import React, {
   ChangeEvent,
   ChangeEventHandler,
   MouseEvent,
-  useEffect,
   EventHandler,
   SyntheticEvent,
+  useLayoutEffect,
+  useEffect,
+  useRef,
 } from 'react';
 import Difficulty from './Difficulty';
 import Board from './Board';
+import {Scoreboard} from './Scoreboard';
 import {
   Cell,
   fnArgs,
@@ -24,10 +27,14 @@ import {
 
 const MynSweepr: React.FC = () => {
   const [difficulty, setDifficulty] = useState('9');
+  const prevDifficulty = usePrevious(difficulty);
   const [width, setWidth] = useState(9);
+  const prevWidth = usePrevious(width);
   const [height, setHeight] = useState(9);
+  const prevHeight = usePrevious(height);
   const [cells, setCells] = useState([] as Cell[]);
   const [mineCount, setMineCount] = useState(0);
+  const [gameIsActive, setGameIsActive] = useState(false);
 
   // const setRowsAndColumns = () => {
   //   setRows();
@@ -42,50 +49,48 @@ const MynSweepr: React.FC = () => {
     document.documentElement.style.setProperty('--columns', width.toString());
   };
 
-  useEffect(() => {
-    let prevDifficulty = '9';
-    let difficultySet = false;
-    setDifficulty((prev) => {
+  function usePrevious(value: string | number) {
+    const ref = useRef<string|number>();
+    useEffect(() => {
+      ref.current = value;
+    })
+    return ref.current;
+  }
+
+  useLayoutEffect(() => {
+    setDifficulty(() => {
       if (difficulty !== prevDifficulty) {
-        prevDifficulty = difficulty;
-        difficultySet = true;
+        setWidth(w => difficulty === '?' ? w : +difficulty);
+        setHeight(h => difficulty === '?' ? h : difficulty === '30' ? 16 : +difficulty);
       }
       return difficulty;
     });
-    if (difficultySet) {
-      setWidth((w) => (difficulty === '?' ? w : +difficulty));
-      setHeight((h) =>
-        difficulty === '?' ? h : difficulty === '30' ? 16 : +difficulty
-      );
-    }
-  }, [difficulty]);
+  }, [difficulty, prevDifficulty]);
 
-  useEffect(() => {
-    let prevWidth = 9;
-    setWidth((_) => {
+  useLayoutEffect(() => {
+    setWidth(() => {
       if (width !== prevWidth) {
-        prevWidth = width;
         setColumns();
       }
       return width;
     });
     // eslint-disable-next-line
-  }, [width]);
+  }, [width, prevWidth]);
 
-  useEffect(() => {
-    let prevHeight = 9;
-    setHeight((prev) => {
+  useLayoutEffect(() => {
+    setHeight(() => {
       if (height !== prevHeight) {
-        prevHeight = height;
         setRows();
       }
       return height;
     });
     // eslint-disable-next-line
-  }, [height]);
+  }, [height, prevHeight]);
 
-  useEffect(() => {
-    const board = generateBoard(width, height, 1 / 6);
+  useLayoutEffect(() => {
+    let board = generateBoard({width, height, density: 1 / 6});
+    board = generateBoard({width, height, density: 1 / 6});
+    board = generateBoard({width, height, density: 1 / 6});
     setCells(() => board.cells);
     setMineCount(() => board.mineCount);
   }, [width, height]);
@@ -94,6 +99,7 @@ const MynSweepr: React.FC = () => {
     e: MouseEvent<HTMLInputElement, globalThis.MouseEvent>
   ) => {
     const culty = e && (e.target as HTMLInputElement).value;
+    setGameIsActive(false);
     setDifficulty(culty);
   };
 
@@ -101,6 +107,7 @@ const MynSweepr: React.FC = () => {
     e: ChangeEvent<HTMLInputElement>
   ) => {
     const dth = +e.target.value;
+    setGameIsActive(false);
     setWidth(dth);
   };
 
@@ -108,11 +115,13 @@ const MynSweepr: React.FC = () => {
     e: ChangeEvent<HTMLInputElement>
   ) => {
     const ght = +e.target.value;
+    setGameIsActive(false);
     setHeight(ght);
   };
 
   const handleCellClick: EventHandler<SyntheticEvent> = (e: SyntheticEvent) => {
     console.log('click', e);
+    setGameIsActive(true);
     let args: fnArgs = {
       cells,
       mineCount,
@@ -125,22 +134,29 @@ const MynSweepr: React.FC = () => {
         setCells(args.cells);
         setMineCount(args.mineCount);
         console.log('onBlank: ', args);
+        return args;
       },
       onLose: (args: fnArgs) => {
+        setGameIsActive(false);
         setCells(showAllCells(args.cells));
         setMineCount(0);
         // TODO: show dialog
         console.log('onLose: ', args);
+        return args;
       },
       onNearby: (args: fnArgs) => {
         console.log('onNearby: ', args);
+        return args;
       },
       onReveal: (args: fnArgs) => {
         console.log('onReveal: ', args);
+        return args;
       },
       onWin: (args: fnArgs) => {
         // TODO: show dialog
+        setGameIsActive(false);
         console.log('onWin: ', args);
+        return args;
       },
     };
     const result = revealCell(args as revealCellArgs);
@@ -152,6 +168,7 @@ const MynSweepr: React.FC = () => {
     e: SyntheticEvent
   ) => {
     console.log('double-click', e);
+    setGameIsActive(true);
     let args: fnArgs = {
       cells,
       mineCount,
@@ -164,22 +181,29 @@ const MynSweepr: React.FC = () => {
         setCells(args.cells);
         setMineCount(args.mineCount);
         console.log('onBlank: ', args);
+        return args;
       },
       onLose: (args: fnArgs) => {
+        setGameIsActive(false);
         setCells(showAllCells(args.cells));
         setMineCount(0);
         // TODO: show dialog
         console.log('onLose: ', args);
+        return args;
       },
       onNearby: (args: fnArgs) => {
         console.log('onNearby: ', args);
+        return args;
       },
       onReveal: (args: fnArgs) => {
         console.log('onReveal: ', args);
+        return args;
       },
       onWin: (args: fnArgs) => {
         // TODO: show dialog
+        setGameIsActive(false);
         console.log('onWin: ', args);
+        return args;
       },
     };
     const result = clearAround(args as clearAroundArgs);
@@ -191,6 +215,7 @@ const MynSweepr: React.FC = () => {
     e: SyntheticEvent
   ) => {
     e.preventDefault();
+    setGameIsActive(true);
     console.log('right-click', e);
     let args: fnArgs = {
       cells,
@@ -204,22 +229,29 @@ const MynSweepr: React.FC = () => {
         setCells(args.cells);
         setMineCount(args.mineCount);
         console.log('onBlank: ', args);
+        return args;
       },
       onLose: (args: fnArgs) => {
+        setGameIsActive(false);
         setCells(showAllCells(args.cells));
         setMineCount(0);
         // TODO: show dialog
         console.log('onLose: ', args);
+        return args;
       },
       onNearby: (args: fnArgs) => {
         console.log('onNearby: ', args);
+        return args;
       },
       onReveal: (args: fnArgs) => {
         console.log('onReveal: ', args);
+        return args;
       },
       onWin: (args: fnArgs) => {
         // TODO: show dialog
+        setGameIsActive(false);
         console.log('onWin: ', args);
+        return args;
       },
     };
     const result = flagCell(args as clearAroundArgs);
@@ -240,6 +272,10 @@ const MynSweepr: React.FC = () => {
         ></Difficulty>
       </header>
       <main>
+        <Scoreboard
+          isActive={gameIsActive}
+          remaining={mineCount}
+        ></Scoreboard>
         <Board
           cells={cells}
           cellClick={handleCellClick}
