@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Heretic-Monkey's Date/Time Picker</title>
+    <link rel="stylesheet" href="index.css" />
+    <script src="HMDateTimePicker.js"></script>
+  </head>
+  <body>
+    <h1>Demo</h1>
+    <form>
+      <div class="form-group">
+        <label for="date-time-input">Date/Time Input:</label>
+        <input type="text" id="date-time-input" class="date-time-utc" />
+      </div>
+      <aside class="date-time-picker date-picker show">
+        <div class="date-picker calendar-entry">
+          <div class="calendar-entry">
+            <div class="calendar-entry-header">
+              <label for="date-time-picker-month">Month:</label>
+              <select id="date-time-picker-month" class="month-utc"></select>
+              <label for="date-time-picker-year">Year:</label>
+              <select id="date-time-picker-year" class="year-utc"></select>
+              <button type="button" class="month-year-selector">
+                <span class="selected">Oct 2020</span> ▼
+              </button>
+              <button
+                id="date-time-picker-prev"
+                class="month-prev-utc"
+                type="button"
+              >
+                Prev
+              </button>
+              <button
+                id="date-time-picker-next"
+                class="month-next-utc"
+                type="button"
+              >
+                Next
+              </button>
+            </div>
+            <div class="calendar-entry-body">
+              <span
+                class="calendar-entry-body-header-weekday"
+                aria-label="Sunday"
+                >Sun</span
+              >
+              <span
+                class="calendar-entry-body-header-weekday"
+                aria-label="Monday"
+                >Mon</span
+              >
+              <span
+                class="calendar-entry-body-header-weekday"
+                aria-label="Tuesday"
+                >Tue</span
+              >
+              <span
+                class="calendar-entry-body-header-weekday"
+                aria-label="Wednesday"
+                >Wed</span
+              >
+              <span
+                class="calendar-entry-body-header-weekday"
+                aria-label="Thursday"
+                >Thu</span
+              >
+              <span
+                class="calendar-entry-body-header-weekday"
+                aria-label="Friday"
+                >Fri</span
+              >
+              <span
+                class="calendar-entry-body-header-weekday"
+                aria-label="Saturday"
+                >Sat</span
+              >
+            </div>
+          </div>
+          <div class="year-entry"></div>
+          <div class="month-entry"></div>
+          <div class="manual-entry">
+            <label for="date-time-picker-date-input">Date:</label>
+            <input
+              type="text"
+              id="date-time-picker-date-input"
+              class="date-utc"
+              readonly
+            />
+          </div>
+        </div>
+        <div class="time-picker"></div>
+        <div class="picker-footer">
+          <button type="button" class="picker-footer picker-footer-cancel">
+            Cancel
+          </button>
+          <button type="button" class="picker-footer picker-footer-submit">
+            OK
+          </button>
+        </div>
+      </aside>
+    </form>
+    <script async>
+      const picker = new HMDateTimePicker({
+        inputSelector: '#date-time-input',
+        pickerSelector: 'aside.date-time-picker',
+        useUTC: true,
+        defaultDate: undefined,
+        format: 'MM/dd/yyyy',
+        maxDate: (function () {
+          var d = new Date();
+          d.setDate(d.getDate() + 180);
+          return d;
+        })(),
+        minDate: Date.now() + new Date().getTimezoneOffset() * 1000,
+        useYearAndMonthTabs: true,
+      });
+      picker.init();
+    </script>
+  </body>
+</html>

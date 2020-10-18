@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Date/Time Picker</title>
+    <link rel="stylesheet" type="text/css" href="hm-datepicker.css" />
+  </head>
+  <body>
+    <form>
+      <label for="hm-dtp">Date/Time Picker:</label>
+      <hm-date-time-picker
+        title="Date/Time Picker"
+        use-utc="true"
+        default-value=""
+        format="MM/dd/yyyy"
+        min-date="function () { return Date.now() + new Date().getTimezoneOffset() * 1000; }"
+        max-date="function () { var d = new Date(); d.setDate(d.getDate() + 180); return d; }"
+      >
+      </hm-date-time-picker>
+    </form>
+  </body>
+</html>
