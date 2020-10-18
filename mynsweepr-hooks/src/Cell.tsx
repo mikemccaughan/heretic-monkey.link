@@ -30,6 +30,9 @@ const Cell: React.FC<CellProps> = ({
   if (flag) {
     classes.push('flag');
   }
+  if ((val ?? 0) < 0) {
+    classes.push('mine');
+  }
   return (
     <button
       type="button"

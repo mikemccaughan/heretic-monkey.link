@@ -11,16 +11,17 @@ export interface Cell {
     wasClicked?: boolean;
 };
 
-function getRandom(maxValue: number) {
-    let max = Number.MAX_SAFE_INTEGER;
-    let randomValue = window.crypto.getRandomValues(new Uint32Array(1))[0] / max;
-    return Math.floor(randomValue * maxValue);
+function getRandom(maxValue: number): number {
+    // let max = 4294967295; // Max Uint32
+    // let randomValue = window.crypto.getRandomValues(new Uint32Array(1))[0] / max;
+    // return Math.floor(randomValue * maxValue);
+    return Math.floor(Math.random() * maxValue);
 }
 
-export function generateBoard(width: number, height: number, density: number): { cells: Cell[], mineCount: number } {
-    width = width ?? 9;
-    height = height ?? 9;
-    density = density ?? (1 / 6);
+export function generateBoard(options: {width?: number; height?: number; density?: number;}): { cells: Cell[], mineCount: number } {
+    const width = options.width ?? 9;
+    const height = options.height ?? 9;
+    const density = options.density ?? (1 / 6);
     if (width < 2) throw new Error(`width must be >= 1, got ${width}`);
     if (height < 2) throw new Error(`height must be >= 1, got ${height}`);
     if (density <= 0 || density >= 1) throw new Error(`density must be > 0 and < 1, got ${density}`);
@@ -28,12 +29,13 @@ export function generateBoard(width: number, height: number, density: number): {
     let mineCount = Math.floor(width * height * density);
     const isBetween = (value: number, min: number, max: number): boolean => value >= min && value <= max;
     let boardCells = new Array(height).fill(new Array(width).fill(0));
+    console.log('board', JSON.stringify(boardCells));
     let value = -(mineCount * 2);
-    let randomValues = new Int32Array(cells.length);
-    window.crypto.getRandomValues(randomValues);
     for (let i = 0; i < mineCount; i++) {
-        let x, y;
-        while (true) {
+        let x: number = 0;
+        let y: number = 0;
+        let c: number = 0;
+        while (true && ++c < 1000) {
             x = getRandom(width); // Math.floor(Math.random() * width);
             y = getRandom(height); // Math.floor(Math.random() * height);
             if (0 <= boardCells[y][x]) {
@@ -49,6 +51,11 @@ export function generateBoard(width: number, height: number, density: number): {
                 }
             }
         }
+    }
+    console.log('board', JSON.stringify(boardCells));
+    const actualMineCount = boardCells.reduce((agg: number, cur: number[]) => agg = cur.reduce((a: number, c: number) => a += c < 0 ? 1 : 0, agg), 0);
+    if (actualMineCount > mineCount) {
+        console.warn(`Too many mines! target: ${mineCount}; actual: ${actualMineCount}`);
     }
     let index = 0;
     for (let y = 0; y < height; y++) {
@@ -96,7 +103,12 @@ export function clearAround(args: clearAroundArgs): fnArgs {
     const minY = cell.y === 0 ? 0 : cell.y - 1;
     const maxY = cell.y === args.height - 1 ? cell.y : cell.y + 1;
     let revealCellArgs: fnArgs = {
-        cells: updateCellAtIndex(args.cells, args.index, 'hidden', false),
+        cells: updateCellAtIndex({
+            cells: args.cells, 
+            index: args.index, 
+            propertyName: 'hidden', 
+            propertyValue: false
+        }),
         mineCount: args.mineCount,
         index: args.index,
         hadOverlay: cell.hadOverlay,
@@ -119,32 +131,39 @@ export function clearAround(args: clearAroundArgs): fnArgs {
     return revealCellArgs;
 }
 
-function updateCellAtIndex(cells: Cell[], index: number, propertyName: string, propertyValue: number | boolean) {
-    if (index === 0) {
+interface updateCellArgs {
+    cells: Cell[];
+    index: number;
+    propertyName: string;
+    propertyValue: number | boolean;
+}
+
+function updateCellAtIndex(args: updateCellArgs) {
+    if (args.index === 0) {
         return [
             {
-                ...cells[0],
-                [propertyName]: propertyValue
+                ...args.cells[0],
+                [args.propertyName]: args.propertyValue
             },
-            ...cells.slice(1)
+            ...args.cells.slice(1)
         ];
-    } else if (index === cells.length - 1) {
+    } else if (args.index === args.cells.length - 1) {
         return [
-            ...cells.slice(0, -1),
+            ...args.cells.slice(0, -1),
             {
-                ...cells[index],
-                [propertyName]: propertyValue
+                ...args.cells[args.index],
+                [args.propertyName]: args.propertyValue
             }
         ];
     }
 
     return [
-        ...cells.slice(0, index - 1),
+        ...args.cells.slice(0, args.index - 1),
         {
-            ...cells[index],
-            [propertyName]: propertyValue
+            ...args.cells[args.index],
+            [args.propertyName]: args.propertyValue
         },
-        ...cells.slice(index + 1)
+        ...args.cells.slice(args.index + 1)
     ];
 }
 
@@ -156,7 +175,12 @@ export function revealCell(args: revealCellArgs): fnArgs {
     if (args.onReveal) args = args.onReveal(args);
     args = {
         ...args,
-        cells: updateCellAtIndex(args.cells, args.index, 'hadOverlay', args.hadOverlay)
+        cells: updateCellAtIndex({
+            cells: args.cells, 
+            index: args.index, 
+            propertyName: 'hadOverlay', 
+            propertyValue: args.hadOverlay
+        })
     };
     return showCell(args as showCellArgs);
 }
@@ -168,7 +192,12 @@ export function showCell(args: showCellArgs): fnArgs {
     const cell = args.cells[args.index];
     args = {
         ...args,
-        cells: updateCellAtIndex(args.cells, args.index, 'hidden', false)
+        cells: updateCellAtIndex({
+            cells: args.cells, 
+            index: args.index, 
+            propertyName: 'hidden', 
+            propertyValue: false
+        })
     }
     if (cell.hasMine && args.onLose) {
         args = args.onLose(args);
@@ -191,13 +220,23 @@ export function flagCell(args: flagCellArgs): fnArgs {
     if (cell.flag) {
         return {
             ...args,
-            cells: updateCellAtIndex(args.cells, args.index, 'flag', false),
+            cells: updateCellAtIndex({
+                cells: args.cells, 
+                index: args.index, 
+                propertyName: 'flag', 
+                propertyValue: false
+            }),
             mineCount: args.mineCount + 1
         };
     }
     return {
         ...args,
-        cells: updateCellAtIndex(args.cells, args.index, 'flag', true),
+        cells: updateCellAtIndex({
+            cells: args.cells, 
+            index: args.index, 
+            propertyName: 'flag', 
+            propertyValue: true
+        }),
         mineCount: args.mineCount - 1
     };
 }
