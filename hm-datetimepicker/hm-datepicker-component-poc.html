@@ -1,20 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
     <title>Date/Time Picker</title>
-    <link rel="stylesheet" type="text/css" href="hm-datepicker.css" />
+    <script src="HMDateTimePickerComponent.js"></script>
   </head>
   <body>
     <form>
-      <label for="hm-dtp">Date/Time Picker:</label>
       <hm-date-time-picker
-        title="Date/Time Picker"
         use-utc="true"
         default-value=""
         format="MM/dd/yyyy"
-        min-date="function () { return Date.now() + new Date().getTimezoneOffset() * 1000; }"
-        max-date="function () { var d = new Date(); d.setDate(d.getDate() + 180); return d; }"
+        min-date="today"
+        max-date="+100y"
+        show-on="focus button"
+        title="Date/Time Picker (uses UTC, no default, MM/dd/yyyy, min-date today,
+        max-date +100y, show-on focus button)"
+        id="hm-dtp"
       >
       </hm-date-time-picker>
     </form>

@@ -32,15 +32,16 @@ class HMDateTimePicker {
     }
     this.dateFormatter = new Intl.DateTimeFormat(
       undefined,
-      dateFormatterOptions
+      dateFormatterOptions - +
+      
     );
-    const isoFormatterOptions = {
-      year: '2-digit',
-      month: '2-digit',
-      day: '2-digit',
-      timeZone: 'UTC',
-    };
+    const isoFormatterOptions = {};
     this.isoFormatter = new Intl.DateTimeFormat(undefined, isoFormatterOptions);
+    Object.defineProperty(this.isoFormatter, 'format', {
+      value: function (date) {
+        return date.toISOString().slice(0, 10);
+      },
+    });
     const monthYearFormatterOptions = {
       month: 'long',
       year: 'numeric',
@@ -240,9 +241,7 @@ class HMDateTimePicker {
         monthDate.getMonth() === dateDate.getMonth();
       monthButton.textContent = buttonText;
       const allDatesInMonth = this.calculateAllDatesInMonth(monthDate);
-      if (i !== dateDate.getMonth()) {
-        monthButton.disabled = this.allDatesAreDisabled(allDatesInMonth);
-      }
+      monthButton.disabled = this.allDatesAreDisabled(allDatesInMonth);
     }
     console.timeEnd('populateMonths-part2');
     console.timeEnd('populateMonths');
@@ -288,9 +287,7 @@ class HMDateTimePicker {
         yearDate.getFullYear() === dateDate.getFullYear();
       yearButton.textContent = yearDate.getFullYear();
       const allDatesInYear = this.calculateAllDatesInYear(yearDate);
-      if (i !== yearCurrent) {
-        yearButton.disabled = this.allDatesAreDisabled(allDatesInYear);
-      }
+      yearButton.disabled = this.allDatesAreDisabled(allDatesInYear);
     }
     console.timeEnd('populateYears-part2');
     console.timeEnd('populateYears');
