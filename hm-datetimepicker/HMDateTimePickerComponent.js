@@ -637,6 +637,11 @@ div.picker-footer {
     const formatted = this.dateFormatter.format(val);
     this.inputElement.value = formatted;
   }
+  parseInputValue() {
+    const val = this.inputElement.value;
+    this.value = this.parseDate(val);
+    this.setSelectedValue();
+  }
   populateMonths() {
     console.time('populateMonths');
     console.time('populateMonths-part1');
@@ -941,7 +946,7 @@ div.picker-footer {
   }
   lostFocus(e) {
     console.log('lostFocus', e.target);
-    this.setSelectedValue();
+    this.parseInputValue();
   }
   somethingElseGotFocus(e) {
     console.log('somethingElseGotFocus', e.target);
@@ -1223,6 +1228,7 @@ div.picker-footer {
       undefined,
       dateFormatterOptions
     );
+
     const timeFormatterOptions = {
       timeStyle: 'long',
     };
@@ -1233,6 +1239,7 @@ div.picker-footer {
       undefined,
       timeFormatterOptions
     );
+
     if (Array.isArray(format)) {
       this.formats = Array.from(format);
     }
@@ -1282,17 +1289,19 @@ div.picker-footer {
     this.value = this.parseDate(this.inputElement.value, this.defaultDate);
 
     this.repopulate();
-    handlers = Object.assign(
+    let handlers = Object.assign(
       { click: this.somethingElseGotFocus.bind(this) },
       this.boundEventHandlers.get(document.documentElement)
     );
     document.documentElement.addEventListener('click', handlers.click);
+    this.boundEventHandlers.set(document.documentElement, handlers);
     if (this.showOn.contains('focus')) {
       handlers = Object.assign(
         { focusin: this.gotFocus.bind(this) },
         this.boundEventHandlers.get(this.inputElement)
       );
       this.inputElement.addEventListener('focusin', handlers.focusin);
+      this.boundEventHandlers.set(this.inputElement, handlers);
     }
     if (this.showOn.contains('button')) {
       handlers = Object.assign(
@@ -1300,17 +1309,21 @@ div.picker-footer {
         this.boundEventHandlers.get(this.buttonElement)
       );
       this.buttonElement.addEventListener('click', this.gotFocus.bind(this));
+      this.boundEventHandlers.set(this.buttonElement, handlers);
     }
     handlers = Object.assign(
       { focusout: this.lostFocus.bind(this) },
       this.boundEventHandlers.get(this.inputElement)
     );
     this.inputElement.addEventListener('focusout', handlers.focusout);
+    this.boundEventHandlers.set(this.inputElement, handlers);
     handlers = Object.assign(
       { click: this.panelClicked.bind(this) },
       this.boundEventHandlers.get(this.panelElement)
     );
     this.panelElement.addEventListener('click', handlers.click);
+    this.boundEventHandlers.set(this.panelElement, handlers);
+    // TODO: Add a function that does the whole handlers dance.
     this.prevMonth.addEventListener('click', this.prevClicked.bind(this));
     this.nextMonth.addEventListener('click', this.nextClicked.bind(this));
     this.monthSelect.addEventListener('change', this.monthSelected.bind(this));
