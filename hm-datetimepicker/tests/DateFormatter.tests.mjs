@@ -14,6 +14,15 @@ function runTests() {
       DateFormatter.formatDate(date, 'en-US', undefined, 'Australia/Sydney'),
       '1/15/2021'
     );
+    Assert.isEqual(
+      DateFormatter.formatDate(
+        date,
+        'en-US',
+        'www, MMM d, yyyy',
+        'America/New_York'
+      ),
+      'Thu, Jan 14, 2021'
+    );
     console.log('All tests passed. Exiting.');
   } catch (e) {
     console.error(e);

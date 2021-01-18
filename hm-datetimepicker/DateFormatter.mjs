@@ -490,10 +490,11 @@ export class DateFormatter {
     };
     const stringsToFind = Object.keys(DateFormatter.stringsToFormatMap);
     const styles = ['full', 'long', 'medium', 'short'];
+    let done = [];
     let formatted = format;
     let hadStyle = false;
     for (let s of stringsToFind) {
-      if (formatted.includes(s)) {
+      if (formatted.includes(s) && !done.includes(formatted.indexOf(s))) {
         const isStyle = styles.some((style) => s.includes(style));
         let value = null;
         if (s === 'iso') {
@@ -509,6 +510,24 @@ export class DateFormatter {
             dateFormat,
             DateFormatter.stringsToFormatMap[s]
           );
+          // v8 and others require the entire time to be formatted to override individual
+          // elements of the time, so this code fills in the higher units of time.
+          if (
+            options.hasOwnProperty('minute') &&
+            !options.hasOwnProperty('hour')
+          ) {
+            options.hour = options.minute;
+            options.hour12 = options.hour !== '2-digit';
+          }
+          if (
+            options.hasOwnProperty('second') &&
+            !options.hasOwnProperty('minute') &&
+            !options.hasOwnProperty('hour')
+          ) {
+            options.minute = options.second;
+            options.hour = options.minute;
+            options.hour12 = options.hour !== '2-digit';
+          }
           const formatter = new Intl.DateTimeFormat(locale, options);
           const parts = formatter.formatToParts(date);
           const partType = Object.keys(DateFormatter.stringsToFormatMap[s])[0];
@@ -522,8 +541,7 @@ export class DateFormatter {
             resolvedOption = resolvedOptions[optionName];
           }
           value = parts.find((part) => part.type === partType).value;
-          // v8 resolves minute and second as 'numeric' even when set as '2-digit'
-          // it also resolves hourCycle as 'h24' even when set as 'h23'
+          // v8 resolves hourCycle as 'h24' even when set as 'h23'
           // so this code checks for those mismatches and accounts for them, where it can
           if (
             (resolvedOption !== option && value && value.length) ||
@@ -541,6 +559,8 @@ export class DateFormatter {
             console.warn(
               `Option "${optionName}" was set as "${option}" but resolved as "${resolvedOption}". Attempting to correct...`
             );
+            // While the code above might fix the problem in v8 & SpiderMonkey,
+            // I have doubts about JavaScriptCore so I'm leaving this in.
             if (resolvedOption === 'numeric' && option === '2-digit') {
               value = `00${value}`.slice(-2);
             } else if (resolvedOption === '2-digit' && option === 'numeric') {
@@ -555,6 +575,17 @@ export class DateFormatter {
           }
         }
         if (value && value.length) {
+          let last = 0;
+          while (formatted.indexOf(s, last) !== -1) {
+            last = formatted.indexOf(s, last);
+            done = [
+              ...done,
+              ...Array(value.length)
+                .fill(0)
+                .map((_, i) => i + last),
+            ];
+            last += 1;
+          }
           formatted = formatted.replace(new RegExp(`${s}`, 'g'), value);
         }
         hadStyle = hadStyle || isStyle;
