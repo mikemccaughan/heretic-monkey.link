@@ -18,7 +18,7 @@ function runTests() {
       DateFormatter.formatDate(
         date,
         'en-US',
-        'www, MMM d, yyyy',
+        'EEE, MMM d, y',
         'America/New_York'
       ),
       'Thu, Jan 14, 2021'

@@ -30,6 +30,43 @@
         >
       </li>
       <li>
+        <a href="FauxStorage.js"
+          >FauxStorage, a class that implements a similar interface to the
+          Storage API</a
+        >
+      </li>
+      <li>
+        <a href="timer.js"
+          >Timer, a class that implements a simple timer based on
+          <code>setInterval</code></a
+        >
+      </li>
+      <li>
+        <a href="util.js"
+          >Util, a class that has a bunch of one-off functions, including:</a
+        >
+        <ul>
+          <li>
+            <code>debounce(fn, ms)</code> - bog standard debounce function.
+          </li>
+          <li>
+            <code>getData(element, name)</code> - using an internal
+            <code>WeakMap</code>, gets arbitrary data stored by key.
+          </li>
+          <li>
+            <code>setData(element, name, value)</code> - using an internal
+            <code>WeakMap</code>, stores arbitrary data (<code>value</code>) by
+            key (<code>name</code>).
+          </li>
+          <li>
+            <code>getAncestor(element, selector)</code> - this is the same as
+            <code>element.closest(selector)</code>. If that doesn't exist, uses
+            <code>matches</code> and <code>parentElement</code> to walk the tree
+            and find the ancestor.
+          </li>
+        </ul>
+      </li>
+      <li>
         <a href="minesweeper.html"
           >MynSweepr (Minesweeper clone) using vanilla HTML/CSS/JS</a
         >
@@ -67,6 +104,50 @@
         <a href="hm-walls/dist/hm-walls/index.html"
           >Beginnings of a wallpaper app...</a
         >
+      </li>
+      <li>
+        <a href="hm-datetimepicker/hm-datepicker-component-poc.html"
+          >POC of a Date Picker using Web Components technologies</a
+        >
+        <ul>
+          <li>
+            <a href="hm-datetimepicker/index.html"
+              >Date Picker not using Web Components, just for giggles</a
+            >
+          </li>
+          <li>
+            <a href="hm-datetimepicker/DateFormatter.mjs"
+              >A module for formatting dates - WIP</a
+            >
+          </li>
+          <li>
+            <a href="hm-datetimepicker/RelativeDateParser.js"
+              >A module for parsing relative dates (for the date pickers; things
+              like "+1m" and "-1.5y") - WIP</a
+            >
+          </li>
+          <li>
+            <a href="hm-datetimepicker/TimeSpan.js"
+              >A module for a class that mimicks the </a
+            ><a
+              href="https://docs.microsoft.com/en-us/dotnet/api/system.timespan?view=net-5.0"
+              >TimeSpan Struct from .NET</a
+            >
+            - WIP
+          </li>
+          <li>
+            <a href="hm-datetimepicker/TokenList.js"
+              >A module for a class that implements the </a
+            ><a
+              href="https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList"
+              >DOMTokenList from the DOM standard</a
+            >
+            <a href="hm-datetimepicker/TokenList.js"
+              >in a generic fashion (uses strings, not DOMStrings, e.g.</a
+            >
+            - WIP
+          </li>
+        </ul>
       </li>
     </ul>
   </body>

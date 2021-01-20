@@ -104,25 +104,25 @@ export class DateFormatter {
     /**
      * Formats the era in a "long" format; e.g. Anno Domini
      */
-    ggg: {
+    GGG: {
       era: 'long',
     },
     /**
      * Formats the era in a "short" format; e.g. AD
      */
-    gg: {
+    GG: {
       era: 'short',
     },
     /**
      * Formats the era in a "narrow" format; e.g. A
      */
-    g: {
+    G: {
       era: 'narrow',
     },
     /**
      * Formats the year using the minimum number of digits needed; e.g., 2021, 12 (for the year 12 AD), -12 (for the year 12 BC)
      */
-    yyyy: {
+    y: {
       year: 'numeric',
     },
     /**
@@ -158,25 +158,25 @@ export class DateFormatter {
     /**
      * Formats the month name in a "narrow" format; e.g., J, M, D (note that two months can share a narrow name; March is also formatted as M)
      */
-    o: {
+    MMMMM: {
       month: 'narrow',
     },
     /**
      * Formats the weekday name in a "long" format; e.g., Sunday, Thursday, Saturday
      */
-    wwww: {
+    EEEE: {
       weekday: 'long',
     },
     /**
      * Formats the weekday name in a "short" format; e.g., Sun, Thu, Sat
      */
-    www: {
+    EEE: {
       weekday: 'short',
     },
     /**
      * Formats the weekday name in a "narrow" format; e.g., S, T, S (note that two days can share a narrow name)
      */
-    w: {
+    EEEEE: {
       weekday: 'narrow',
     },
     /**
@@ -279,6 +279,24 @@ export class DateFormatter {
      */
     k: {
       timeZoneName: 'short',
+    },
+    /**
+     * Formats the time of day using a "long" format (implementation-dependent); e.g., "in the night", "in the evening", "PM"
+     */
+    aaa: {
+      dayPeriod: 'long',
+    },
+    /**
+     * Formats the time of day using a "short" format (implementation-dependent); e.g., "in the night", "in the evening", "PM"
+     */
+    aa: {
+      dayPeriod: 'short',
+    },
+    /**
+     * Formats the time of day using a "short" format (implementation-dependent); e.g., "in the night", "in the evening", "P"
+     */
+    a: {
+      dayPeriod: 'narrow',
     },
   };
 
@@ -413,7 +431,7 @@ export class DateFormatter {
         case 'year':
           switch (type) {
             case 'numeric':
-              format += 'yyyy';
+              format += 'y';
               break;
             case '2-digit':
               format += 'yy';
@@ -501,7 +519,7 @@ export class DateFormatter {
           value = DateFormatter.formatDate(
             date,
             undefined,
-            'yyyy-MM-ddTHH:mm:ss.fffZ',
+            'y-MM-ddTHH:mm:ss.fffZ',
             'UTC'
           );
         } else {
@@ -527,6 +545,14 @@ export class DateFormatter {
             options.minute = options.second;
             options.hour = options.minute;
             options.hour12 = options.hour !== '2-digit';
+          }
+          if (
+            options.hasOwnProperty('dayPeriod') &&
+            !options.hasOwnProperty('minute') &&
+            !options.hasOwnProperty('hour')
+          ) {
+            options.hour = options.minute = 'numeric';
+            options.hour12 = true;
           }
           const formatter = new Intl.DateTimeFormat(locale, options);
           const parts = formatter.formatToParts(date);
@@ -575,6 +601,8 @@ export class DateFormatter {
           }
         }
         if (value && value.length) {
+          // Keeps a running list of indexes of strings that have been replaced in the formatted string so that later
+          // iterations don't try and replace format strings in the replacement text (e.g., the h, r, & d in Thursday)
           let last = 0;
           while (formatted.indexOf(s, last) !== -1) {
             last = formatted.indexOf(s, last);
