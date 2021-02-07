@@ -46,8 +46,8 @@
     "@loopback/context": "^3.9.4",
     "@loopback/core": "^2.9.3",
     "@loopback/openapi-v3": "^3.4.7",
-    "@loopback/repository": "^2.11.0",
-    "@loopback/rest": "^5.2.0",
+    "@loopback/repository": "^3.4.0",
+    "@loopback/rest": "^5.2.1",
     "@loopback/rest-explorer": "^2.2.8",
     "@loopback/service-proxy": "^2.3.6",
     "azure-storage": "^2.10.3",
@@ -60,6 +60,6 @@
     "@types/node": "^14.0.27",
     "mocha": "^8.1.1",
     "tslint": "^5.20.1",
-    "typescript": "^3.9.6"
+    "typescript": "^3.9.7"
   }
 }
