@@ -1,4 +1,4 @@
-export class RelativeDateParser {
+export default class RelativeDateParser {
   static canParse(value) {
     return (
       value != null &&

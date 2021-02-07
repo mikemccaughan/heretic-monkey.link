@@ -1,5 +1,5 @@
 export interface Cell {
-    value: number;
+    val: number;
     hasMine: boolean;
     nearby: number;
     x: number;
@@ -25,23 +25,22 @@ export function generateBoard(options: {width?: number; height?: number; density
     if (width < 2) throw new Error(`width must be >= 1, got ${width}`);
     if (height < 2) throw new Error(`height must be >= 1, got ${height}`);
     if (density <= 0 || density >= 1) throw new Error(`density must be > 0 and < 1, got ${density}`);
+    const isBetween = (value: number, min: number, max: number): boolean => value >= min && value <= max;
     let cells = new Array(width * height);
     let mineCount = Math.floor(width * height * density);
-    const isBetween = (value: number, min: number, max: number): boolean => value >= min && value <= max;
-    let boardCells = new Array(height).fill(new Array(width).fill(0));
-    console.log('board', JSON.stringify(boardCells));
+    let boardCells = new Array(height).fill(0).map(_ => new Array(width).fill(0)) as number[][];
     let value = -(mineCount * 2);
     for (let i = 0; i < mineCount; i++) {
         let x: number = 0;
         let y: number = 0;
-        let c: number = 0;
-        while (true && ++c < 1000) {
-            x = getRandom(width); // Math.floor(Math.random() * width);
-            y = getRandom(height); // Math.floor(Math.random() * height);
-            if (0 <= boardCells[y][x]) {
+        while (true) {
+            x = getRandom(width);
+            y = getRandom(height);
+            if (boardCells[y][x] >= 0) {
                 break;
             }
         }
+
         for (let m = -1; m < 2; m++) {
             for (let n = -1; n < 2; n++) {
                 if (n === 0 && m === 0) {
@@ -52,17 +51,26 @@ export function generateBoard(options: {width?: number; height?: number; density
             }
         }
     }
+
     console.log('board', JSON.stringify(boardCells));
     const actualMineCount = boardCells.reduce((agg: number, cur: number[]) => agg = cur.reduce((a: number, c: number) => a += c < 0 ? 1 : 0, agg), 0);
     if (actualMineCount > mineCount) {
         console.warn(`Too many mines! target: ${mineCount}; actual: ${actualMineCount}`);
     }
+
+    cells = createCells(width, height, boardCells);
+
+    return { cells, mineCount };
+}
+
+function createCells(width: number, height: number, boardCells: number[][]): Cell[] {
+    const cells: Cell[] = [];
     let index = 0;
     for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
             let i = index;
             cells[index++] = {
-                value: boardCells[y][x],
+                val: boardCells[y][x],
                 hasMine: boardCells[y][x] < 0,
                 nearby: boardCells[y][x] >= 0 ? boardCells[y][x] : 0,
                 x: x,
@@ -75,7 +83,7 @@ export function generateBoard(options: {width?: number; height?: number; density
         }
     }
 
-    return { cells, mineCount };
+    return cells;
 }
 
 export interface fnArgs {
@@ -97,6 +105,7 @@ export interface clearAroundArgs extends fnArgs {
 }
 
 export function clearAround(args: clearAroundArgs): fnArgs {
+    console.log(`clearAround: args: ${JSON.stringify(args)}`);
     const cell = args.cells[args.index];
     const minX = cell.x === 0 ? 0 : cell.x - 1;
     const maxX = cell.x === args.width - 1 ? cell.x : cell.x + 1;
@@ -112,7 +121,7 @@ export function clearAround(args: clearAroundArgs): fnArgs {
         mineCount: args.mineCount,
         index: args.index,
         hadOverlay: cell.hadOverlay,
-        wasClicked: cell.wasClicked,
+        wasClicked: false,
         onLose: args.onLose,
         onBlank: args.onBlank,
         onNearby: args.onNearby,
@@ -139,6 +148,7 @@ interface updateCellArgs {
 }
 
 function updateCellAtIndex(args: updateCellArgs) {
+    console.log(`updateCellAtIndex: args: ${JSON.stringify(args)}`);
     if (args.index === 0) {
         return [
             {
@@ -172,6 +182,7 @@ export interface revealCellArgs extends fnArgs {
 }
 
 export function revealCell(args: revealCellArgs): fnArgs {
+    console.log(`revealCell: args: ${JSON.stringify(args)}`);
     if (args.onReveal) args = args.onReveal(args);
     args = {
         ...args,
@@ -189,6 +200,7 @@ export interface showCellArgs extends fnArgs {
 }
 
 export function showCell(args: showCellArgs): fnArgs {
+    console.log(`showCell: args: ${JSON.stringify(args)}`);
     const cell = args.cells[args.index];
     args = {
         ...args,
@@ -198,6 +210,17 @@ export function showCell(args: showCellArgs): fnArgs {
             propertyName: 'hidden', 
             propertyValue: false
         })
+    };
+    if (cell.hasMine) {
+        args = {
+            ...args,
+            cells: updateCellAtIndex({
+                cells: args.cells,
+                index: args.index,
+                propertyName: 'hasMine',
+                propertyValue: true
+            })
+        };
     }
     if (cell.hasMine && args.onLose) {
         args = args.onLose(args);
@@ -205,7 +228,7 @@ export function showCell(args: showCellArgs): fnArgs {
         args = args.onBlank(args);
     } else if (args.mineCount === 0 && args.onWin) {
         args = args.onWin(args);
-    } else if (args.onNearby) {
+    } else if (cell.nearby > 0 && args.onNearby) {
         args = args.onNearby(args);
     }
 
@@ -216,6 +239,7 @@ export interface flagCellArgs extends fnArgs {
 }
 
 export function flagCell(args: flagCellArgs): fnArgs {
+    console.log(`flagCell: args: ${JSON.stringify(args)}`);
     const cell = args.cells[args.index];
     if (cell.flag) {
         return {
@@ -242,6 +266,7 @@ export function flagCell(args: flagCellArgs): fnArgs {
 }
 
 export function showAllCells(cells: Cell[]) {
+    console.log(`showAllCells: cells: ${JSON.stringify(cells)}`);
     return [
         ...cells.filter(c => !c.hidden),
         ...cells.filter(c => c.hidden).map(c => ({

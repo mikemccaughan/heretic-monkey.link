@@ -7,6 +7,8 @@ export interface CellProps {
   y?: number;
   hidden?: boolean;
   flag?: boolean;
+  hasMine?: boolean;
+  nearby?: number;
   cellClick?: EventHandler<SyntheticEvent>;
   cellDoubleClick?: EventHandler<SyntheticEvent>;
   cellRightClick?: EventHandler<SyntheticEvent>;
@@ -19,6 +21,8 @@ const Cell: React.FC<CellProps> = ({
   y,
   hidden,
   flag,
+  hasMine,
+  nearby,
   cellClick,
   cellDoubleClick,
   cellRightClick
@@ -30,8 +34,11 @@ const Cell: React.FC<CellProps> = ({
   if (flag) {
     classes.push('flag');
   }
-  if ((val ?? 0) < 0) {
+  if (hasMine) {
     classes.push('mine');
+  }
+  if (nearby ?? 0 > 0) {
+    classes.push('nearby');
   }
   return (
     <button
@@ -43,7 +50,7 @@ const Cell: React.FC<CellProps> = ({
       onClick={cellClick}
       onDoubleClick={cellDoubleClick}
       onContextMenu={cellRightClick}
-    ></button>
+    >{nearby}</button>
   );
 };
 

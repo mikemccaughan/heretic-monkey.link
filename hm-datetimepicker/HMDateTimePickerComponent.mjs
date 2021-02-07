@@ -1,220 +1,19 @@
-class TokenList {
-  constructor(value) {
-    if (value == null || value.length === 0) {
-      this.list = [];
-    } else if (value instanceof TokenList) {
-      this.list = [...value.list];
-    } else {
-      this.list = value
-        .trim()
-        .split(' ')
-        .map((token) => token.trim())
-        .filter((token) => token.length);
-    }
-  }
-  get length() {
-    return this.list.length;
-  }
-  get value() {
-    return this.list.join(' ');
-  }
-  item(index) {
-    return index < 0 || index > this.list.length - 1
-      ? undefined
-      : this.list[index];
-  }
-  contains(token) {
-    return this.list.includes(token);
-  }
-  add(...tokens) {
-    this.list = [...this.list, ...tokens];
-  }
-  remove(...tokens) {
-    this.list = this.list.filter((token) => tokens.includes(token));
-  }
-  replace(oldToken, newToken) {
-    this.list.splice(this.list.indexOf(oldToken), 1, newToken);
-  }
-  supports(token) {
-    return true;
-  }
-  toggle(token, force) {
-    if (force === true) {
-      // added, not removed
-      this.list.push(token);
-      return true;
-    } else if (force === false) {
-      // removed, not added
-      if (this.list.includes(token)) {
-        this.list.splice(this.list.indexOf(token), 1);
-      }
-      return false;
-    } else {
-      // toggle
-      if (this.list.includes(token)) {
-        this.list.splice(this.list.indexOf(token), 1);
-        return false;
-      } else {
-        this.list.push(token);
-        return true;
-      }
-    }
-  }
-  entries() {
-    return this.list[Symbol.iterator];
-  }
-  forEach(callback, thisArg) {
-    this.list.forEach(callback, thisArg);
-  }
-  keys() {
-    return this.entries();
-  }
-  values() {
-    return this.entries();
-  }
-}
-class RelativeDateParser {
-  static canParse(value) {
-    return (
-      value != null &&
-      value.length &&
-      (['yesterday', 'today', 'tomorrow'].includes(value.toLowerCase()) ||
-        /^([+-]*)(\d+)([yqmwdhnsl]?$)/.test(value))
-    );
-  }
-  static parse(value, useUTC) {
-    var now = new Date();
-    value = value.trim().toLowerCase();
-    if (value === 'yesterday') {
-      now.setDate(now.getDate() - 1);
-      return new Date(now.valueOf());
-    }
-    if (value === 'today') {
-      return new Date(now.valueOf());
-    }
-    if (value === 'tomorrow') {
-      now.setDate(now.getDate() + 1);
-      return new Date(now.valueOf());
-    }
-    // if it doesn't start with +, -, or a digit, return invalid date
-    if (
-      !value.startsWith('+') &&
-      !value.startsWith('-') &&
-      !/^\d/.test(value)
-    ) {
-      return new Date('Invalid Date');
-    }
-    // if it doesn't end with a unit identifier or a digit, return invalid date
-    if (
-      !['y', 'q', 'm', 'w', 'd', 'h', 'n', 's', 'l'].some((ending) =>
-        value.endsWith(ending)
-      ) &&
-      !/\d$/.test(value)
-    ) {
-      return new Date('Invalid Date');
-    }
-    // Get the first character and the last character
-    const avalue = [...value];
-    const start = avalue.splice(0, 1)[0];
-    const end = avalue.slice(-1)[0];
-    let hasSign = true;
-    let hasUnit = true;
-    if (Number.isInteger(start)) {
-      avalue.unshift(start);
-      hasSign = false;
-    }
-    if (Number.isInteger(end)) {
-      avalue.push(end);
-      hasUnit = false;
-    }
+import RelativeDateParser from "./RelativeDateParser.mjs";
+import TokenList from "./TokenList.mjs";
 
-    if (!hasUnit) {
-      return new Date('Invalid Date');
-    }
-
-    value = parseInt(avalue.join(''));
-    if (hasSign && start === '-') {
-      value = -value;
-    }
-    var getter = null;
-    var setter = null;
-    switch (end) {
-      case 'y':
-        getter = useUTC ? now.getUTCFullYear : now.getFullYear;
-        setter = useUTC
-          ? (old, value) => now.setUTCFullYear(old + value)
-          : (old, value) => now.setFullYear(old + value);
-        break;
-      case 'q':
-        getter = useUTC ? now.getUTCMonth : now.getMonth;
-        setter = useUTC
-          ? (old, value) => now.setUTCMonth(old + value * 3)
-          : (old, value) => now.setMonth(old + value * 3);
-        break;
-      case 'm':
-        getter = useUTC ? now.getUTCMonth : now.getMonth;
-        setter = useUTC
-          ? (old, value) => now.setUTCMonth(old + value)
-          : (old, value) => now.setMonth(old + value);
-        break;
-      case 'w':
-        getter = useUTC ? now.getUTCDate : now.getDate;
-        setter = useUTC
-          ? (old, value) => now.setUTCDate(old + value * 7)
-          : (old, value) => now.setDate(old + value * 7);
-        break;
-      case 'h':
-        getter = useUTC ? now.getUTCHours : now.getHours;
-        setter = useUTC
-          ? (old, value) => now.setUTCHours(old + value)
-          : (old, value) => now.setHours(old + value);
-        break;
-      case 'n':
-        getter = useUTC ? now.getUTCMinutes : now.getMinutes;
-        setter = useUTC
-          ? (old, value) => now.setUTCMinutes(old + value)
-          : (old, value) => now.setMinutes(old + value);
-        break;
-      case 's':
-        getter = useUTC ? now.getUTCSeconds : now.getSeconds;
-        setter = useUTC
-          ? (old, value) => now.setUTCSeconds(old + value)
-          : (old, value) => now.setSeconds(old + value);
-        break;
-      case 'l':
-        getter = useUTC ? now.getUTCMilliseconds : now.getMilliseconds;
-        setter = useUTC
-          ? (old, value) => now.setUTCMilliseconds(old + value)
-          : (old, value) => now.setMilliseconds(old + value);
-        break;
-      case 'd':
-      default:
-        getter = useUTC ? now.getUTCDate : now.getDate;
-        setter = useUTC
-          ? (old, value) => now.setUTCDate(old + value)
-          : (old, value) => now.setDate(old + value);
-        break;
-    }
-    if (getter && setter) {
-      const old = getter();
-      setter(old, value);
-    }
-    return new Date(now.valueOf());
-  }
-}
 class DateCache {
   static allDatesInYear = {};
   static allDatesInMonth = {};
 }
-class HMDateTimePicker extends HTMLElement {
+export class HMDateTimePicker extends HTMLElement {
   constructor() {
     super();
     this.instanceId = Date.now();
     console.time(`constructor for instance ${this.instanceId}`);
 
-    this.attachShadow({ mode: 'open' });
-    const cssLink = document.createElement('style');
-    cssLink.setAttribute('type', 'text/css');
+    this.attachShadow({ mode: "open" });
+    const cssLink = document.createElement("style");
+    cssLink.setAttribute("type", "text/css");
     cssLink.textContent = `.date-time-picker {
   display: none;
 }
@@ -455,127 +254,182 @@ div.picker-footer {
 }`;
     this.shadowRoot.appendChild(cssLink);
 
-    this.labelElement = document.createElement('label');
+    this.labelElement = document.createElement("label");
     this.shadowRoot.appendChild(this.labelElement);
-    this.inputElement = document.createElement('input');
-    this.inputElement.type = 'text';
-    this.inputElement.classList.add('date-time');
+    this.inputElement = document.createElement("input");
+    this.inputElement.type = "text";
+    this.inputElement.classList.add("date-time");
     this.shadowRoot.appendChild(this.inputElement);
 
     const isoFormatterOptions = {};
     this.isoFormatter = new Intl.DateTimeFormat(undefined, isoFormatterOptions);
-    Object.defineProperty(this.isoFormatter, 'format', {
+    Object.defineProperty(this.isoFormatter, "format", {
       value: function (date) {
         return date.toISOString().slice(0, 10);
       },
     });
     const monthYearFormatterOptions = {
-      month: 'long',
-      year: 'numeric',
+      month: "long",
+      year: "numeric",
     };
     this.monthYearFormatter = new Intl.DateTimeFormat(
       undefined,
       monthYearFormatterOptions
     );
-    const monthLongFormatterOptions = { month: 'long' };
+    const monthLongFormatterOptions = { month: "long" };
     this.monthLongFormatter = new Intl.DateTimeFormat(
       undefined,
       monthLongFormatterOptions
     );
-    const monthShortFormatterOptions = { month: 'short' };
+    const monthShortFormatterOptions = { month: "short" };
     this.monthShortFormatter = new Intl.DateTimeFormat(
       undefined,
       monthShortFormatterOptions
     );
-    const yearFormatterOptions = { year: 'numeric' };
+    const yearFormatterOptions = { year: "numeric" };
     this.yearFormatter = new Intl.DateTimeFormat(
       undefined,
       yearFormatterOptions
     );
+    const weekdayLongFormatterOptions = { weekday: "long" };
+    this.weekdayLongFormatter = new Intl.DateTimeFormat(
+      undefined,
+      weekdayLongFormatterOptions
+    );
+    const weekdayShortFormatterOptions = { weekday: "short" };
+    this.weekdayShortFormatter = new Intl.DateTimeFormat(
+      undefined,
+      weekdayShortFormatterOptions
+    );
+    const weekdayNarrowFormatterOptions = { weekday: "narrow" };
+    this.weekdayNarrowFormatter = new Intl.DateTimeFormat(
+      undefined,
+      weekdayNarrowFormatterOptions
+    );
     console.timeEnd(`constructor for instance ${this.instanceId}`);
   }
   connectedCallback() {
-    console.log('connectedCallback');
+    console.log("connectedCallback");
     if (this.isConnected) {
       this.init();
     }
   }
   disconnectedCallback() {
     this.destroy();
-    console.log('disconnectedCallback');
+    console.log("disconnectedCallback");
   }
   adoptedCallback() {
-    console.log('adoptedCallback');
+    console.log("adoptedCallback");
   }
   attributeChangedCallback(name, oldValue, newValue) {
-    console.log('attributeChangedCallback', name, oldValue, newValue);
+    console.log("attributeChangedCallback", name, oldValue, newValue);
   }
   static get observedAttributes() {
-    return ['min-date', 'max-date', 'show-on'];
+    return ["min-date", "max-date", "show-on"];
   }
   createDataset(element) {
     return {
       inputClassName:
-        element.getAttribute('input-class-name') ??
-        element.getAttribute('inputClassName') ??
-        '',
+        element.getAttribute("input-class-name") ??
+        element.getAttribute("inputClassName") ??
+        "",
       inputId:
-        element.getAttribute('input-id') ?? element.getAttribute('inputId'),
+        element.getAttribute("input-id") ?? element.getAttribute("inputId"),
       labelClassName:
-        element.getAttribute('label-class-name') ??
-        element.getAttribute('labelClassName') ??
-        '',
+        element.getAttribute("label-class-name") ??
+        element.getAttribute("labelClassName") ??
+        "",
       labelId:
-        element.getAttribute('label-id') ?? element.getAttribute('labelId'),
+        element.getAttribute("label-id") ?? element.getAttribute("labelId"),
       panelElementName:
-        element.getAttribute('panel-element-name') ??
-        element.getAttribute('panelElementName'),
+        element.getAttribute("panel-element-name") ??
+        element.getAttribute("panelElementName"),
       panelElementClassName:
-        element.getAttribute('panel-class-name') ??
-        element.getAttribute('panelClassName') ??
-        element.getAttribute('panelElementClassName') ??
-        '',
+        element.getAttribute("panel-class-name") ??
+        element.getAttribute("panelClassName") ??
+        element.getAttribute("panelElementClassName") ??
+        "",
       useUTC:
-        element.getAttribute('use-utc') ??
-        element.getAttribute('useUtc') ??
-        element.getAttribute('useUTC'),
+        element.getAttribute("use-utc") ??
+        element.getAttribute("useUtc") ??
+        element.getAttribute("useUTC"),
       defaultDate:
-        element.getAttribute('default-date') ??
-        element.getAttribute('defaultDate'),
-      format: element.getAttribute('format'),
+        element.getAttribute("default-date") ??
+        element.getAttribute("defaultDate"),
+      format: element.getAttribute("format"),
       minDate:
-        element.getAttribute('min-date') ?? element.getAttribute('minDate'),
+        element.getAttribute("min-date") ?? element.getAttribute("minDate"),
       maxDate:
-        element.getAttribute('max-date') ?? element.getAttribute('maxDate'),
+        element.getAttribute("max-date") ?? element.getAttribute("maxDate"),
       disableDate:
-        element.getAttribute('disable-date') ??
-        element.getAttribute('disableDate'),
+        element.getAttribute("disable-date") ??
+        element.getAttribute("disableDate"),
       useYearAndMonthTabs:
-        element.getAttribute('use-year-and-month-tabs') ??
-        element.getAttribute('useYearAndMonthTabs'),
+        element.getAttribute("use-year-and-month-tabs") ??
+        element.getAttribute("useYearAndMonthTabs"),
       useYearAndMonthSelects:
-        element.getAttribute('use-year-and-month-selects') ??
-        element.getAttribute('useYearAndMonthSelects'),
+        element.getAttribute("use-year-and-month-selects") ??
+        element.getAttribute("useYearAndMonthSelects"),
       showOn: new TokenList(
-        element.getAttribute('show-on') ?? element.getAttribute('showOn')
+        element.getAttribute("show-on") ?? element.getAttribute("showOn")
       ),
       buttonHtml:
-        element.getAttribute('button-html') ??
-        element.getAttribute('buttonHtml') ??
-        element.getAttribute('buttonHTML'),
+        element.getAttribute("button-html") ??
+        element.getAttribute("buttonHtml") ??
+        element.getAttribute("buttonHTML"),
       buttonIcon:
-        element.getAttribute('button-icon') ??
-        element.getAttribute('buttonIcon'),
-      title: element.getAttribute('title'),
+        element.getAttribute("button-icon") ??
+        element.getAttribute("buttonIcon"),
+      title: element.getAttribute("title"),
+      weekStartsOn: this.parseWeekday(
+        element.getAttribute("week-starts-on") ??
+          element.getAttribute("weekStartsOn")
+      ),
     };
   }
   get dateButtons() {
     return this.panelElement.querySelectorAll(
-      'button.calendar-entry-body-date'
+      "button.calendar-entry-body-date"
     );
   }
+  parseWeekday(value) {
+    if (value == null) {
+      return value;
+    }
+    if (isNaN(parseInt(value))) {
+      switch (value[0].toUpperCase() + value.slice(1).toLowerCase()) {
+        case "Monday":
+        case "Mon":
+        case "M":
+          return 1;
+        case "Tuesday":
+        case "Tue":
+          return 2;
+        case "Wednesday":
+        case "Wed":
+        case "W":
+          return 3;
+        case "Thursday":
+        case "Thu":
+          return 4;
+        case "Friday":
+        case "Fri":
+        case "F":
+          return 5;
+        case "Saturday":
+        case "Sat":
+          return 6;
+        case "Sunday":
+        case "Sun":
+        default:
+          return 0;
+      }
+    } else {
+      return parseInt(value, 10);
+    }
+  }
   getDate(value) {
-    if (typeof value !== 'object' || Number.isNaN(value.valueOf())) {
+    if (typeof value !== "object" || Number.isNaN(value.valueOf())) {
       return value;
     }
     const returnValue =
@@ -598,21 +452,21 @@ div.picker-footer {
     return this.getDate(today);
   }
   parseDate(value, defaultValue) {
-    let returnValue = new Date('Invalid');
-    if (typeof value === 'object' && value instanceof Date) {
+    let returnValue = new Date("Invalid");
+    if (typeof value === "object" && value instanceof Date) {
       if (Number.isNaN(value.valueOf())) {
         returnValue = this.parseDate(defaultValue);
       } else {
         returnValue = this.getDate(value);
       }
     }
-    if (typeof value === 'undefined') {
+    if (typeof value === "undefined") {
       returnValue = defaultValue ? this.parseDate(defaultValue) : this.getNow();
     }
-    if (typeof value === 'number') {
+    if (typeof value === "number") {
       returnValue = new Date(value);
     }
-    if (typeof value === 'string') {
+    if (typeof value === "string") {
       // TODO: Parse Date
       // assume it parses as local
       if (value.trim().length === 0) {
@@ -629,8 +483,12 @@ div.picker-footer {
     const val = this.value;
     const formatted = this.dateFormatter.format(val);
     this.pickerInputElement.value = formatted;
-    const myFormatted = this.monthYearFormatter.format(val);
-    this.monthYearSelector.querySelector('.selected').textContent = myFormatted;
+    if (this.useYearAndMonthTabs) {
+      const myFormatted = this.monthYearFormatter.format(val);
+      this.monthYearSelector.querySelector(
+        ".selected"
+      ).textContent = myFormatted;
+    }
   }
   setSelectedValue() {
     const val = this.value;
@@ -643,98 +501,106 @@ div.picker-footer {
     this.setSelectedValue();
   }
   populateMonths() {
-    console.time('populateMonths');
-    console.time('populateMonths-part1');
+    console.time("populateMonths");
     const dateDate = this.getDate(this.value);
     const monthDate = this.getDate(this.value);
     const monthCurrent = monthDate.getMonth();
-    this.monthSelect.innerHTML = '';
-    // for (let i = this.monthSelect.length - 1; i >= 0; i--) {
-    //   this.monthSelect.remove(i);
-    // }
-    for (let i = 0; i < 12; i++) {
-      monthDate.setMonth(i);
-      let monthOption = document.createElement('option');
-      monthOption.value = i;
-      monthOption.text = this.monthLongFormatter.format(monthDate);
-      monthOption.selected = i === monthCurrent;
-      this.monthSelect.add(monthOption);
-    }
-    console.timeEnd('populateMonths-part1');
-    console.time('populateMonths-part2');
-    for (let i = 0; i < 12; i++) {
-      monthDate.setMonth(i);
-      const buttonLabel = this.monthLongFormatter.format(monthDate);
-      const buttonText = this.monthShortFormatter.format(monthDate);
-      let monthButton = this.monthEntry.querySelector(
-        `button[aria-label="${buttonLabel}"]`
-      );
-      if (monthButton == null) {
-        monthButton = document.createElement('button');
-        monthButton.setAttribute('type', 'button');
-        monthButton.classList.add('month-entry-month');
-        this.monthEntry.appendChild(monthButton);
+    if (this.useYearAndMonthSelects) {
+      console.time("populateMonths-part1");
+      this.monthSelect.innerHTML = "";
+      // for (let i = this.monthSelect.length - 1; i >= 0; i--) {
+      //   this.monthSelect.remove(i);
+      // }
+      for (let i = 0; i < 12; i++) {
+        monthDate.setMonth(i);
+        let monthOption = document.createElement("option");
+        monthOption.value = i;
+        monthOption.text = this.monthLongFormatter.format(monthDate);
+        monthOption.selected = i === monthCurrent;
+        this.monthSelect.add(monthOption);
       }
-      monthButton.setAttribute('aria-label', buttonLabel);
-      this.clearDataset(monthButton);
-      monthButton.dataset.date = this.isoFormatter.format(monthDate);
-      monthButton.dataset.isToday =
-        monthDate.getFullYear() === this.getNow().getFullYear() &&
-        monthDate.getMonth() === this.getNow().getMonth();
-      monthButton.dataset.isSelected =
-        monthDate.getFullYear() === dateDate.getFullYear() &&
-        monthDate.getMonth() === dateDate.getMonth();
-      monthButton.textContent = buttonText;
-      const allDatesInMonth = this.calculateAllDatesInMonth(monthDate);
-      monthButton.disabled = this.allDatesAreDisabled(allDatesInMonth);
+      console.timeEnd("populateMonths-part1");
     }
-    console.timeEnd('populateMonths-part2');
-    console.timeEnd('populateMonths');
+    if (this.useYearAndMonthTabs) {
+      console.time("populateMonths-part2");
+      for (let i = 0; i < 12; i++) {
+        monthDate.setMonth(i);
+        const buttonLabel = this.monthLongFormatter.format(monthDate);
+        const buttonText = this.monthShortFormatter.format(monthDate);
+        let monthButton = this.monthEntry.querySelector(
+          `button[aria-label="${buttonLabel}"]`
+        );
+        if (monthButton == null) {
+          monthButton = document.createElement("button");
+          monthButton.setAttribute("type", "button");
+          monthButton.classList.add("month-entry-month");
+          this.monthEntry.appendChild(monthButton);
+        }
+        monthButton.setAttribute("aria-label", buttonLabel);
+        this.clearDataset(monthButton);
+        monthButton.dataset.date = this.isoFormatter.format(monthDate);
+        monthButton.dataset.isToday =
+          monthDate.getFullYear() === this.getNow().getFullYear() &&
+          monthDate.getMonth() === this.getNow().getMonth();
+        monthButton.dataset.isSelected =
+          monthDate.getFullYear() === dateDate.getFullYear() &&
+          monthDate.getMonth() === dateDate.getMonth();
+        monthButton.textContent = buttonText;
+        const allDatesInMonth = this.calculateAllDatesInMonth(monthDate);
+        monthButton.disabled = this.allDatesAreDisabled(allDatesInMonth);
+      }
+      console.timeEnd("populateMonths-part2");
+    }
+    console.timeEnd("populateMonths");
   }
   populateYears() {
-    console.time('populateYears');
-    console.time('populateYears-part1');
+    console.time("populateYears");
     const dateDate = this.getDate(this.value);
     const yearDate = this.getDate(this.value);
     const yearSelected = yearDate.getFullYear();
     const yearCurrent = this.getNow().getFullYear();
     // Faster method for emptying select of its options
-    this.yearSelect.innerHTML = '';
-    for (let i = yearCurrent; i < yearCurrent + 12; i++) {
-      yearDate.setFullYear(i);
-      let yearOption = document.createElement('option');
-      yearOption.value = i;
-      yearOption.text = this.yearFormatter.format(yearDate);
-      yearOption.selected = i === yearSelected;
-      this.yearSelect.add(yearOption);
-    }
-    console.timeEnd('populateYears-part1');
-    console.time('populateYears-part2');
-    for (let i = yearCurrent; i < yearCurrent + 24; i++) {
-      yearDate.setFullYear(i);
-      const buttonLabel = this.yearFormatter.format(yearDate);
-      let yearButton = this.yearEntry.querySelector(
-        `button[aria-label="${buttonLabel}"]`
-      );
-      if (yearButton == null) {
-        yearButton = document.createElement('button');
-        yearButton.setAttribute('type', 'button');
-        yearButton.classList.add('year-entry-year');
-        this.yearEntry.appendChild(yearButton);
+    if (this.useYearAndMonthSelects) {
+      console.time("populateYears-part1");
+      this.yearSelect.innerHTML = "";
+      for (let i = yearCurrent; i < yearCurrent + 12; i++) {
+        yearDate.setFullYear(i);
+        let yearOption = document.createElement("option");
+        yearOption.value = i;
+        yearOption.text = this.yearFormatter.format(yearDate);
+        yearOption.selected = i === yearSelected;
+        this.yearSelect.add(yearOption);
       }
-      yearButton.setAttribute('aria-label', buttonLabel);
-      this.clearDataset(yearButton);
-      yearButton.dataset.date = this.isoFormatter.format(yearDate);
-      yearButton.dataset.isToday =
-        yearDate.getFullYear() === this.getNow().getFullYear();
-      yearButton.dataset.isSelected =
-        yearDate.getFullYear() === dateDate.getFullYear();
-      yearButton.textContent = yearDate.getFullYear();
-      const allDatesInYear = this.calculateAllDatesInYear(yearDate);
-      yearButton.disabled = this.allDatesAreDisabled(allDatesInYear);
+      console.timeEnd("populateYears-part1");
     }
-    console.timeEnd('populateYears-part2');
-    console.timeEnd('populateYears');
+    if (this.useYearAndMonthTabs) {
+      console.time("populateYears-part2");
+      for (let i = yearCurrent; i < yearCurrent + 24; i++) {
+        yearDate.setFullYear(i);
+        const buttonLabel = this.yearFormatter.format(yearDate);
+        let yearButton = this.yearEntry.querySelector(
+          `button[aria-label="${buttonLabel}"]`
+        );
+        if (yearButton == null) {
+          yearButton = document.createElement("button");
+          yearButton.setAttribute("type", "button");
+          yearButton.classList.add("year-entry-year");
+          this.yearEntry.appendChild(yearButton);
+        }
+        yearButton.setAttribute("aria-label", buttonLabel);
+        this.clearDataset(yearButton);
+        yearButton.dataset.date = this.isoFormatter.format(yearDate);
+        yearButton.dataset.isToday =
+          yearDate.getFullYear() === this.getNow().getFullYear();
+        yearButton.dataset.isSelected =
+          yearDate.getFullYear() === dateDate.getFullYear();
+        yearButton.textContent = yearDate.getFullYear();
+        const allDatesInYear = this.calculateAllDatesInYear(yearDate);
+        yearButton.disabled = this.allDatesAreDisabled(allDatesInYear);
+      }
+      console.timeEnd("populateYears-part2");
+    }
+    console.timeEnd("populateYears");
   }
   getFirstOfMonth(value) {
     return new Date(
@@ -826,18 +692,18 @@ div.picker-footer {
     }
   }
   populateDates() {
-    console.time('populateDates');
+    console.time("populateDates");
     const dateDate = new Date(this.value);
     const startDate = this.getFirstSunday(dateDate);
     const calendarElement = this.panelElement.querySelector(
-      '.calendar-entry-body'
+      ".calendar-entry-body"
     );
     for (let i = 0; i < 42; i++) {
       if (!this.dateButtons || this.dateButtons.length <= i) {
-        let newDateButton = document.createElement('button');
-        newDateButton.setAttribute('type', 'button');
-        newDateButton.setAttribute('aria-selected', false);
-        newDateButton.classList.add('calendar-entry-body-date');
+        let newDateButton = document.createElement("button");
+        newDateButton.setAttribute("type", "button");
+        newDateButton.setAttribute("aria-selected", false);
+        newDateButton.classList.add("calendar-entry-body-date");
         calendarElement.appendChild(newDateButton);
         newDateButton = null;
       }
@@ -851,23 +717,23 @@ div.picker-footer {
         dateDate.getMilliseconds()
       );
       const button = this.dateButtons[i];
-      button.setAttribute('aria-label', this.dateFormatter.format(buttonDate));
+      button.setAttribute("aria-label", this.dateFormatter.format(buttonDate));
       this.clearDataset(button);
       button.dataset.date = this.isoFormatter.format(buttonDate);
       button.dataset.dateOther = buttonDate.getMonth() !== dateDate.getMonth();
       button.dataset.isToday = this.isSameDay(buttonDate, this.getNow());
       button.dataset.isSelected = this.isSameDay(buttonDate, dateDate);
-      button.setAttribute('aria-selected', button.dataset.isSelected);
+      button.setAttribute("aria-selected", button.dataset.isSelected);
       button.textContent = buttonDate.getDate();
       button.disabled = this.dateIsDisabled(buttonDate);
     }
-    console.timeEnd('populateDates');
+    console.timeEnd("populateDates");
   }
   calculateAllDatesInMonth(monthDate) {
     const keyParts = this.monthKeyFormatter.formatToParts(monthDate);
     const key =
-      keyParts.find((p) => p.type === 'year').value +
-      keyParts.find((p) => p.type === 'month').value;
+      keyParts.find((p) => p.type === "year").value +
+      keyParts.find((p) => p.type === "month").value;
     //console.time(`calculateAllDatesInMonth${key}`);
     if (DateCache.allDatesInMonth.hasOwnProperty(key)) {
       //console.timeEnd(`calculateAllDatesInMonth${key}`);
@@ -917,7 +783,7 @@ div.picker-footer {
     return allDatesDisabled;
   }
   repopulate() {
-    console.time('repopulate');
+    console.time("repopulate");
     this.populateMonths();
     this.populateYears();
     this.populateDates();
@@ -929,27 +795,36 @@ div.picker-footer {
     nextMonth.setMonth(nextMonth.getMonth() + 1);
     const nextMonthDates = this.calculateAllDatesInMonth(nextMonth);
     this.nextMonth.disabled = this.allDatesAreDisabled(nextMonthDates);
-    console.timeEnd('repopulate');
+    console.timeEnd("repopulate");
+  }
+  keyDown(e) {
+    console.log("keyDown", e.target, e.key);
+    if (
+      e.target.closest("input") == this.inputElement &&
+      e.key === "ArrowDown"
+    ) {
+      this.gotFocus(e);
+    }
   }
   gotFocus(e) {
-    console.log('gotFocus', e.target);
+    console.log("gotFocus", e.target);
     this.value = this.parseDate(this.inputElement.value, this.defaultDate);
     this.repopulate();
     this.formatDate();
-    this.panelElement.classList.toggle('show');
+    this.panelElement.classList.toggle("show");
     this.shadowRoot.host.setAttribute(
-      'aria-expanded',
-      this.panelElement.classList.contains('show')
+      "aria-expanded",
+      this.panelElement.classList.contains("show")
     );
     e.stopPropagation();
     e.cancelBubble = true;
   }
   lostFocus(e) {
-    console.log('lostFocus', e.target);
+    console.log("lostFocus", e.target);
     this.parseInputValue();
   }
   somethingElseGotFocus(e) {
-    console.log('somethingElseGotFocus', e.target);
+    console.log("somethingElseGotFocus", e.target);
     if (
       e &&
       e.target &&
@@ -960,22 +835,22 @@ div.picker-footer {
       e.target !== this &&
       !this.contains(e.target)
     ) {
-      this.panelElement.classList.remove('show');
+      this.panelElement.classList.remove("show");
       e.stopPropagation();
     }
   }
   dateSelected(e) {
     this.value = this.parseDate(e.target.dataset.date);
-    e.target.setAttribute('aria-selected', true);
+    e.target.setAttribute("aria-selected", true);
     this.formatDate();
     this.repopulate();
-    if (e.target.matches('.year-entry-year')) {
-      this.datePickerElement.classList.add('month-entry');
-      this.datePickerElement.classList.remove('year-entry');
+    if (e.target.matches(".year-entry-year")) {
+      this.datePickerElement.classList.add("month-entry");
+      this.datePickerElement.classList.remove("year-entry");
     }
-    if (e.target.matches('.month-entry-month')) {
-      this.datePickerElement.classList.add('calendar-entry');
-      this.datePickerElement.classList.remove('month-entry');
+    if (e.target.matches(".month-entry-month")) {
+      this.datePickerElement.classList.add("calendar-entry");
+      this.datePickerElement.classList.remove("month-entry");
     }
   }
   prevClicked(e) {
@@ -1043,27 +918,27 @@ div.picker-footer {
   }
   monthYearClicked(e) {
     e.preventDefault();
-    this.datePickerElement.classList.remove('calendar-entry');
-    this.datePickerElement.classList.add('year-entry');
+    this.datePickerElement.classList.remove("calendar-entry");
+    this.datePickerElement.classList.add("year-entry");
   }
   cancelClicked(e) {
-    this.panelElement.classList.remove('show');
+    this.panelElement.classList.remove("show");
   }
   submitClicked(e) {
     this.setSelectedValue();
-    this.panelElement.classList.remove('show');
+    this.panelElement.classList.remove("show");
   }
   panelClicked(e) {
     if (
-      e.target.matches('.calendar-entry-body-date') ||
-      e.target.matches('.year-entry-year') ||
-      e.target.matches('.month-entry-month')
+      e.target.matches(".calendar-entry-body-date") ||
+      e.target.matches(".year-entry-year") ||
+      e.target.matches(".month-entry-month")
     ) {
       this.dateSelected(e);
     }
   }
   init() {
-    console.time('init');
+    console.time("init");
     this.boundEventHandlers = new WeakMap();
     let {
       inputClassName,
@@ -1084,18 +959,30 @@ div.picker-footer {
       buttonHtml,
       buttonIcon,
       title,
+      weekStartsOn,
     } = this.createDataset(this);
 
+    this.useUTC = ["true", "yes", "y"].includes(useUTC?.toLowerCase());
+    this.useYearAndMonthTabs = useYearAndMonthTabs || !useYearAndMonthSelects;
+    this.useYearAndMonthSelects =
+      useYearAndMonthSelects || !useYearAndMonthTabs;
+    if (this.useYearAndMonthSelects && this.useYearAndMonthTabs) {
+      this.useYearAndMonthTabs = false;
+    }
+    if (!this.useYearAndMonthSelects && !this.useYearAndMonthTabs) {
+      this.useYearAndMonthSelects = true;
+    }
+
     this.showOn = new TokenList(showOn);
-    if (showOn.contains('button')) {
-      this.buttonElement = document.createElement('button');
-      this.buttonElement.type = 'button';
-      this.buttonElement.classList.add('date-time-toggle');
+    if (showOn.contains("button")) {
+      this.buttonElement = document.createElement("button");
+      this.buttonElement.type = "button";
+      this.buttonElement.classList.add("date-time-toggle");
       if (buttonHtml != null && buttonHtml.length) {
         this.buttonElement.innerHTML = buttonHtml;
       } else if (buttonIcon != null && buttonIcon.length) {
-        const iconElement = document.createElement('i');
-        iconElement.classList.add('material-icons');
+        const iconElement = document.createElement("i");
+        iconElement.classList.add("material-icons");
         iconElement.textContent = buttonIcon;
         this.buttonElement.appendChild(iconElement);
       }
@@ -1109,120 +996,143 @@ div.picker-footer {
     labelId = labelId ?? `date-time-label-${inputId}`;
     this.labelElement.id = labelId;
     this.labelElement.textContent = title;
-    panelElementName = panelElementName ?? 'aside';
+    panelElementName = panelElementName ?? "menu";
     this.panelElement = document.createElement(panelElementName);
     this.panelElement.id = `date-time-panel-${this.instanceId}`;
+    this.shadowRoot.host.setAttribute("aria-controls", this.panelElement.id);
+    this.panelElement.setAttribute("aria-live", "polite");
+    this.panelElement.setAttribute("aria-expanded", "false");
     this.panelElement.className = panelElementClassName;
-    this.panelElement.classList.add('date-time-picker');
-    this.panelElement.innerHTML = `
-        <div class="date-picker calendar-entry">
-          <div class="calendar-entry">
-            <div class="calendar-entry-header">
-              <label for="date-time-picker-month-${this.instanceId}">Month:</label>
-              <select id="date-time-picker-month-${this.instanceId}" class="month-utc"></select>
-              <label for="date-time-picker-year-${this.instanceId}">Year:</label>
-              <select id="date-time-picker-year-${this.instanceId}" class="year-utc"></select>
-              <button type="button" class="month-year-selector">
-                <span class="selected">Oct 2020</span> ▼
-              </button>
-              <button
-                id="date-time-picker-prev-${this.instanceId}"
-                class="month-prev-utc"
-                type="button"
-              >
-                Prev
-              </button>
-              <button
-                id="date-time-picker-next-${this.instanceId}"
-                class="month-next-utc"
-                type="button"
-              >
-                Next
-              </button>
-            </div>
-            <div class="calendar-entry-body">
-              <span
-                class="calendar-entry-body-header-weekday"
-                aria-label="Sunday"
-                >Sun</span
-              >
-              <span
-                class="calendar-entry-body-header-weekday"
-                aria-label="Monday"
-                >Mon</span
-              >
-              <span
-                class="calendar-entry-body-header-weekday"
-                aria-label="Tuesday"
-                >Tue</span
-              >
-              <span
-                class="calendar-entry-body-header-weekday"
-                aria-label="Wednesday"
-                >Wed</span
-              >
-              <span
-                class="calendar-entry-body-header-weekday"
-                aria-label="Thursday"
-                >Thu</span
-              >
-              <span
-                class="calendar-entry-body-header-weekday"
-                aria-label="Friday"
-                >Fri</span
-              >
-              <span
-                class="calendar-entry-body-header-weekday"
-                aria-label="Saturday"
-                >Sat</span
-              >
-            </div>
-          </div>
-          <div class="year-entry"></div>
-          <div class="month-entry"></div>
-          <div class="manual-entry">
-            <label for="date-time-picker-date-input-${this.instanceId}">Date:</label>
-            <input
-              type="text"
-              id="date-time-picker-date-input-${this.instanceId}"
-              class="date-utc"
-              readonly
-            />
-          </div>
-        </div>
-        <div class="time-picker"></div>
-        <div class="picker-footer">
-          <button type="button" class="picker-footer picker-footer-cancel">
-            Cancel
-          </button>
-          <button type="button" class="picker-footer picker-footer-submit">
-            OK
-          </button>
-        </div>`;
+    this.panelElement.classList.add("date-time-picker");
+    const dateEntryWrapper = document.createElement("div");
+    dateEntryWrapper.classList.add("date-picker", "calendar-entry");
+    dateEntryWrapper.setAttribute("role", "tablist");
+    this.panelElement.appendChild(dateEntryWrapper);
+    const calendarEntry = document.createElement("div");
+    calendarEntry.classList.add("calendar-entry");
+    calendarEntry.setAttribute("role", "tab");
+    const calendarEntryHeader = document.createElement("div");
+    calendarEntryHeader.classList.add("calendar-entry-header");
+    if (this.useYearAndMonthSelects) {
+      const monthLabel = document.createElement("label");
+      monthLabel.htmlFor = `date-time-picker-month-${this.instanceId}`;
+      monthLabel.textContent = "Month:";
+      calendarEntryHeader.appendChild(monthLabel);
+      const monthSelect = document.createElement("select");
+      monthSelect.id = `date-time-picker-month-${this.instanceId}`;
+      monthSelect.classList.add("month-utc");
+      calendarEntryHeader.appendChild(monthSelect);
+      const yearLabel = document.createElement("label");
+      yearLabel.htmlFor = `date-time-picker-year-${this.instanceId}`;
+      yearLabel.textContent = "Year:";
+      calendarEntryHeader.appendChild(yearLabel);
+      const yearSelect = document.createElement("select");
+      yearSelect.id = `date-time-picker-year-${this.instanceId}`;
+      yearSelect.classList.add("year-utc");
+      calendarEntryHeader.appendChild(yearSelect);
+    }
+    if (this.useYearAndMonthTabs) {
+      const monthYearSelector = document.createElement("button");
+      monthYearSelector.type = "button";
+      monthYearSelector.classList.add("month-year-selector");
+      const selectedMonthYear = document.createElement("span");
+      selectedMonthYear.classList.add("selected");
+      monthYearSelector.appendChild(selectedMonthYear);
+      monthYearSelector.appendChild(document.createTextNode(" ▼"));
+      calendarEntryHeader.appendChild(monthYearSelector);
+    }
+    const monthPrev = document.createElement("button");
+    monthPrev.id = `date-time-picker-prev-${this.instanceId}`;
+    monthPrev.className = "month-prev-utc";
+    monthPrev.type = "button";
+    monthPrev.textContent = "Prev";
+    calendarEntryHeader.appendChild(monthPrev);
+    const monthNext = document.createElement("button");
+    monthNext.id = `date-time-picker-next-${this.instanceId}`;
+    monthNext.className = "month-next-utc";
+    monthNext.type = "button";
+    monthNext.textContent = "Next";
+    calendarEntryHeader.appendChild(monthNext);
+    calendarEntry.appendChild(calendarEntryHeader);
+    const calendarEntryBody = document.createElement("div");
+    calendarEntryBody.classList.add("calendar-entry-body");
+    const weekdayDates = [
+      new Date(Date.UTC(2021, 0, 24)),
+      new Date(Date.UTC(2021, 0, 25)),
+      new Date(Date.UTC(2021, 0, 26)),
+      new Date(Date.UTC(2021, 0, 27)),
+      new Date(Date.UTC(2021, 0, 28)),
+      new Date(Date.UTC(2021, 0, 29)),
+      new Date(Date.UTC(2021, 0, 30)),
+    ];
+    for (let d = weekStartsOn; d < weekStartsOn + 7; d++) {
+      let w = d % 6;
+      const dayHeader = document.createElement("span");
+      dayHeader.classList.add("calendar-entry-body-header-weekday");
+      dayHeader.setAttribute(
+        "aria-label",
+        this.weekdayLongFormatter.format(weekdayDates[w])
+      );
+      dayHeader.textContent = this.weekdayShortFormatter.format(
+        weekdayDates[w]
+      );
+      calendarEntryBody.appendChild(dayHeader);
+    }
+    calendarEntry.appendChild(calendarEntryBody);
+    dateEntryWrapper.appendChild(calendarEntry);
+    const yearEntry = document.createElement("div");
+    yearEntry.className = "year-entry";
+    yearEntry.setAttribute("role", "tab");
+    yearEntry.setAttribute("aria-expanded", false);
+    dateEntryWrapper.appendChild(yearEntry);
+    const monthEntry = document.createElement("div");
+    monthEntry.className = "month-entry";
+    monthEntry.setAttribute("role", "tab");
+    monthEntry.setAttribute("aria-expanded", false);
+    dateEntryWrapper.appendChild(monthEntry);
+    const manualEntry = document.createElement("div");
+    manualEntry.className = "manual-entry";
+    const dateLabel = document.createElement("label");
+    const dateId = `date-time-picker-date-input-${this.instanceId}`;
+    dateLabel.htmlFor = dateId;
+    dateLabel.textContent = "Date:";
+    manualEntry.appendChild(dateLabel);
+    const dateEntry = document.createElement("input");
+    dateEntry.id = dateId;
+    dateEntry.className = "date-utc";
+    dateEntry.type = "text";
+    dateEntry.readOnly = true;
+    manualEntry.appendChild(dateEntry);
+    dateEntryWrapper.appendChild(manualEntry);
+    const timePicker = document.createElement("div");
+    timePicker.className = "time-picker time-entry";
+    this.panelElement.appendChild(timePicker);
+    const pickerFooter = document.createElement("div");
+    pickerFooter.className = "picker-footer";
+    const cancelButton = document.createElement("button");
+    cancelButton.type = "button";
+    cancelButton.className = "picker-footer-cancel";
+    cancelButton.textContent = "Cancel";
+    pickerFooter.appendChild(cancelButton);
+    const submitButton = document.createElement("button");
+    submitButton.type = "button";
+    submitButton.className = "picker-footer-submit";
+    submitButton.textContent = "OK";
+    pickerFooter.appendChild(submitButton);
+    this.panelElement.appendChild(pickerFooter);
     this.shadowRoot.appendChild(this.panelElement);
 
-    this.useUTC = ['true', 'yes', 'y'].includes(useUTC?.toLowerCase());
-    this.useYearAndMonthTabs = useYearAndMonthTabs || !useYearAndMonthSelects;
-    this.useYearAndMonthSelects =
-      useYearAndMonthSelects || !useYearAndMonthTabs;
-    if (this.useYearAndMonthSelects && this.useYearAndMonthTabs) {
-      this.useYearAndMonthTabs = false;
-    }
-    if (!this.useYearAndMonthSelects && !this.useYearAndMonthTabs) {
-      this.useYearAndMonthSelects = true;
-    }
-
-    let mmYYformat = { year: 'numeric', month: '2-digit' };
+    let mmYYformat = { year: "numeric", month: "2-digit" };
     if (this.useUTC) {
-      mmYYformat.timeZone = 'UTC';
+      mmYYformat.timeZone = "UTC";
     }
-    this.monthKeyFormatter = new Intl.DateTimeFormat('en-US', mmYYformat);
+    this.monthKeyFormatter = new Intl.DateTimeFormat("en-US", mmYYformat);
 
     const dateFormatterOptions = {
-      dateStyle: 'long',
+      dateStyle: "long",
     };
     if (this.useUTC) {
-      dateFormatterOptions.timeZone = 'UTC';
+      dateFormatterOptions.timeZone = "UTC";
     }
     this.dateFormatter = new Intl.DateTimeFormat(
       undefined,
@@ -1230,10 +1140,10 @@ div.picker-footer {
     );
 
     const timeFormatterOptions = {
-      timeStyle: 'long',
+      timeStyle: "long",
     };
     if (this.useUTC) {
-      timeFormatterOptions.timeZone = 'UTC';
+      timeFormatterOptions.timeZone = "UTC";
     }
     this.timeFormatter = new Intl.DateTimeFormat(
       undefined,
@@ -1243,48 +1153,48 @@ div.picker-footer {
     if (Array.isArray(format)) {
       this.formats = Array.from(format);
     }
-    if (typeof format === 'string') {
+    if (typeof format === "string") {
       this.formats = [format];
     }
-    if (typeof window[minDate] === 'function') {
+    if (typeof window[minDate] === "function") {
       minDate = window[minDate]();
     } else if (
-      typeof minDate === 'string' &&
+      typeof minDate === "string" &&
       RelativeDateParser.canParse(minDate)
     ) {
       minDate = RelativeDateParser.parse(minDate, this.useUTC);
     }
-    if (typeof window[maxDate] === 'function') {
+    if (typeof window[maxDate] === "function") {
       maxDate = window[maxDate]();
     }
     this.minDate = this.parseDate(minDate, new Date(-8640000000000000));
     this.maxDate = this.parseDate(maxDate, new Date(8640000000000000));
     this.disableDate =
-      typeof disableDate === 'function' ? disableDate : (date) => false;
+      typeof disableDate === "function" ? disableDate : (date) => false;
 
-    this.panelElement.classList.toggle('use-tabs', this.useYearAndMonthTabs);
+    this.panelElement.classList.toggle("use-tabs", this.useYearAndMonthTabs);
     this.panelElement.classList.toggle(
-      'use-selects',
+      "use-selects",
       this.useYearAndMonthSelects
     );
     this.monthYearSelector = this.panelElement.querySelector(
-      '.month-year-selector'
+      ".month-year-selector"
     );
-    this.datePickerElement = this.panelElement.querySelector('.date-picker');
-    this.pickerInputElement = this.panelElement.querySelector('.date-utc');
-    this.monthSelect = this.panelElement.querySelector('.month-utc');
-    this.yearSelect = this.panelElement.querySelector('.year-utc');
-    this.prevMonth = this.panelElement.querySelector('.month-prev-utc');
-    this.nextMonth = this.panelElement.querySelector('.month-next-utc');
+    this.datePickerElement = this.panelElement.querySelector(".date-picker");
+    this.pickerInputElement = this.panelElement.querySelector(".date-utc");
+    this.monthSelect = this.panelElement.querySelector(".month-utc");
+    this.yearSelect = this.panelElement.querySelector(".year-utc");
+    this.prevMonth = this.panelElement.querySelector(".month-prev-utc");
+    this.nextMonth = this.panelElement.querySelector(".month-next-utc");
     this.okayButton = this.panelElement
-      .closest('aside')
-      .querySelector('button.picker-footer-submit');
+      .closest(panelElementName)
+      .querySelector("button.picker-footer-submit");
     this.cancelButton = this.panelElement
-      .closest('aside')
-      .querySelector('button.picker-footer-cancel');
-    this.yearEntry = this.panelElement.querySelector('.year-entry');
-    this.monthEntry = this.panelElement.querySelector('.month-entry');
-    this.panelElement.classList.remove('show');
+      .closest(panelElementName)
+      .querySelector("button.picker-footer-cancel");
+    this.yearEntry = this.panelElement.querySelector(".year-entry");
+    this.monthEntry = this.panelElement.querySelector(".month-entry");
+    this.panelElement.classList.remove("show");
     this.defaultDate = this.parseDate(defaultDate);
     this.value = this.parseDate(this.inputElement.value, this.defaultDate);
 
@@ -1293,53 +1203,68 @@ div.picker-footer {
       { click: this.somethingElseGotFocus.bind(this) },
       this.boundEventHandlers.get(document.documentElement)
     );
-    document.documentElement.addEventListener('click', handlers.click);
+    document.documentElement.addEventListener("click", handlers.click);
     this.boundEventHandlers.set(document.documentElement, handlers);
-    if (this.showOn.contains('focus')) {
+    if (this.showOn.contains("focus")) {
       handlers = Object.assign(
         { focusin: this.gotFocus.bind(this) },
         this.boundEventHandlers.get(this.inputElement)
       );
-      this.inputElement.addEventListener('focusin', handlers.focusin);
+      this.inputElement.addEventListener("focusin", handlers.focusin);
       this.boundEventHandlers.set(this.inputElement, handlers);
     }
-    if (this.showOn.contains('button')) {
+    if (this.showOn.contains("down")) {
+      handlers = Object.assign(
+        { focusin: this.gotFocus.bind(this) },
+        this.boundEventHandlers.get(this.inputElement)
+      );
+      this.inputElement.addEventListener("keydown", handlers.focusin);
+      this.boundEventHandlers.set(this.inputElement, handlers);
+    }
+    if (this.showOn.contains("button")) {
       handlers = Object.assign(
         { click: this.gotFocus.bind(this) },
         this.boundEventHandlers.get(this.buttonElement)
       );
-      this.buttonElement.addEventListener('click', this.gotFocus.bind(this));
+      this.buttonElement.addEventListener("click", this.gotFocus.bind(this));
       this.boundEventHandlers.set(this.buttonElement, handlers);
     }
     handlers = Object.assign(
       { focusout: this.lostFocus.bind(this) },
       this.boundEventHandlers.get(this.inputElement)
     );
-    this.inputElement.addEventListener('focusout', handlers.focusout);
+    this.inputElement.addEventListener("focusout", handlers.focusout);
     this.boundEventHandlers.set(this.inputElement, handlers);
     handlers = Object.assign(
       { click: this.panelClicked.bind(this) },
       this.boundEventHandlers.get(this.panelElement)
     );
-    this.panelElement.addEventListener('click', handlers.click);
+    this.panelElement.addEventListener("click", handlers.click);
     this.boundEventHandlers.set(this.panelElement, handlers);
     // TODO: Add a function that does the whole handlers dance.
-    this.prevMonth.addEventListener('click', this.prevClicked.bind(this));
-    this.nextMonth.addEventListener('click', this.nextClicked.bind(this));
-    this.monthSelect.addEventListener('change', this.monthSelected.bind(this));
-    this.yearSelect.addEventListener('change', this.yearSelected.bind(this));
-    this.monthYearSelector.addEventListener(
-      'click',
-      this.monthYearClicked.bind(this)
-    );
-    this.cancelButton.addEventListener('click', this.cancelClicked.bind(this));
-    this.okayButton.addEventListener('click', this.submitClicked.bind(this));
+    if (this.useYearAndMonthSelects) {
+      this.prevMonth.addEventListener("click", this.prevClicked.bind(this));
+      this.nextMonth.addEventListener("click", this.nextClicked.bind(this));
+      this.monthSelect.addEventListener(
+        "change",
+        this.monthSelected.bind(this)
+      );
+      this.yearSelect.addEventListener("change", this.yearSelected.bind(this));
+    }
+    if (this.useYearAndMonthTabs) {
+      this.monthYearSelector.addEventListener(
+        "click",
+        this.monthYearClicked.bind(this)
+      );
+    }
+    this.cancelButton.addEventListener("click", this.cancelClicked.bind(this));
+    this.okayButton.addEventListener("click", this.submitClicked.bind(this));
 
-    console.timeEnd('init');
+    console.timeEnd("init");
   }
   destroy() {
-    console.time('destroy');
-    console.timeEnd('destroy');
+    console.time("destroy");
+    console.timeEnd("destroy");
   }
 }
-customElements.define('hm-date-time-picker', HMDateTimePicker);
+customElements.define("hm-date-time-picker", HMDateTimePicker);

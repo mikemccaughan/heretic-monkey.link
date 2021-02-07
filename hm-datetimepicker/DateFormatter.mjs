@@ -1,7 +1,7 @@
 /**
  * Provides basic instance and static date and time formatting functionality.
  */
-export class DateFormatter {
+export default class DateFormatter {
   /***
    * Regular expression for validating BCP 47 language tags, for use as a locale.
    */

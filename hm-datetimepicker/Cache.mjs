@@ -1,5 +1,4 @@
-import { TimeSpan } from './TimeSpan';
-import { TimeSpan } from './TimeSpan';
+import { TimeSpan } from './TimeSpan.mjs';
 export const CacheExpirationType = {
   Absolute: 0,
   Sliding: 1,
@@ -10,7 +9,7 @@ export class CacheExpiration {
     this.expiration = expiration;
   }
 }
-export class Cache {
+export default class Cache {
   static InfiniteAbsoluteExpiration = new CacheExpiration(
     CacheExpirationType.Absolute,
     new Date(0)

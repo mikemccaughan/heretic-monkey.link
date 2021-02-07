@@ -89,8 +89,6 @@ const MynSweepr: React.FC = () => {
 
   useLayoutEffect(() => {
     let board = generateBoard({width, height, density: 1 / 6});
-    board = generateBoard({width, height, density: 1 / 6});
-    board = generateBoard({width, height, density: 1 / 6});
     setCells(() => board.cells);
     setMineCount(() => board.mineCount);
   }, [width, height]);
@@ -130,6 +128,7 @@ const MynSweepr: React.FC = () => {
         (e.target as HTMLElement)?.classList?.contains('hidden') ?? false,
       wasClicked: true,
       onBlank: (args: fnArgs) => {
+        console.log(`handleCellClick: onBlank: args: ${JSON.stringify(args)}`);
         args = clearAround(args as clearAroundArgs);
         setCells(args.cells);
         setMineCount(args.mineCount);
@@ -145,11 +144,11 @@ const MynSweepr: React.FC = () => {
         return args;
       },
       onNearby: (args: fnArgs) => {
-        console.log('onNearby: ', args);
+        console.log(`handleCellClick: onNearby: args: ${JSON.stringify(args)}`);
         return args;
       },
       onReveal: (args: fnArgs) => {
-        console.log('onReveal: ', args);
+        console.log(`handleCellClick: onReveal: args: ${JSON.stringify(args)}`);
         return args;
       },
       onWin: (args: fnArgs) => {

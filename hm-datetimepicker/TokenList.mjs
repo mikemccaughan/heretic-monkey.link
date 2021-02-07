@@ -1,4 +1,4 @@
-export class TokenList {
+export default class TokenList {
   constructor(value) {
     if (value == null || value.length === 0) {
       this.list = [];

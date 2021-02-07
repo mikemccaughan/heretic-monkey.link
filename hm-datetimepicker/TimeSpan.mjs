@@ -1,4 +1,4 @@
-export class TimeSpan {
+export default class TimeSpan {
   static Zero = new TimeSpan(0);
   static MinValue = new TimeSpan(-8640000000000000);
   static MaxValue = new TimeSpan(8640000000000000);
