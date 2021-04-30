@@ -8,18 +8,34 @@
   </head>
   <body>
     <form>
-      <hm-date-time-picker
-        use-utc="true"
-        default-value=""
-        format="MM/dd/yyyy"
-        min-date="today"
-        max-date="+100y"
-        show-on="focus button"
-        title="Date/Time Picker (uses UTC, no default, MM/dd/yyyy, min-date today,
+      <p>
+        <hm-date-time-picker
+          use-utc="true"
+          default-value=""
+          format="MM/dd/yyyy"
+          min-date="today"
+          max-date="+100y"
+          show-on="focus button"
+          title="Date/Time Picker (uses UTC, no default, MM/dd/yyyy, min-date today,
         max-date +100y, show-on focus button)"
-        id="hm-dtp"
-      >
-      </hm-date-time-picker>
+          id="hm-dtp"
+        >
+        </hm-date-time-picker>
+      </p>
+      <p>
+        <hm-date-time-picker
+          use-utc="false"
+          default-value=""
+          format="y-M-d"
+          min-date="-1d"
+          max-date="+1m"
+          show-on="button"
+          title="Date/Time Picker (does not use UTC, no default, y-M-d, min-date yesterday,
+        max-date +1m, show-on button)"
+          id="hm-dtp-02"
+        >
+        </hm-date-time-picker>
+      </p>
     </form>
   </body>
 </html>
