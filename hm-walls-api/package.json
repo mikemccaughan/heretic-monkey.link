@@ -50,7 +50,7 @@
     "@loopback/rest": "^5.2.1",
     "@loopback/rest-explorer": "^2.2.8",
     "@loopback/service-proxy": "^2.3.6",
-    "azure-storage": "^2.10.3",
+    "azure-storage": "^2.10.4",
     "loopback-connector-rest": "^3.7.0"
   },
   "devDependencies": {
