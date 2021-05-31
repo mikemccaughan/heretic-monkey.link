@@ -1,6 +1,7 @@
 const autoprefixer = require('autoprefixer');
 
 module.exports = [{
+    mode: 'production',
     entry: ['./app.scss', './app.js'],
     output: {
       filename: 'bundle.js',
@@ -21,7 +22,13 @@ module.exports = [{
             {
               loader: 'postcss-loader',
               options: {
-                plugins: () => [autoprefixer()]
+                postcssOptions: {
+                  plugins: [
+                    [
+                      'postcss-preset-env'
+                    ]
+                  ]
+                }
               }
             },
             {
@@ -41,10 +48,12 @@ module.exports = [{
         },
         {
           test: /\.js$/,
-          loader: 'babel-loader',
-          query: {
-            presets: ['@babel/preset-env']
-          },
+          use: {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/preset-env']
+            }
+          }
         }
       ],
     },
