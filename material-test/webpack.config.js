@@ -1,6 +1,7 @@
 const autoprefixer = require('autoprefixer');
 
-module.exports = [{
+module.exports = [
+  {
     mode: 'production',
     entry: ['./app.scss', './app.js'],
     output: {
@@ -23,38 +24,42 @@ module.exports = [{
               loader: 'postcss-loader',
               options: {
                 postcssOptions: {
-                  plugins: [
-                    [
-                      'postcss-preset-env'
-                    ]
-                  ]
-                }
-              }
+                  plugins: [['postcss-preset-env']],
+                },
+              },
             },
             {
               loader: 'sass-loader',
               options: {
                 sassOptions: {
-                  includePaths: ['./node_modules']
+                  includePaths: ['./node_modules'],
                 },
                 // Prefer Dart Sass
                 implementation: require('sass'),
-  
+
                 // See https://github.com/webpack-contrib/sass-loader/issues/804
                 webpackImporter: false,
               },
-            }
-          ]
+            },
+          ],
         },
         {
           test: /\.js$/,
           use: {
             loader: 'babel-loader',
             options: {
-              presets: ['@babel/preset-env']
-            }
-          }
-        }
+              presets: ['@babel/preset-env'],
+            },
+          },
+        },
       ],
     },
-  }];
+    devServer: {
+      static: {
+        directory: __dirname,
+      },
+      compress: true,
+      port: 8080,
+    },
+  },
+];

@@ -19,7 +19,5 @@ export default class Cache {
     TimeSpan.Zero
   );
 
-    constructor() { }
-    
-    
+  constructor() {}
 }

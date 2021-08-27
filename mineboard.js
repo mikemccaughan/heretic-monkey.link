@@ -52,7 +52,7 @@ export default class MineBoard {
                 let i = index;
                 this.cells[index++] = {
                     value: boardCells[y][x],
-                    hasMine: boardCells[y][x] < 0,
+                    hasMine: boardCells[y][x] < 0,  
                     nearby: boardCells[y][x] >= 0 ? boardCells[y][x] : 0,
                     x: x,
                     y: y,
