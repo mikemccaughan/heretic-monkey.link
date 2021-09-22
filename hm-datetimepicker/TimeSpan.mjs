@@ -76,6 +76,12 @@ export default class TimeSpan {
     console.timeEnd('process');
     this._isProcessing = false;
   }
+  addToDate(date) {
+    return new Date(date.valueOf() + this.totalMillieconds);
+  }
+  subtractFromDate(date) {
+    return new Date(date.valueOf() - this.totalMillieconds);
+  }
   get asDate() {
     return new Date(this._totalMilliseconds);
   }
@@ -150,5 +156,11 @@ export default class TimeSpan {
       this._ms = value;
       this.process();
     }
+  }
+  static fromSubtractingTwoDates(earlierDate, laterDate) {
+    const ts = new TimeSpan();
+    ts.fromMs(laterDate.valueOf() - earlierDate.valueOf());
+    ts.process();
+    return ts;
   }
 }
