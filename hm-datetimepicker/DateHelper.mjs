@@ -1,3 +1,4 @@
+import tzdb from './zone1970.json';
 /**
  * Provides basic instance and static date and time formatting functionality.
  */
@@ -5,7 +6,8 @@ export class DateHelper {
   /***
    * Regular expression for validating BCP 47 language tags, for use as a locale.
    */
-  static bcp47re = /^((?<grandfathered>(en-GB-oed|i-ami|i-bnn|i-default|i-enochian|i-hak|i-klingon|i-lux|i-mingo|i-navajo|i-pwn|i-tao|i-tay|i-tsu|sgn-BE-FR|sgn-BE-NL|sgn-CH-DE)|(art-lojban|cel-gaulish|no-bok|no-nyn|zh-guoyu|zh-hakka|zh-min|zh-min-nan|zh-xiang))|((?<language>([A-Za-z]{2,3}(-(?<extlang>[A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-(?<script>[A-Za-z]{4}))?(-(?<region>[A-Za-z]{2}|[0-9]{3}))?(-(?<variant>[A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-(?<extension>[0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(?<privateUse>x(-[A-Za-z0-9]{1,8})+))?)|(?<privateUse1>x(-[A-Za-z0-9]{1,8})+))$/;
+  static bcp47re =
+    /^((?<grandfathered>(en-GB-oed|i-ami|i-bnn|i-default|i-enochian|i-hak|i-klingon|i-lux|i-mingo|i-navajo|i-pwn|i-tao|i-tay|i-tsu|sgn-BE-FR|sgn-BE-NL|sgn-CH-DE)|(art-lojban|cel-gaulish|no-bok|no-nyn|zh-guoyu|zh-hakka|zh-min|zh-min-nan|zh-xiang))|((?<language>([A-Za-z]{2,3}(-(?<extlang>[A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-(?<script>[A-Za-z]{4}))?(-(?<region>[A-Za-z]{2}|[0-9]{3}))?(-(?<variant>[A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-(?<extension>[0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(?<privateUse>x(-[A-Za-z0-9]{1,8})+))?)|(?<privateUse1>x(-[A-Za-z0-9]{1,8})+))$/;
   /**
    * A map between a format string and the option(s) to pass to Intl.DateTimeFormat.
    */
@@ -275,7 +277,7 @@ export class DateHelper {
       timeZoneName: 'long',
     },
     /**
-     * Formats the time zone used for formatting using a "long" format (implementation-dependent); e.g., GMT-5, GMT-01:01:36, UTC
+     * Formats the time zone used for formatting using a "short" format (implementation-dependent); e.g., GMT-5, GMT-01:01:36, UTC
      */
     k: {
       timeZoneName: 'short',
@@ -333,14 +335,20 @@ export class DateHelper {
     if (!formatsResult.valid) {
       throw new Error(formatsResult.error);
     }
-    this._formats = formatsResult.value;
+    if (this._formats !== formatsResult.value) {
+      this._formats = formatsResult.value;
+    }
   }
   get timeZone() {
     return this._timeZone;
   }
   set timeZone(value) {
-    if (this._timeZone !== value) {
-      this._timeZone = value;
+    const timeZoneResult = DateHelper.parseTimeZone(value);
+    if (!timeZoneResult.valid) {
+      throw new Error(timeZoneResult.error);
+    }
+    if (this._timeZone !== timeZoneResult.value) {
+      this._timeZone = timeZoneResult.value;
     }
   }
   static validateOptions(options) {
@@ -355,9 +363,11 @@ export class DateHelper {
       throw new Error(formatResult.error);
     }
     format = formatResult.value;
-    if (timeZone == null || timeZone.length === 0) {
-      timeZone = 'UTC';
+    const timeZoneResult = DateHelper.parseTimeZone(timeZone);
+    if (!timeZoneResult.valid) {
+      throw new Error(timeZoneResult.error);
     }
+    timeZone = timeZoneResult.value;
     return { locale, format, timeZone };
   }
   static parseFormats(formats) {
@@ -420,6 +430,70 @@ export class DateHelper {
         value: [],
       };
     }
+  }
+  static parseTimeZone(timeZone) {
+    if (typeof timeZone === 'undefined') {
+      return { valid: true, value: 'UTC' };
+    } else if (typeof timeZone === 'string') {
+      if (tzdb.find((tz) => tz.timeZoneName.trim() === timeZone.trim())) {
+        return { valid: true, value: timeZone.trim() };
+      } else {
+        return {
+          valid: false,
+          error: `The time zone specified, "${timeZone}", is not a valid time zone name`,
+          value: 'UTC',
+        };
+      }
+    }
+    return {
+      valid: false,
+      error: `The time zone specified, "${timeZone}", is not a valid time zone name`,
+      value: 'UTC',
+    };
+  }
+  /**
+   * Returns a list of time zones provided by the IANA tzdb.
+   * @returns {object[]} timeZoneInfo an array of time zone information
+   * @returns {string} timeZoneInfo.countryCodes The comma-delimited list of ISO 3166 2-character country codes which the time zone covers
+   * @returns {string} timeZoneInfo.coords The latitude and longitude of the timezone's principal location in ISO 6709 sign-degrees-minutes-seconds format
+   * @returns {string} timeZoneInfo.timeZoneName The name of the time zone as provided by IANA
+   * @returns {string} timeZoneInfo.comments Present if and only if a country has multiple timezones
+   */
+  static validTimeZones() {
+    return tzdb;
+  }
+  /**
+   * Returns a list of time zone names provided by the IANA tzdb.
+   * @returns {string[]} an array of time zone names
+   */
+  static validTimeZoneNames() {
+    return tzdb.map((tz) => tz.timeZoneName).sort();
+  }
+  /**
+   * Gets an array of IANA time zones that match the offset from UTC returned by getTimezoneOffset.
+   */
+  static getPossibleClientTimeZones() {
+    let rawOffset = new Date().getTimezoneOffset();
+    const rawOffsetIsNegative = rawOffset < 0;
+    rawOffset = Math.abs(rawOffset);
+    // raw offset is the number of minutes less then UTC the current time zone is, so, say, EST is -05:00,
+    // so raw offset will be 300 (not -300). The following creates a Date that number of hours past midnight
+    // on the epoch, such that toISOString returns the formatted hours:minutes (new Date(0).toISOString()
+    // would return 1970-01-01T00:00:00.000Z)
+    const rawOffsetAsDate = new Date(rawOffset * 60000);
+    const rawOffsetFormatted = rawOffsetAsDate.toISOString().substring(11, 16);
+    // Note: the negative symbol below does not map to the standard US keyboard layout; it is
+    // Unicode 2212(hex) MINUS SIGN.
+    const offset = `${rawOffsetIsNegative ? '+' : '−'}${rawOffsetFormatted}`;
+    return tzdb.filter((tz) => tz.utcOffsetStandard === offset || tz.utcOffsetDST === offset);
+  }
+  /**
+   * Same as getPossibleClientTimeZones, only just the names
+   */
+  static getPossibleClientTimeZoneNames() {
+    return DateHelper.getPossibleClientTimeZones()
+      .map((tz) => tz.timeZoneName)
+      .sort();
   }
   /**
    * Gets the default format string for the specified locale
@@ -531,34 +605,19 @@ export class DateHelper {
             timeZone: 'UTC',
           });
         } else {
-          const options = Object.assign(
-            {},
-            dateFormat,
-            DateHelper.stringsToFormatMap[s]
-          );
+          const options = Object.assign({}, dateFormat, DateHelper.stringsToFormatMap[s]);
           // v8 and others require the entire time to be formatted to override individual
           // elements of the time, so this code fills in the higher units of time.
-          if (
-            options.hasOwnProperty('minute') &&
-            !options.hasOwnProperty('hour')
-          ) {
+          if (options.hasOwnProperty('minute') && !options.hasOwnProperty('hour')) {
             options.hour = options.minute;
             options.hour12 = options.hour !== '2-digit';
           }
-          if (
-            options.hasOwnProperty('second') &&
-            !options.hasOwnProperty('minute') &&
-            !options.hasOwnProperty('hour')
-          ) {
+          if (options.hasOwnProperty('second') && !options.hasOwnProperty('minute') && !options.hasOwnProperty('hour')) {
             options.minute = options.second;
             options.hour = options.minute;
             options.hour12 = options.hour !== '2-digit';
           }
-          if (
-            options.hasOwnProperty('dayPeriod') &&
-            !options.hasOwnProperty('minute') &&
-            !options.hasOwnProperty('hour')
-          ) {
+          if (options.hasOwnProperty('dayPeriod') && !options.hasOwnProperty('minute') && !options.hasOwnProperty('hour')) {
             options.hour = options.minute = 'numeric';
             options.hour12 = true;
           }
@@ -577,33 +636,20 @@ export class DateHelper {
           value = parts.find((part) => part.type === partType).value;
           // v8 resolves hourCycle as 'h24' even when set as 'h23'
           // so this code checks for those mismatches and accounts for them, where it can
-          if (
-            (resolvedOption !== option && value && value.length) ||
-            (optionName === 'hour' && value && value.length)
-          ) {
-            if (
-              optionName === 'hour' &&
-              options.hourCycle === 'h23' &&
-              resolvedOptions.hourCycle === 'h24'
-            ) {
+          if ((resolvedOption !== option && value && value.length) || (optionName === 'hour' && value && value.length)) {
+            if (optionName === 'hour' && options.hourCycle === 'h23' && resolvedOptions.hourCycle === 'h24') {
               optionName = 'hourCycle';
               option = options[optionName];
               resolvedOption = resolvedOptions[optionName];
             }
-            console.warn(
-              `Option "${optionName}" was set as "${option}" but resolved as "${resolvedOption}". Attempting to correct...`
-            );
+            console.warn(`Option "${optionName}" was set as "${option}" but resolved as "${resolvedOption}". Attempting to correct...`);
             // While the code above might fix the problem in v8 & SpiderMonkey,
             // I have doubts about JavaScriptCore so I'm leaving this in.
             if (resolvedOption === 'numeric' && option === '2-digit') {
               value = `00${value}`.slice(-2);
             } else if (resolvedOption === '2-digit' && option === 'numeric') {
               value = parseInt(value).toString();
-            } else if (
-              resolvedOption === 'h24' &&
-              option === 'h23' &&
-              value === '24'
-            ) {
+            } else if (resolvedOption === 'h24' && option === 'h23' && value === '24') {
               value = '00';
             }
           }
@@ -630,12 +676,12 @@ export class DateHelper {
     return formatted;
   }
   /**
-   *
+   * Parses a value as a Date object using the provided options.
    * @param {Date|string|number|undefined|null} value The value to parse.
-   * @param {object} options Optional hash of overrides for the properties set on the object. Only relevant when value is a string.
-   * @param {string|string[]} options.locale The locales in which to format the date (must be valid BCP 47 language tags). Only relevant when value is a string.
-   * @param {string|string[]} options.format The format in which to format the date (must be valid format strings). Only relevant when value is a string.
-   * @param {string|string[]} options.timeZone The time zone in which to format the date (must be valid IANA time zone names, or 'UTC'). Only relevant when value is a string.
+   * @param {object} options Hash of properties to use when parsing a string. Only relevant when value is a string.
+   * @param {string|string[]} options.locale The locales in which to parse the date (must be valid BCP 47 language tags). Only relevant when value is a string.
+   * @param {string|string[]} options.format The format in which to parse the date (must be valid format strings). Only relevant when value is a string.
+   * @param {string|string[]} options.timeZone The time zone in which to parse the date (must be valid IANA time zone names, or 'UTC'). Only relevant when value is a string.
    */
   static parseDate(value, options) {
     let { locale, format, timeZone } = DateHelper.validateOptions(options);
@@ -644,12 +690,10 @@ export class DateHelper {
       return value;
     }
     if (value instanceof Date) {
-      result = new Date(value.valueOf());
-      return result;
+      value = DateHelper.formatDate(value, options);
     }
-    if (value === Number(value)) {
-      result = new Date(+value);
-      return result;
+    if (typeof value === 'number' && !Number.isNaN(value)) {
+      value = DateHelper.formatDate(new Date(value), options);
     }
     // value is string
     if (value.length === 0) {
@@ -666,9 +710,9 @@ export class DateHelper {
         while (f.includes(stringToFind)) {
           let part = { ...DateHelper.stringsToFormatMap[stringToFind] };
           part.index = f.indexOf(stringToFind);
-          part.length
+          part.length = stringToFind === 'y' ? 4 : stringToFind.length;
           parts.push(part);
-          f = f.replace(stringToFind, '_'.repeat(stringToFind.length));
+          f = f.replace(stringToFind, '_'.repeat(part.length));
         }
         if (!stringsToFind.some((s) => f.includes(s))) {
           break;
@@ -680,51 +724,65 @@ export class DateHelper {
     }
 
     // Currently only working with numeric replacements, not things like month names
-    const nonDigitChars = new Set([...value].filter((c) => /\D/.test(c)));
-    const indexesOfNonDigitChars = [...value]
-      .map((c, i) => (nonDigitChars.has(c) ? i : null))
-      .filter((i) => i !== null);
-    let hasNonDigitCharAfter = false;
+
+    const nonAlphaNumChars = new Set([...value].filter((c) => /[^\p{L}\p{N}]/u.test(c)));
+    const indexesOfNonAlphaNumChars = [...value].map((c, i) => (nonAlphaNumChars.has(c) ? i : null)).filter((i) => i !== null);
+    let indexOfPartEnd = undefined;
+    let hasNonAlphaNumCharAfter = false;
     const date = new Date();
     date.setHours(0, 0, 0, 0);
     const yearPart = parts.find((p) => p.year?.length);
     if (yearPart) {
-      hasNonDigitCharAfter =
-        indexesOfNonDigitChars.findIndex((i) => i > yearPart.index) !== -1;
-      const year = value.slice(
-        yearPart.index + 1,
-        hasNonDigitCharAfter
-          ? indexesOfNonDigitChars.findIndex((i) => i > yearPart.index)
-          : value.length
-      );
-      date.setFullYear(+year);
+      indexOfPartEnd = indexesOfNonAlphaNumChars.find((i) => i > yearPart.index);
+      hasNonAlphaNumCharAfter = indexOfPartEnd !== undefined;
+      const year = value.slice(yearPart.index === 0 ? 0 : yearPart.index + 1, hasNonAlphaNumCharAfter ? indexOfPartEnd : value.length).replace(/\D/g, '');
+      if (!Number.isNaN(+year) && +year !== 0) {
+        date.setFullYear(+year);
+      } else {
+        console.warn(`The year portion, "${year}" was not able to be parsed as a number`);
+      }
     }
     const monthPart = parts.find((p) => p.month?.length);
     if (monthPart) {
-      hasNonDigitCharAfter =
-        indexesOfNonDigitChars.findIndex((i) => i > monthPart.index) !== -1;
-      const month = value.slice(
-        monthPart.index,
-        hasNonDigitCharAfter
-          ? indexesOfNonDigitChars.find((i) => i > monthPart.index)
-          : value.length
-      );
-      date.setMonth(+month - 1);
+      indexOfPartEnd = indexesOfNonAlphaNumChars.find((i) => i > monthPart.index);
+      hasNonAlphaNumCharAfter = indexOfPartEnd !== undefined;
+      let month = value.slice(monthPart.index === 0 ? 0 : monthPart.index + 1, hasNonAlphaNumCharAfter ? indexOfPartEnd : value.length).replace(/\D/g, '');
+      if (!Number.isNaN(+month) && +month !== 0) {
+        date.setMonth(+month - 1);
+      } else {
+        // map month names
+        const form = monthPart.month;
+        const months = new Array(12)
+          .fill(0)
+          .map((_, i) => new Date(2021, i, 1))
+          .map((d) => d.toLocaleString(locale, { month: form }));
+        month = months.indexOf(value.slice(monthPart.index, hasNonAlphaNumCharAfter ? indexOfPartEnd : value.length));
+        if (month > -1) {
+          date.setMonth(month);
+        } else {
+          console.warn(`The month portion, "${month}" was not able to be parsed as a month name`);
+        }
+      }
     }
     const dayPart = parts.find((p) => p.day?.length);
     if (dayPart) {
-      hasNonDigitCharAfter =
-        indexesOfNonDigitChars.findIndex((i) => i > dayPart.index) !== -1;
-      const day = value.slice(
-        dayPart.index,
-        hasNonDigitCharAfter
-          ? indexesOfNonDigitChars.find((i) => i > dayPart.index)
-          : value.length
-      );
-      date.setDate(+day);
+      indexOfPartEnd = indexesOfNonAlphaNumChars.find((i) => i > dayPart.index);
+      hasNonAlphaNumCharAfter = indexOfPartEnd !== undefined;
+      const day = value.slice(dayPart.index, hasNonAlphaNumCharAfter ? indexOfPartEnd : value.length).replace(/\D/g, '');
+      if (!Number.isNaN(+day) && +day !== 0) {
+        date.setDate(+day);
+      } else {
+        console.warn(`The day portion, "${day}" was not able to be parsed as a number`);
+      }
     }
 
     return date;
+  }
+  /**
+   * Gets the default format string for the current locale
+   */
+  getDefaultFormat() {
+    return DateHelper.getDefaultFormatForLocale(this.locales);
   }
   /**
    * Formats a date using the properties of the current instance.
@@ -737,9 +795,25 @@ export class DateHelper {
   formatDate(date, options) {
     let { locale, format, timeZone } = DateHelper.validateOptions(options);
     return DateHelper.formatDate(date, {
-      locale: locale || this.locales,
-      format: format || this.formats,
-      timeZone: timeZone || this.timeZone,
+      locale: locale ?? this.locales,
+      format: format ?? this.formats,
+      timeZone: timeZone ?? this.timeZone,
+    });
+  }
+  /**
+   * Parses a value as a Date object using the provided options.
+   * @param {Date} date The Date object to format
+   * @param {object} options Optional hash of overrides for the properties set on the object. Note that it's probably easier to just use the static function in this case.
+   * @param {string} options.locale The locale in which to parse the date (must be a valid BCP 47 language tag)
+   * @param {string} options.format The format in which to parse the date (must be a valid format string)
+   * @param {string} options.timeZone The time zone in which to parse the date (must be a valid IANA time zone name, or 'UTC')
+   */
+  parseDate(value, options) {
+    let { locale, format, timeZone } = DateHelper.validateOptions(options);
+    return DateHelper.parseDate(value, {
+      locale: locale ?? this.locales,
+      format: format ?? this.formats,
+      timeZone: timeZone ?? this.timeZone,
     });
   }
 }
