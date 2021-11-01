@@ -2,13 +2,13 @@ export default class RelativeDateParser {
   static canParse(value) {
     return (
       value != null &&
-      value.length &&
+      value.length !== 0 &&
       (['yesterday', 'today', 'tomorrow'].includes(value.toLowerCase()) ||
         /^([+-]*)(\d+)([yqmwdhnsl]?$)/.test(value))
     );
   }
-  static parse(value, useUTC) {
-    var now = new Date();
+  static parse(value, relativeTo = new Date(), useUTC = false) {
+    var now = relativeTo != null ? new Date(relativeTo) : new Date();
     value = value.trim().toLowerCase();
     if (value === 'yesterday') {
       now.setDate(now.getDate() - 1);
@@ -44,11 +44,11 @@ export default class RelativeDateParser {
     const end = avalue.slice(-1)[0];
     let hasSign = true;
     let hasUnit = true;
-    if (Number.isInteger(start)) {
+    if (Number.isInteger(parseInt(start, 10))) {
       avalue.unshift(start);
       hasSign = false;
     }
-    if (Number.isInteger(end)) {
+    if (Number.isInteger(parseInt(end, 10))) {
       avalue.push(end);
       hasUnit = false;
     }
@@ -65,56 +65,56 @@ export default class RelativeDateParser {
     var setter = null;
     switch (end) {
       case 'y':
-        getter = useUTC ? now.getUTCFullYear : now.getFullYear;
+        getter = (useUTC ? now.getUTCFullYear : now.getFullYear).bind(now);
         setter = useUTC
           ? (old, value) => now.setUTCFullYear(old + value)
           : (old, value) => now.setFullYear(old + value);
         break;
       case 'q':
-        getter = useUTC ? now.getUTCMonth : now.getMonth;
+        getter = (useUTC ? now.getUTCMonth : now.getMonth).bind(now);
         setter = useUTC
           ? (old, value) => now.setUTCMonth(old + value * 3)
           : (old, value) => now.setMonth(old + value * 3);
         break;
       case 'm':
-        getter = useUTC ? now.getUTCMonth : now.getMonth;
+        getter = (useUTC ? now.getUTCMonth : now.getMonth).bind(now);
         setter = useUTC
           ? (old, value) => now.setUTCMonth(old + value)
           : (old, value) => now.setMonth(old + value);
         break;
       case 'w':
-        getter = useUTC ? now.getUTCDate : now.getDate;
+        getter = (useUTC ? now.getUTCDate : now.getDate).bind(now);
         setter = useUTC
           ? (old, value) => now.setUTCDate(old + value * 7)
           : (old, value) => now.setDate(old + value * 7);
         break;
       case 'h':
-        getter = useUTC ? now.getUTCHours : now.getHours;
+        getter = (useUTC ? now.getUTCHours : now.getHours).bind(now);
         setter = useUTC
           ? (old, value) => now.setUTCHours(old + value)
           : (old, value) => now.setHours(old + value);
         break;
       case 'n':
-        getter = useUTC ? now.getUTCMinutes : now.getMinutes;
+        getter = (useUTC ? now.getUTCMinutes : now.getMinutes).bind(now);
         setter = useUTC
           ? (old, value) => now.setUTCMinutes(old + value)
           : (old, value) => now.setMinutes(old + value);
         break;
       case 's':
-        getter = useUTC ? now.getUTCSeconds : now.getSeconds;
+        getter = (useUTC ? now.getUTCSeconds : now.getSeconds).bind(now);
         setter = useUTC
           ? (old, value) => now.setUTCSeconds(old + value)
           : (old, value) => now.setSeconds(old + value);
         break;
       case 'l':
-        getter = useUTC ? now.getUTCMilliseconds : now.getMilliseconds;
+        getter = (useUTC ? now.getUTCMilliseconds : now.getMilliseconds).bind(now);
         setter = useUTC
           ? (old, value) => now.setUTCMilliseconds(old + value)
           : (old, value) => now.setMilliseconds(old + value);
         break;
       case 'd':
       default:
-        getter = useUTC ? now.getUTCDate : now.getDate;
+        getter = (useUTC ? now.getUTCDate : now.getDate).bind(now);
         setter = useUTC
           ? (old, value) => now.setUTCDate(old + value)
           : (old, value) => now.setDate(old + value);
@@ -124,6 +124,7 @@ export default class RelativeDateParser {
       const old = getter();
       setter(old, value);
     }
+
     return new Date(now.valueOf());
   }
 }

@@ -32,8 +32,7 @@ class HMDateTimePicker {
     }
     this.dateFormatter = new Intl.DateTimeFormat(
       undefined,
-      dateFormatterOptions - +
-      
+      dateFormatterOptions
     );
     const isoFormatterOptions = {};
     this.isoFormatter = new Intl.DateTimeFormat(undefined, isoFormatterOptions);
