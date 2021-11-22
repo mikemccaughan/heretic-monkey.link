@@ -1,7 +1,7 @@
-import { Entity, model, property } from '@loopback/repository';
+import { AnyObject, Entity, model, property } from '@loopback/repository';
 
 @model({ settings: {} })
-export class Wall extends Entity {
+export class Wall extends Entity implements AnyObject {
     @property({
         type: 'number',
         id: true,

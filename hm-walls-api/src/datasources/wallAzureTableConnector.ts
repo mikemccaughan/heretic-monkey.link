@@ -11,6 +11,7 @@ import {
     Command,
     Filter,
     WhereBuilder,
+    Fields,
 } from '@loopback/repository';
 import { Wall } from '../models';
 
@@ -58,7 +59,7 @@ export class WallAzureTableConnector implements CrudConnector {
                     let allEntities = result.entries.map(entry => entry as Wall);
                     this.ids = allEntities.map(entry => entry.id);
                 });
-            resolve();
+            resolve(void(0));
         });
     }
     async disconnect(): Promise<void> {
@@ -122,7 +123,7 @@ export class WallAzureTableConnector implements CrudConnector {
                     }
                 },
             );
-            resolve();
+            resolve(entity);
         });
     }
     async createAll?(
@@ -142,7 +143,7 @@ export class WallAzureTableConnector implements CrudConnector {
         throw new Error('Method not implemented.');
     }
     private convertWhereToTableQuery(
-        where?: Where<AnyObject>,
+        where?: Where<Wall>,
         query?: storage.TableQuery,
     ): storage.TableQuery | null {
         if (!where) {
@@ -153,10 +154,10 @@ export class WallAzureTableConnector implements CrudConnector {
             query || new storage.TableQuery();
         // not used because TypeScript is weird (will raise the "could be undefined" error on where)
         // tslint:disable-next-line: no-unused
-        let whereNotUndefined: Where<AnyObject> =
+        let whereNotUndefined: Where<Wall> =
             where || new WhereBuilder().build();
-        const keys = Object.keys(where);
-        const props = keys.filter(key => !['and', 'or'].includes(key));
+        const keys = Object.keys(where) as (keyof Where<Wall>)[];
+        const props = keys.filter(key => !['and', 'or'].includes(key)) as (keyof Where<Wall>)[];
         props.forEach(
             prop =>
                 (queryNotUndefined = queryNotUndefined.where(
@@ -164,10 +165,10 @@ export class WallAzureTableConnector implements CrudConnector {
                     where[prop],
                 )),
         );
-        const andsOrs = keys.filter(key => ['and', 'or'].includes(key));
+        const andsOrs = keys.filter(key => ['and', 'or'].includes(key)) as (keyof Where<Wall>)[];
         andsOrs.forEach(andOr => {
             const andOrWhere = {
-                ...where[andOr],
+                ...where[andOr] as object,
             };
             this.convertWhereToTableQuery(andOrWhere, queryNotUndefined);
         });
@@ -176,7 +177,7 @@ export class WallAzureTableConnector implements CrudConnector {
     }
     async find(
         modelClass: Class<Wall>,
-        filter?: Filter<AnyObject>,
+        filter?: Filter<Wall>,
         options?: AnyObject,
     ): Promise<DataObject<Wall>[]> {
         console.log('find', modelClass, filter, options);
@@ -206,7 +207,7 @@ export class WallAzureTableConnector implements CrudConnector {
                             : new storage.TableQuery();
                     if (filter && filter.fields !== undefined) {
                         query = query.select(
-                            Object.keys(filter.fields).filter(key => filter.fields![key]),
+                            (Object.keys(filter.fields) as (keyof Fields<Wall>)[]).filter(key => filter.fields![key]),
                         );
                     }
                     if (filter && filter.limit !== undefined) {
