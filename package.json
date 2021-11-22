@@ -17,12 +17,10 @@
   },
   "homepage": "https://github.com/mikemccaughan/heretic-monkey.link#readme",
   "dependencies": {
-    "applicationinsights": "^1.8.9",
-    "azure-storage": "^2.10.4",
+    "applicationinsights": "^2.1.9",
     "express": "^4.17.1",
     "jquery": "^3.5.1",
-    "node-html-parser": "^4.1.5",
+    "node-html-parser": "^5.1.0",
     "portscanner": "^2.2.0"
-  },
-  "devDependencies": {}
+  }
 }
