@@ -31,6 +31,7 @@
     "@material/auto-init": "^13.0.0",
     "@material/button": "^13.0.0",
     "@material/card": "^13.0.0",
+    "@material/dom": "^13.0.0",
     "@material/drawer": "^13.0.0",
     "@material/icon-button": "^13.0.0",
     "@material/menu": "^13.0.0",

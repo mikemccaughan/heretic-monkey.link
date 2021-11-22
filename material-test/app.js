@@ -1,13 +1,13 @@
 import mdcAutoInit from '@material/auto-init';
-import {MDCTextField} from '@material/textfield';
-import {MDCRipple} from '@material/ripple';
-import {MDCDrawer} from "@material/drawer";
-import {MDCList} from "@material/list";
-import {MDCTopAppBar} from '@material/top-app-bar';
-import {MDCMenuSurface} from '@material/menu-surface';
-import {MDCMenu} from '@material/menu';
-import {Corner} from '@material/menu-surface/constants';
-import {MDCSelect} from '@material/select';
+import { MDCTextField } from '@material/textfield';
+import { MDCRipple } from '@material/ripple';
+import { MDCDrawer } from "@material/drawer";
+import { MDCList } from "@material/list";
+import { MDCTopAppBar } from '@material/top-app-bar';
+import { MDCMenuSurface } from '@material/menu-surface';
+import { MDCMenu } from '@material/menu';
+import { Corner } from '@material/menu-surface/constants';
+import { MDCSelect } from '@material/select';
 import { EventEmitter } from './EventEmitter';
 
 mdcAutoInit.register('MDCRipple', MDCRipple);
@@ -37,7 +37,7 @@ altMenuSurface.listen('MDCMenuSurface:opened', () => {
 
 const altMenu = MDCMenu.attachTo(altMenuEl);
 altMenu.setAnchorCorner(Corner.TOP_RIGHT);
-altMenu.setAnchorMargin({right: 40, top: 50});
+altMenu.setAnchorMargin({ right: 40, top: 50 });
 const altMenuButton = document.getElementById('alt-menu');
 altMenuButton.addEventListener('click', () => {
   altMenu.open = !altMenu.open;
@@ -46,9 +46,9 @@ altMenuButton.addEventListener('click', () => {
 document.querySelectorAll(".mdc-select").forEach(select => {
   const mdcSelect = MDCSelect.attachTo(select);
   const selectMenuSurface = select.querySelector('.mdc-select__menu.mdc-menu-surface');
-  selectMenuSurface.classList.add('mdc-menu-surface--open','mdc-menu-surface--is-open-below');
+  selectMenuSurface.classList.add('mdc-menu-surface--open', 'mdc-menu-surface--is-open-below');
   const maxWidth = selectMenuSurface.getBoundingClientRect().width;
-  selectMenuSurface.classList.remove('mdc-menu-surface--open','mdc-menu-surface--is-open-below');
+  selectMenuSurface.classList.remove('mdc-menu-surface--open', 'mdc-menu-surface--is-open-below');
   select.style.width = `${maxWidth}px`;
   select.querySelector('.mdc-select__anchor').style.width = `${maxWidth}px`;
   mdcSelect.listen('MDCSelect:change', (event) => {

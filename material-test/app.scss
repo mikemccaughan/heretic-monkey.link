@@ -18,9 +18,6 @@
 @use "utility";
 @use "mdc-overrides";
 
-@include icon-button.core-styles;
-@include card.core-styles;
-
 :root {
   --fs-theme-html-background: #666666;
   --fs-theme-body-box-shadow: 0 0 4vmax rgba(0, 0, 0, 0.22);
@@ -132,7 +129,7 @@ footer {
 .navrail {
   max-width: calc(var(--fs-theme-rail-item-width) + 2px);
   border-right: 1px solid;
-  @include theme.prop(border-right-color, primary);
+  @include theme.property(border-right-color, primary);
 }
 
 .rail {
