@@ -1,37 +1,40 @@
 class TokenList {
   constructor(value) {
     if (value == null || value.length === 0) {
-      this.list = [];
+      this.list = new Set();
     } else {
-      this.list = value
+      this.list = new Set(value
         .trim()
         .split(' ')
         .map((token) => token.trim())
-        .filter((token) => token.length);
+        .filter((token) => token.length)
+      );
     }
   }
   get length() {
-    return this.list.length;
+    return this.list.size;
   }
   get value() {
-    return this.list.join(' ');
+    return [...this.list].join(' ');
   }
   item(index) {
-    return index < 0 || index > this.list.length - 1
+    return index < 0 || index > this.list.size - 1
       ? undefined
-      : this.list[index];
+      : [...this.list][index];
   }
   contains(token) {
-    return this.list.includes(token);
+    return this.list.has(token);
   }
   add(...tokens) {
-    this.list = [...this.list, ...tokens];
+    tokens.forEach(token => this.list.add(token));
   }
   remove(...tokens) {
-    this.list = this.list.filter((token) => tokens.includes(token));
+    tokens.forEach(token => this.list.delete(token));
   }
   replace(oldToken, newToken) {
-    this.list.splice(this.list.indexOf(oldToken), 1, newToken);
+    const arr = [...this.list];
+    arr.splice(arr.indexOf(oldToken), 1, newToken);
+    this.list = new Set(arr);
   }
   supports(token) {
     return true;
@@ -39,35 +42,35 @@ class TokenList {
   toggle(token, force) {
     if (force === true) {
       // added, not removed
-      this.list.push(token);
+      this.list.add(token);
       return true;
     } else if (force === false) {
       // removed, not added
-      if (this.list.includes(token)) {
-        this.list.splice(this.list.indexOf(token), 1);
+      if (this.list.has(token)) {
+        this.list.delete(token);
       }
       return false;
     } else {
       // toggle
-      if (this.list.includes(token)) {
-        this.list.splice(this.list.indexOf(token), 1);
+      if (this.list.has(token)) {
+        this.list.delete(token);
         return false;
       } else {
-        this.list.push(token);
+        this.list.add(token);
         return true;
       }
     }
   }
   entries() {
-    return this.list[Symbol.iterator];
+    return this.list.entries();
   }
   forEach(callback, thisArg) {
     this.list.forEach(callback, thisArg);
   }
   keys() {
-    return this.entries();
+    return this.list.keys();
   }
   values() {
-    return this.entries();
+    return this.list.values();
   }
 }
