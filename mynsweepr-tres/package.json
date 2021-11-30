@@ -4,21 +4,13 @@
   "private": true,
   "homepage": "http://heretic-monkey.link/mynsweepr-tres/build/",
   "dependencies": {
-    "@types/jest": "23.3.12",
-    "@types/node": "10.12.18",
-    "@types/react": "^16.9.23",
-    "@types/react-dom": "16.0.11",
-    "@types/react-redux": "^7.1.7",
-    "@types/redux": "^3.6.0",
-    "ajv": "^6.12.0",
-    "eslint-plugin-flowtype": "^3.13.0",
-    "react": "^16.13.0",
-    "react-dom": "^16.13.0",
-    "react-redux": "^6.0.1",
-    "react-scripts": "^3.4.3",
-    "redux": "^4.0.5",
-    "redux-thunk": "^2.3.0",
-    "typescript": "3.2.2"
+    "ajv": "^8.8.2",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-redux": "^7.2.6",
+    "react-scripts": "^4.0.3",
+    "redux": "^4.1.2",
+    "redux-thunk": "^2.4.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -36,7 +28,13 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "sass": "^1.26.10",
-    "sass-loader": "^7.3.1"
+    "@types/jest": "^27.0.3",
+    "@types/node": "^16.11.11",
+    "@types/react": "^17.0.37",
+    "@types/react-dom": "^17.0.11",
+    "@types/react-redux": "^7.1.20",
+    "sass": "^1.44.0",
+    "sass-loader": "^12.3.0",
+    "typescript": "^4.5.2"
   }
 }
