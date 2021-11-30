@@ -12,18 +12,22 @@ export interface Cell {
 };
 
 function getRandom(maxValue: number): number {
-    // let max = 4294967295; // Max Uint32
-    // let randomValue = window.crypto.getRandomValues(new Uint32Array(1))[0] / max;
-    // return Math.floor(randomValue * maxValue);
-    return Math.floor(Math.random() * maxValue);
+    let max = 4294967295; // Max Uint32
+    let randomValue = window.crypto.getRandomValues(new Uint32Array(1))[0] / max;
+    return Math.floor(randomValue * maxValue);
+    // return Math.floor(Math.random() * maxValue);
+}
+
+function getMineCount(boardCells: number[][]): number {
+    return boardCells.reduce((agg: number, cur: number[]) => agg = cur.reduce((a: number, c: number) => a += c < 0 ? 1 : 0, agg), 0);
 }
 
 export function generateBoard(options: {width?: number; height?: number; density?: number;}): { cells: Cell[], mineCount: number } {
     const width = options.width ?? 9;
     const height = options.height ?? 9;
     const density = options.density ?? (1 / 6);
-    if (width < 2) throw new Error(`width must be >= 1, got ${width}`);
-    if (height < 2) throw new Error(`height must be >= 1, got ${height}`);
+    if (width < 1) throw new Error(`width must be >= 1, got ${width}`);
+    if (height < 1) throw new Error(`height must be >= 1, got ${height}`);
     if (density <= 0 || density >= 1) throw new Error(`density must be > 0 and < 1, got ${density}`);
     const isBetween = (value: number, min: number, max: number): boolean => value >= min && value <= max;
     let cells = new Array(width * height);
@@ -52,8 +56,8 @@ export function generateBoard(options: {width?: number; height?: number; density
         }
     }
 
-    console.log('board', JSON.stringify(boardCells));
-    const actualMineCount = boardCells.reduce((agg: number, cur: number[]) => agg = cur.reduce((a: number, c: number) => a += c < 0 ? 1 : 0, agg), 0);
+    console.log('board', JSON.stringify(boardCells, null, 2));
+    const actualMineCount = getMineCount(boardCells);
     if (actualMineCount > mineCount) {
         console.warn(`Too many mines! target: ${mineCount}; actual: ${actualMineCount}`);
     }
@@ -105,7 +109,7 @@ export interface clearAroundArgs extends fnArgs {
 }
 
 export function clearAround(args: clearAroundArgs): fnArgs {
-    console.log(`clearAround: args: ${JSON.stringify(args)}`);
+    console.log(`clearAround: args: ${JSON.stringify(args, null, 2)}`);
     const cell = args.cells[args.index];
     const minX = cell.x === 0 ? 0 : cell.x - 1;
     const maxX = cell.x === args.width - 1 ? cell.x : cell.x + 1;
@@ -147,8 +151,8 @@ interface updateCellArgs {
     propertyValue: number | boolean;
 }
 
-function updateCellAtIndex(args: updateCellArgs) {
-    console.log(`updateCellAtIndex: args: ${JSON.stringify(args)}`);
+function updateCellAtIndex(args: updateCellArgs): Cell[] {
+    console.log(`updateCellAtIndex: args: ${JSON.stringify(args, null, 2)}`);
     if (args.index === 0) {
         return [
             {
@@ -181,8 +185,11 @@ export interface revealCellArgs extends fnArgs {
     hadOverlay: boolean;
 }
 
+export interface showCellArgs extends fnArgs {
+}
+
 export function revealCell(args: revealCellArgs): fnArgs {
-    console.log(`revealCell: args: ${JSON.stringify(args)}`);
+    console.log(`revealCell: args: ${JSON.stringify(args, null, 2)}`);
     if (args.onReveal) args = args.onReveal(args);
     args = {
         ...args,
@@ -196,11 +203,8 @@ export function revealCell(args: revealCellArgs): fnArgs {
     return showCell(args as showCellArgs);
 }
 
-export interface showCellArgs extends fnArgs {
-}
-
 export function showCell(args: showCellArgs): fnArgs {
-    console.log(`showCell: args: ${JSON.stringify(args)}`);
+    console.log(`showCell: args: ${JSON.stringify(args, null, 2)}`);
     const cell = args.cells[args.index];
     args = {
         ...args,
@@ -239,7 +243,7 @@ export interface flagCellArgs extends fnArgs {
 }
 
 export function flagCell(args: flagCellArgs): fnArgs {
-    console.log(`flagCell: args: ${JSON.stringify(args)}`);
+    console.log(`flagCell: args: ${JSON.stringify(args, null, 2)}`);
     const cell = args.cells[args.index];
     if (cell.flag) {
         return {
@@ -265,8 +269,8 @@ export function flagCell(args: flagCellArgs): fnArgs {
     };
 }
 
-export function showAllCells(cells: Cell[]) {
-    console.log(`showAllCells: cells: ${JSON.stringify(cells)}`);
+export function showAllCells(cells: Cell[]): Cell[] {
+    console.log(`showAllCells: cells: ${JSON.stringify(cells, null, 2)}`);
     return [
         ...cells.filter(c => !c.hidden),
         ...cells.filter(c => c.hidden).map(c => ({

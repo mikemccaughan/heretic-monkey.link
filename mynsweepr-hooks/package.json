@@ -4,14 +4,15 @@
   "private": true,
   "homepage": "/mynsweepr-hooks/build/",
   "dependencies": {
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.5.0",
-    "@testing-library/user-event": "^7.1.2",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-scripts": "^3.4.3",
-    "sass": "^1.26.10",
-    "typescript": "~3.7.2"
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.5.3",
+    "@testing-library/jest-dom": "^5.15.1",
+    "@testing-library/react": "^12.1.2",
+    "@testing-library/user-event": "^13.5.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-scripts": "^4.0.3",
+    "sass": "^1.43.4",
+    "typescript": "^4.5.2"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -35,9 +36,9 @@
     ]
   },
   "devDependencies": {
-    "@types/jest": "^24.9.1",
-    "@types/node": "^12.12.51",
-    "@types/react": "^16.9.43",
-    "@types/react-dom": "^16.9.8"
+    "@types/jest": "^27.0.3",
+    "@types/node": "^16.11.10",
+    "@types/react": "^17.0.36",
+    "@types/react-dom": "^17.0.11"
   }
 }

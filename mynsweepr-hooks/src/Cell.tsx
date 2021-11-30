@@ -37,7 +37,7 @@ const Cell: React.FC<CellProps> = ({
   if (hasMine) {
     classes.push('mine');
   }
-  if (nearby ?? 0 > 0) {
+  if (nearby ?? false) {
     classes.push('nearby');
   }
   return (
