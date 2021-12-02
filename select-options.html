@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Testing ideas for responsive select elements</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <style>
+        .form-group {
+            display: flex;
+            flex-flow: column;
+            max-width: 98vw;
+        }
+
+        .expanded-select select {
+            max-width: 100%;
+            white-space: pre-wrap;
+            max-height: fit-content;
+            height: 4em;
+            display: flex;
+            flex-flow: column wrap;
+        }
+
+        .expanded-select select option {
+            white-space: pre-wrap !important;
+            height: 4em;
+        }
+    </style>
+    <script>
+        window.addEventListener('load', () => {
+            document.querySelector('.hard-coded select').addEventListener('change', (e) => {
+                e.target.setAttribute('title', e.target.querySelector('option:checked').getAttribute('title'));
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <form>
+        <fieldset>
+            <legend>HTML select elements with CSS</legend>
+            <div class="form-group vanilla">
+                <label for="vanilla">Vanilla implementation, not responsive</label>
+                <select id="vanilla">
+                    <option value="0" disabled selected>Select an option because this one is disabled and quite long
+                        winded</option>
+                    <option value="1">A similarly long winded option, with commas, and numbers #1030234010</option>
+                    <option value="2">A long winded option, but more concise</option>
+                    <option value="3">Brief</option>
+                </select>
+            </div>
+            <div class="form-group hack">
+                <label for="hack">Hack for iOS</label>
+                <select id="hack">
+                    <option value="0" disabled selected>Select an option because this one is disabled and quite long
+                        winded</option>
+                    <option value="1">A similarly long winded option, with commas, and numbers #1030234010</option>
+                    <option value="2">A long winded option, but more concise</option>
+                    <option value="3">Brief</option>
+                    <optgroup label=""></optgroup>
+                </select>
+            </div>
+            <div class="form-group expanded-select">
+                <label for="expanded-select">Allows selected options to wrap to next line</label>
+                <select id="expanded-select">
+                    <option value="0" disabled selected>Select an option because this one is disabled and quite long
+                        winded</option>
+                    <option value="1">A similarly long winded option, with commas, and numbers #1030234010</option>
+                    <option value="2">A long winded option, but more concise</option>
+                    <option value="3">Brief</option>
+                </select>
+            </div>
+            <div class="form-group hard-coded">
+                <label for="hard-coded">Hard-coded implementation, using HTML to truncate</label>
+                <select id="hard-coded">
+                    <option value="0" selected disabled
+                        aria-label="Select an option because this one is disabled and quite long winded"
+                        title="Select an option because this one is disabled and quite long winded">Select an
+                        option</option>
+                    <option value="0" class="addendum-option" disabled>because this one is</option>
+                    <option value="0" class="addendum-option" disabled>disabled and quite</option>
+                    <option value="0" class="addendum-option" disabled>long winded</option>
+                    <option value="1" aria-label="A similarly long winded option, with commas, and numbers #1030234010"
+                        title="A similarly long winded option, with commas, and numbers #1030234010">
+                        A similarly long</option>
+                    <option value="1" class="addendum-option" disabled>winded option,</option>
+                    <option value="1" class="addendum-option" disabled>with commas,</option>
+                    <option value="1" class="addendum-option" disabled>and numbers #1030234010</option>
+                    <option value="2" aria-label="A long winded option, but more concise"
+                        title="A long winded option, but more concise">A long winded option,</option>
+                    <option value="2" class="addendum-option" disabled>but more concise</option>
+                    <option value="3" aria-label="Brief" title="Brief">Brief</option>
+                </select>
+            </div>
+        </fieldset>
+        <fielset>
+            <legend>HTML input with datalist</legend>
+            <div class="form-group ">
+                <label for="vanilla-input">Vanilla implementation</label>
+                <input id="vanilla-input" type="text" list="options">
+                <datalist id="options">
+                    <option value="0" disabled selected>Select an option because this one is disabled and quite long
+                        winded</option>
+                    <option value="1">A similarly long winded option, with commas, and numbers #1030234010</option>
+                    <option value="2">A long winded option, but more concise</option>
+                    <option value="3">Brief</option>
+                </datalist>
+            </div>
+        </fielset>
+    </form>
+</body>
+
+</html>
