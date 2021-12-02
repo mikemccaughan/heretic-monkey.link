@@ -9,6 +9,8 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "glob-parent": "^5.1.2",
+    "ansi-regex": "^5.0.1",
     "serialize-javascript": "^6.0.0",
     "vue": "^2.6.12",
     "vue-router": "^3.4.3",
@@ -44,5 +46,9 @@
   "browserslist": [
     "> 1%",
     "last 2 versions"
-  ]
+  ],
+  "resolutions": {
+    "glob-parent": "^5.1.2",
+    "ansi-regex": "^5.0.1"
+  }
 }
