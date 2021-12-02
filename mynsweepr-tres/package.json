@@ -10,7 +10,8 @@
     "react-redux": "^7.2.6",
     "react-scripts": "^4.0.3",
     "redux": "^4.1.2",
-    "redux-thunk": "^2.4.1"
+    "redux-thunk": "^2.4.1",
+    "immer": "^9.0.6"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -36,5 +37,8 @@
     "sass": "^1.44.0",
     "sass-loader": "^12.3.0",
     "typescript": "^4.5.2"
+  },
+  "resolutions": {
+    "immer": "^9.0.6"
   }
 }
