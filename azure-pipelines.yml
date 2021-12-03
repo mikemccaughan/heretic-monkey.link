@@ -1,0 +1,98 @@
+# Starter pipeline
+
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
+
+- script: |
+    echo Add other tasks to build, test, and deploy your project.
+    echo See https://aka.ms/yaml
+  displayName: 'Run a multi-line script'
+- task: NodeTool@0
+  inputs:
+    versionSpec: '6.x'
+- task: Npm@9
+  inputs:
+    command: 'install'
+    workingDir: '.'
+- task: Npm@1
+  inputs:
+    command: 'custom'
+    workingDir: 'hm-walls'
+    customCommand: 'install -g @angular/cli@latest'
+- task: Npm@10
+  inputs:
+    command: 'custom'
+    workingDir: 'hm-walls'
+    customCommand: 'run build --prod'
+- task: Npm@2
+  inputs:
+    command: 'install'
+    workingDir: 'hm-walls-api'
+- task: Npm@11
+  inputs:
+    command: 'custom'
+    workingDir: 'hm-walls-api'
+    customCommand: 'run build --prod'
+- task: Npm@4
+  inputs:
+    command: 'install'
+    workingDir: 'materials-test'
+- task: Npm@12
+  inputs:
+    command: 'custom'
+    workingDir: 'materials-test'
+    customCommand: 'run build --prod'
+- task: Npm@5
+  inputs:
+    command: 'install'
+    workingDir: 'mynsweepr-angular'
+- task: Npm@13
+  inputs:
+    command: 'custom'
+    workingDir: 'mynsweepr-angular'
+    customCommand: 'run build --prod'
+- task: Npm@6
+  inputs:
+    command: 'install'
+    workingDir: 'mynsweepr-hooks'
+- task: Npm@14
+  inputs:
+    command: 'custom'
+    workingDir: 'mynsweepr-hooks'
+    customCommand: 'run build --prod'
+- task: Npm@7
+  inputs:
+    command: 'install'
+    workingDir: 'mynsweepr-tres'
+- task: Npm@15
+  inputs:
+    command: 'custom'
+    workingDir: 'mynsweepr-tres'
+    customCommand: 'run build --prod'
+- task: Npm@8
+  inputs:
+    command: 'install'
+    workingDir: 'mynsweepr-vue'
+- task: Npm@16
+  inputs:
+    command: 'custom'
+    workingDir: 'mynsweepr-vue'
+    customCommand: 'run build --prod'
+- task: AzureWebApp@1
+  inputs:
+    azureSubscription: 'Visual Studio Professional(56cf7055-53d3-4ec4-b63d-d74a6c251344)'
+    appType: 'webApp'
+    appName: 'heretic-monkeydotlink'
+    package: '$(System.DefaultWorkingDirectory)/**/*.zip'
+    deploymentMethod: 'auto'
