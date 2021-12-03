@@ -21,7 +21,7 @@ steps:
 - task: NodeTool@0
   inputs:
     versionSpec: '6.x'
-- task: Npm@9
+- task: Npm@1
   inputs:
     command: 'install'
     workingDir: '.'
@@ -30,61 +30,61 @@ steps:
     command: 'custom'
     workingDir: 'hm-walls'
     customCommand: 'install -g @angular/cli@latest'
-- task: Npm@10
+- task: Npm@1
   inputs:
     command: 'custom'
     workingDir: 'hm-walls'
     customCommand: 'run build --prod'
-- task: Npm@2
+- task: Npm@1
   inputs:
     command: 'install'
     workingDir: 'hm-walls-api'
-- task: Npm@11
+- task: Npm@1
   inputs:
     command: 'custom'
     workingDir: 'hm-walls-api'
     customCommand: 'run build --prod'
-- task: Npm@4
+- task: Npm@1
   inputs:
     command: 'install'
     workingDir: 'materials-test'
-- task: Npm@12
+- task: Npm@1
   inputs:
     command: 'custom'
     workingDir: 'materials-test'
     customCommand: 'run build --prod'
-- task: Npm@5
+- task: Npm@1
   inputs:
     command: 'install'
     workingDir: 'mynsweepr-angular'
-- task: Npm@13
+- task: Npm@1
   inputs:
     command: 'custom'
     workingDir: 'mynsweepr-angular'
     customCommand: 'run build --prod'
-- task: Npm@6
+- task: Npm@1
   inputs:
     command: 'install'
     workingDir: 'mynsweepr-hooks'
-- task: Npm@14
+- task: Npm@1
   inputs:
     command: 'custom'
     workingDir: 'mynsweepr-hooks'
     customCommand: 'run build --prod'
-- task: Npm@7
+- task: Npm@1
   inputs:
     command: 'install'
     workingDir: 'mynsweepr-tres'
-- task: Npm@15
+- task: Npm@1
   inputs:
     command: 'custom'
     workingDir: 'mynsweepr-tres'
     customCommand: 'run build --prod'
-- task: Npm@8
+- task: Npm@1
   inputs:
     command: 'install'
     workingDir: 'mynsweepr-vue'
-- task: Npm@16
+- task: Npm@1
   inputs:
     command: 'custom'
     workingDir: 'mynsweepr-vue'
