@@ -4,7 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "npm install && npm install -g @angular/cli@latest && cd hm-walls && npm install && npm run build --prod && cd ../hm-walls-api && npm install && npm run build --prod && cd ../material-test && npm install && npm run build --prod && cd ../mynsweepr-angular && npm install && npm run build --prod && cd ../mynsweepr-hooks && npm install && npm run build --prod && cd ../mynsweepr-tres && npm install && npm run build --prod && cd ../mynsweepr-vue && npm install && npm run build --prod"
   },
   "repository": {
     "type": "git",
