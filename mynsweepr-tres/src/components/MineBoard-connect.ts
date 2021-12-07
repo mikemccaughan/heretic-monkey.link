@@ -4,10 +4,6 @@ import {
   cellRightClicked,
   notificationConfirmed,
   timerStart,
-  startTimer,
-  timerStop,
-  stopTimer,
-  remainingChanged,
   changeRemaining,
   changeGameStatus
 } from "../reducers";

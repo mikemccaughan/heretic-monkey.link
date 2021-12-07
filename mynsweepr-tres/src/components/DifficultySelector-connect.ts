@@ -16,12 +16,12 @@ import { boardLoad } from "../actions/actions";
 const mapStateToProps = (state: any) => {
   const difficultySelectorState =
     state.difficultySelector || state.mineBoard || state;
-  return <Partial<DifficultySelectorProps>>{
+  return {
     ...difficultySelectorState
-  };
+  } as Partial<DifficultySelectorProps>;
 };
 const mapDispatchToProps = (dispatch: any) => {
-  return <Partial<DifficultySelectorProps>>{
+  return {
     handleDifficultyChanged: (event: SyntheticEvent<HTMLInputElement>) =>
       dispatch(difficultyChanged(event.currentTarget.value)),
     handleHeightChanged: (event: SyntheticEvent<HTMLInputElement>) =>
@@ -40,7 +40,7 @@ const mapDispatchToProps = (dispatch: any) => {
       key: { key: string },
       event: SyntheticEvent<HTMLButtonElement>
     ) => dispatch(boardLoad(key))
-  };
+  } as Partial<DifficultySelectorProps>;
 };
 
 export default connect<{}, {}, DifficultySelectorProps>(
