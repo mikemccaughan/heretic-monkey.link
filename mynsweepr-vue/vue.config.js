@@ -1,3 +1,4 @@
 module.exports = {
-  publicPath: ''
+  publicPath: '/mynsweepr-vue/',
+  outputDir: '../publish/mynsweepr-vue'
 }
