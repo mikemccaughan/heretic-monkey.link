@@ -18,8 +18,8 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "aot": true,
-            "baseHref": "/mynsweepr-angular/dist/mynsweepr-angular/",
-            "outputPath": "dist/mynsweepr-angular",
+            "baseHref": "/mynsweepr-angular/dist",
+            "outputPath": "../publish/mynsweepr-angular/dist",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -45,7 +45,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
