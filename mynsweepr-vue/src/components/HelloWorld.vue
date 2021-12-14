@@ -9,10 +9,12 @@
       v-bind:total-mines="totalMines"
       v-bind:remaining="remaining"
       v-bind:time="time"
+      v-bind:shouldBeStarted="timerShouldBeRunning"
     />
     <Board
       v-bind:dimensions="JSON.stringify(size)"
       v-bind:density="density"
+      v-bind:board="board"
       v-on:board-built="onBoardBuilt"
       v-on:cell-reveal="onCellReveal"
       v-on:cell-reveal-nearby="onCellRevealNearby"
@@ -47,7 +49,9 @@ export default {
       totalMines: 81 / 6,
       remaining: 81 / 6,
       time: "00:00:00",
+      timerShouldBeRunning: false,
       cells: [],
+      board: "{}",
     };
   },
   methods: {
@@ -56,6 +60,12 @@ export default {
       this.difficulty = +data.difficulty;
       this.size = data.size;
       this.remaining = +data.remaining;
+      this.board = JSON.stringify({
+        cells: this.cells,
+        size: this.size,
+        density: this.density,
+        remaining: this.remaining,
+      });
       this.totalMines = Math.floor(
         data.size.width * data.size.height * this.density
       );
@@ -67,19 +77,97 @@ export default {
       const mineEl = document.querySelector(".minesweeper");
       mineEl.style.width = `${(data.mineSize + 2) * data.size.width}px`;
       mineEl.style.height = `${(data.mineSize + 2) * data.size.height}px`;
+      this.timerShouldBeRunning = false;
     },
     onBoardBuilt(board) {
-      console.log(`board built: ${JSON.stringify(board)}`);
+      console.log(`board built: ${this.board}`);
+      this.cells = board.cells;
       this.remaining = board.cells.filter((cell) => cell.mine).length;
+      this.board = JSON.stringify(board);
+    },
+    lose({ board }) {
+      board = this.showAllCells({ board });
+      this.timerShouldBeRunning = false;
+      console.error("lost");
+      return board;
+    },
+    win({ board }) {
+      console.log("won");
+      this.timerShouldBeRunning = false;
+      return board;
+    },
+    showAllCells({ board }) {
+      board.cells = board.cells.map((cell) => ({ ...cell, hidden: false }));
+      return board;
+    },
+    clearAround({ cell, board }) {
+      cell.hidden = false;
+      board.cells.splice(cell.index, 1, cell);
+      const minX = cell.x === 0 ? 0 : cell.x - 1;
+      const maxX = cell.x === this.size.width - 1 ? cell.x : cell.x + 1;
+      const minY = cell.y === 0 ? 0 : cell.y - 1;
+      const maxY = cell.y === this.size.height - 1 ? cell.y : cell.y + 1;
+      for (let x = minX; x < maxX + 1; x++) {
+        for (let y = minY; y < maxY + 1; y++) {
+          const nextCell = board.cells.find((c) => c.x === x && c.y === y);
+          if (nextCell.index !== cell.index && nextCell.hidden) {
+            this.showCell({ cell: nextCell, board });
+          }
+        }
+      }
+      return board;
+    },
+    showCell({ cell, board }) {
+      if (cell) {
+        cell.hidden = false;
+        board.cells.splice(cell.index, 1, cell);
+        if (cell.flag) {
+          cell.flag = false;
+          board.cells.splice(cell.index, 1, cell);
+        }
+        if (cell.nearby === 0) {
+          board = this.clearAround({ cell, board });
+        }
+        if (cell.mine) {
+          board = this.lose({ board });
+          return board;
+        }
+        if (this.remaining === 0) {
+          board = this.win({ board });
+          return board;
+        }
+      }
+      return board;
     },
     onCellReveal(data) {
-      console.log(`mynsweepr: cell-reveal`, data);
+      console.log(`mynsweepr: cell-reveal`, JSON.stringify(data));
+      const cell = JSON.parse(JSON.stringify(data.cell));
+      let board = JSON.parse(JSON.stringify(data.board));
+      board = this.showCell({ cell, board });
+      this.remaining = board.remaining;
+      this.board = JSON.stringify(board);
+      this.timerShouldBeRunning = true;
     },
     onCellRevealNearby(data) {
-      console.log(`mynsweepr: cell-reveal-nearby`, data);
+      console.log(`mynsweepr: cell-reveal-nearby`, JSON.stringify(data));
+      const cell = JSON.parse(JSON.stringify(data.cell));
+      let board = JSON.parse(JSON.stringify(data.board));
+      board = this.clearAround({ cell, board });
+      this.remaining = board.remaining;
+      this.timerShouldBeRunning = true;
     },
     onCellFlag(data) {
-      console.log(`mynsweepr: cell-flag`, data);
+      console.log(`mynsweepr: cell-flag`, JSON.stringify(data));
+      const cell = JSON.parse(JSON.stringify(data.cell));
+      let board = JSON.parse(JSON.stringify(data.board));
+      if (cell && (cell.flag || cell.hidden)) {
+        cell.flag = !cell.flag;
+        board.cells.splice(cell.index, 1, cell);
+        board.remaining -= 1;
+        this.remaining -= 1;
+      }
+      this.board = JSON.stringify(board);
+      this.timerShouldBeRunning = true;
     },
   },
 };

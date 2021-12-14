@@ -4,9 +4,9 @@
       v-for="cell in cellsForWidth"
       v-bind:cell="JSON.stringify(cell)"
       v-bind:key="cell.index"
-      v-bind:cell-reveal="onCellReveal"
-      v-bind:cell-reveal-nearby="onCellRevealNearby"
-      v-bind:cell-flag="onCellFlag"
+      v-on:cell-reveal="onCellReveal"
+      v-on:cell-reveal-nearby="onCellRevealNearby"
+      v-on:cell-flag="onCellFlag"
     >
     </Cell>
   </div>
@@ -31,12 +31,27 @@ export default {
       type: String,
       default: '{"width":9,"height":9}',
     },
+    board: {
+      type: String,
+      default: "{}",
+    },
   },
   watch: {
     dimensions(newValue, oldValue) {
-        console.log(`dimensions changed from "${oldValue}" to "${newValue}"`);
+      console.log(`dimensions changed from "${oldValue}" to "${newValue}"`);
       if (newValue !== oldValue) {
         this.load();
+      }
+    },
+    board(newValue, oldValue) {
+      console.log(`board changed from "${oldValue}" to "${newValue}"`);
+      const currentBoard = JSON.stringify(this.$data);
+      if (newValue != oldValue && newValue !== currentBoard) {
+        const board = JSON.parse(newValue);
+        this.cells = board.cells;
+        this.size = board.size;
+        this.density = board.density;
+        this.remaining = board.remaining;
       }
     },
   },
@@ -108,15 +123,15 @@ export default {
       this.$emit(`board-built`, this.$data);
     },
     onCellReveal(cell) {
-        console.log('board: onCellReveal', cell);
+      console.log("board: onCellReveal", JSON.stringify(cell));
       this.$emit("cell-reveal", { board: this.$data, cell });
     },
     onCellRevealNearby(cell) {
-        console.log('board: oonCellRevealNearby', cell);
+      console.log("board: oonCellRevealNearby", JSON.stringify(cell));
       this.$emit("cell-reveal-nearby", { board: this.$data, cell });
     },
     onCellFlag(cell) {
-        console.log('board: onCellFlag', cell);
+      console.log("board: onCellFlag", JSON.stringify(cell));
       this.$emit("cell-flag", { board: this.$data, cell });
     },
   },

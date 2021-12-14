@@ -1,11 +1,5 @@
 <template>
-  <button
-    type="button"
-    class="cell hidden"
-    v-on:click="click"
-    v-on:dblclick="doubleClick"
-    v-on:contextmenu="rightClick"
-  >
+  <button type="button" v-bind:class="classes" v-on="buttonListeners">
     <span class="overlay">&nbsp;</span>
   </button>
 </template>
@@ -30,21 +24,53 @@ export default {
       hidden: cell.hidden,
       flag: cell.flag,
       hadOverlay: cell.hadOverlay,
+      doubleClickTimeout: null,
     };
+  },
+  computed: {
+    classes() {
+      return [
+        "cell",
+        this.hidden ? "hidden" : "",
+        this.flag ? "flag" : "",
+        !this.hidden && !this.flag && !this.mine ? "nearby" : "",
+        !this.hidden && !this.flag && !this.mine ? `nearby-${this.nearby}` : "",
+        !this.hidden && !this.flag && this.mine ? "mine" : "",
+      ]
+        .filter((c) => c.length)
+        .join(" ");
+    },
+    buttonListeners() {
+      const vm = this;
+      return Object.assign({}, this.$listeners, {
+        click: function (e) {
+          return vm.click(e);
+        },
+        dblclick: function (e) {
+          return vm.doubleClick(e);
+        },
+        contextmenu: function (e) {
+          return vm.rightClick(e);
+        },
+      });
+    },
   },
   watch: {
     cell(newValue, oldValue) {
+      console.log(`cell changed from "${oldValue}" to "${newValue}"`);
       if (newValue !== oldValue) {
         const cell = JSON.parse(newValue);
         Object.entries(cell).forEach(([key, val]) => (this[key] = val));
       }
     },
     hidden(newValue, oldValue) {
+      console.log(`hidden changed from "${oldValue}" to "${newValue}"`);
       if (newValue !== oldValue) {
         this.$emit("hidden-changed", this.$data);
       }
     },
     flag(newValue, oldValue) {
+      console.log(`flag changed from "${oldValue}" to "${newValue}"`);
       if (newValue !== oldValue) {
         this.$emit("flag-changed", this.$data);
       }
@@ -52,17 +78,32 @@ export default {
   },
   methods: {
     click: function (e) {
-        console.log('cell: click', e);
       e.preventDefault();
-      this.$emit("cell-reveal", this.$data);
+      if (!this.doubleClickTimeout) {
+        const that = this;
+        this.doubleClickTimeout = setTimeout(() => {
+          console.log(
+            'cell: emitting "cell-reveal"',
+            `running timeout ${that.doubleClickTimeout}`
+          );
+          that.$emit("cell-reveal", that.$data);
+          that.doubleClickTimeout = null;
+        }, 500);
+      }
     },
     doubleClick: function (e) {
-        console.log('cell: doubleClick', e);
+      console.log("cell: doubleClick", e);
+      console.log(
+        "cell: doubleClick",
+        `clearing timeout ${this.doubleClickTimeout}`
+      );
+      clearTimeout(this.doubleClickTimeout);
+      this.doubleClickTimeout = null;
       e.preventDefault();
       this.$emit("cell-reveal-nearby", this.$data);
     },
     rightClick: function (e) {
-        console.log('cell: rightClick', e);
+      console.log("cell: rightClick", e);
       e.preventDefault();
       this.$emit("cell-flag", this.$data);
     },
@@ -91,6 +132,7 @@ export default {
 
 .cell .overlay {
   opacity: 0;
+  transition: opacity 250ms ease-in;
 }
 
 .cell.hidden .overlay {
@@ -107,57 +149,86 @@ export default {
   text-align: center;
   font-size: var(--size-icon);
 }
-
+.cell.nearby::before {
+  display: block;
+}
 .cell.nearby-1 {
   color: lightblue;
   text-shadow: darkblue -2px 2px;
 }
-
+.cell.nearby-1::before {
+  content: "1";
+}
 .cell.nearby-2 {
   color: green;
   text-shadow: darkgreen -2px 2px;
 }
-
+.cell.nearby-2::before {
+  content: "2";
+}
 .cell.nearby-3 {
   color: red;
   text-shadow: darkred -2px 2px;
 }
-
+.cell.nearby-3::before {
+  content: "3";
+}
 .cell.nearby-4 {
   color: darkblue;
   text-shadow: black -2px 2px;
 }
-
+.cell.nearby-4::before {
+  content: "4";
+}
 .cell.nearby-5 {
   color: darkred;
   text-shadow: black -2px 2px;
 }
-
+.cell.nearby-5::before {
+  content: "5";
+}
 .cell.nearby-6 {
   color: darkgreen;
   text-shadow: black -2px 2px;
 }
-
+.cell.nearby-6::before {
+  content: "6";
+}
 .cell.nearby-7 {
   color: darkmagenta;
   text-shadow: black -2px 2px;
 }
-
+.cell.nearby-7::before {
+  content: "7";
+}
 .cell.nearby-8 {
   color: darkorange;
   text-shadow: black -2px 2px;
 }
-
+.cell.nearby-8::before {
+  content: "8";
+}
 .cell.blank {
   background-color: white;
 }
 
 .cell.mine {
-  font-size: var(--size-icon);
+  font-size: calc(var(--size-icon) / 1.5);
 }
-
+.cell.mine .overlay::before {
+  content: "💣";
+  display: block;
+  height: 100%;
+  width: 100%;
+}
 .cell.flag .overlay {
   background-color: goldenrod;
   font-size: calc(var(--size-icon) / 2);
+}
+.cell.flag .overlay::before {
+  content: "🚩";
+  display: block;
+  height: 100%;
+  width: 100%;
 }
 </style>

@@ -26,12 +26,35 @@ export default {
       type: Number,
       default: 0,
     },
+    shouldBeStarted: {
+      type: Boolean,
+      default: false,
+    },
+    remaining: {
+        type: Number,
+        default: 13
+    },
   },
   watch: {
     totalMines(newValue, oldValue) {
       console.log(`totalMines changed from ${oldValue} to ${newValue}`);
       if (newValue !== oldValue) {
-        this.start();
+        this.updateRemaining(newValue);
+      }
+    },
+    shouldBeStarted(newValue, oldValue) {
+      console.log(`shouldBeStarted changed from ${oldValue} to ${newValue}`);
+      if (newValue !== oldValue) {
+        if (newValue) {
+          this.startTimer();
+        } else {
+          this.stopTimer();
+        }
+      }
+    },
+    remaining(newValue, oldValue) {
+      console.log(`remaining changed from ${oldValue} to ${newValue}`);
+      if (newValue !== oldValue) {
         this.updateRemaining(newValue);
       }
     },
@@ -46,15 +69,9 @@ export default {
     };
   },
   methods: {
-    start() {
-      if (this.initialLoad) {
-        console.log("initial load: not setting timer");
-        this.initialLoad = false;
-        return;
-      }
+    startTimer() {
       if (this.timer) {
-        clearInterval(this.timer);
-        this.timeStart = null;
+        return;
       }
       this.timer = setInterval(() => {
         this.timeStart = this.timeStart ?? Date.now();
@@ -70,6 +87,14 @@ export default {
         this.$emit("time-changed", this.time);
       }, 1000);
     },
+    stopTimer() {
+      if (!this.timer) {
+        return;
+      }
+      clearInterval(this.timer);
+      this.timeStart = null;
+      this.timer = null;
+    },
     updateRemaining(value) {
       if (this.remaining !== value) {
         this.remaining = value;
@@ -81,13 +106,13 @@ export default {
 </script>
 <style scoped>
 .scoreboard {
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: center;
-    margin: 1rem auto;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  margin: 1rem auto;
 }
 
 .scoreboard-unit {
-    margin: 0 0.5rem;
+  margin: 0 0.5rem;
 }
 </style>
