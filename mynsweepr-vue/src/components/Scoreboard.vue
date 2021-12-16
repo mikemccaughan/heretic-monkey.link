@@ -6,7 +6,7 @@
     </span>
     <span class="scoreboard-unit">
       <span class="icon mine">💣</span>
-      <span class="count" v-text="remaining"></span>
+      <span class="count" v-text="remainingMines"></span>
     </span>
   </div>
 </template>
@@ -31,8 +31,8 @@ export default {
       default: false,
     },
     remaining: {
-        type: Number,
-        default: 13
+      type: Number,
+      default: 13,
     },
   },
   watch: {
@@ -64,7 +64,7 @@ export default {
       timer: 0,
       timeStart: null,
       time: "00:00:00",
-      remaining: 0,
+      remainingMines: this.$props.remaining,
       initialLoad: true,
     };
   },
@@ -96,9 +96,9 @@ export default {
       this.timer = null;
     },
     updateRemaining(value) {
-      if (this.remaining !== value) {
-        this.remaining = value;
-        this.$emit("remaining-changed", this.remaining);
+      if (this.remainingMines !== value) {
+        this.remainingMines = value;
+        this.$emit("remaining-changed", this.remainingMines);
       }
     },
   },

@@ -23,7 +23,6 @@ export default {
         height: 9,
       },
       density: 1 / 6,
-      remaining: 13,
     };
   },
   props: {
@@ -51,13 +50,15 @@ export default {
         this.cells = board.cells;
         this.size = board.size;
         this.density = board.density;
-        this.remaining = board.remaining;
       }
     },
   },
   computed: {
     cellsForWidth() {
       return this.cells;
+    },
+    remaining() {
+      return this.cells.filter(cell => cell.mine && cell.hidden && !cell.flag).length - this.cells.filter(cell => cell.flag).length;
     },
   },
   components: { Cell },
@@ -66,7 +67,7 @@ export default {
   },
   methods: {
     load() {
-      console.log("generating board...");
+      this.$emit('board-building');
       this.size = JSON.parse(this.$props.dimensions);
       const mineCount = this.size.width * this.size.height * this.density;
       const isBetween = function (value, min, max) {

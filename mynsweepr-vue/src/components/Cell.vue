@@ -18,9 +18,6 @@ export default {
       x: cell.x,
       y: cell.y,
       nearby: cell.nearby,
-      get mine() {
-        return this.value < 0;
-      },
       hidden: cell.hidden,
       flag: cell.flag,
       hadOverlay: cell.hadOverlay,
@@ -28,14 +25,23 @@ export default {
     };
   },
   computed: {
+    mine() {
+      return this.value < 0;
+    },
+    hasNearby() {
+      return !this.hidden && !this.flag && !this.mine;
+    },
+    showMine() {
+      return !this.hidden && !this.flag && this.mine;
+    },
     classes() {
       return [
         "cell",
         this.hidden ? "hidden" : "",
         this.flag ? "flag" : "",
-        !this.hidden && !this.flag && !this.mine ? "nearby" : "",
-        !this.hidden && !this.flag && !this.mine ? `nearby-${this.nearby}` : "",
-        !this.hidden && !this.flag && this.mine ? "mine" : "",
+        this.hasNearby ? "nearby" : "",
+        this.hasNearby ? `nearby-${this.nearby}` : "",
+        this.showMine ? "mine" : "",
       ]
         .filter((c) => c.length)
         .join(" ");
@@ -57,20 +63,17 @@ export default {
   },
   watch: {
     cell(newValue, oldValue) {
-      console.log(`cell changed from "${oldValue}" to "${newValue}"`);
       if (newValue !== oldValue) {
         const cell = JSON.parse(newValue);
         Object.entries(cell).forEach(([key, val]) => (this[key] = val));
       }
     },
     hidden(newValue, oldValue) {
-      console.log(`hidden changed from "${oldValue}" to "${newValue}"`);
       if (newValue !== oldValue) {
         this.$emit("hidden-changed", this.$data);
       }
     },
     flag(newValue, oldValue) {
-      console.log(`flag changed from "${oldValue}" to "${newValue}"`);
       if (newValue !== oldValue) {
         this.$emit("flag-changed", this.$data);
       }
@@ -82,28 +85,18 @@ export default {
       if (!this.doubleClickTimeout) {
         const that = this;
         this.doubleClickTimeout = setTimeout(() => {
-          console.log(
-            'cell: emitting "cell-reveal"',
-            `running timeout ${that.doubleClickTimeout}`
-          );
           that.$emit("cell-reveal", that.$data);
           that.doubleClickTimeout = null;
         }, 500);
       }
     },
     doubleClick: function (e) {
-      console.log("cell: doubleClick", e);
-      console.log(
-        "cell: doubleClick",
-        `clearing timeout ${this.doubleClickTimeout}`
-      );
       clearTimeout(this.doubleClickTimeout);
       this.doubleClickTimeout = null;
       e.preventDefault();
       this.$emit("cell-reveal-nearby", this.$data);
     },
     rightClick: function (e) {
-      console.log("cell: rightClick", e);
       e.preventDefault();
       this.$emit("cell-flag", this.$data);
     },
