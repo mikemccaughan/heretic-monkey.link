@@ -73,6 +73,7 @@ export default {
       if (this.timer) {
         return;
       }
+      this.time = "00:00:00";
       this.timer = setInterval(() => {
         this.timeStart = this.timeStart ?? Date.now();
         const elapsed = Date.now() - this.timeStart;

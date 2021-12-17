@@ -2,11 +2,11 @@
   <div class="board">
     <Cell
       v-for="cell in cellsForWidth"
-      v-bind:cell="JSON.stringify(cell)"
-      v-bind:key="cell.index"
-      v-on:cell-reveal="onCellReveal"
-      v-on:cell-reveal-nearby="onCellRevealNearby"
-      v-on:cell-flag="onCellFlag"
+      :cell="JSON.stringify(cell)"
+      :key="cell.index"
+      @cell-reveal="onCellReveal"
+      @cell-reveal-nearby="onCellRevealNearby"
+      @cell-flag="onCellFlag"
     >
     </Cell>
   </div>
@@ -34,22 +34,32 @@ export default {
       type: String,
       default: "{}",
     },
+    needsRebuild: {
+      type: Boolean,
+      default: false,
+    }
   },
   watch: {
     dimensions(newValue, oldValue) {
-      console.log(`dimensions changed from "${oldValue}" to "${newValue}"`);
+      console.log(`Board: dimensions changed from "${oldValue}" to "${newValue}"`);
       if (newValue !== oldValue) {
         this.load();
       }
     },
     board(newValue, oldValue) {
-      console.log(`board changed from "${oldValue}" to "${newValue}"`);
+      console.log(`Board: board changed from "${oldValue}" to "${newValue}"`);
       const currentBoard = JSON.stringify(this.$data);
       if (newValue != oldValue && newValue !== currentBoard) {
         const board = JSON.parse(newValue);
         this.cells = board.cells;
         this.size = board.size;
         this.density = board.density;
+      }
+    },
+    needsRebuild(newValue, oldValue) {
+      console.log(`Board: needsRebuild changed from "${oldValue}" to "${newValue}"`);
+      if (newValue !== oldValue && newValue) {
+        this.load();
       }
     },
   },

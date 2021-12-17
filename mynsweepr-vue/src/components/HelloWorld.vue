@@ -1,27 +1,61 @@
 <template>
   <main class="minesweeper">
-    <Processing v-bind:isProcessing="isProcessing"/>
+    <Processing :isProcessing="isProcessing" />
     <Difficulty
-      v-bind:difficulty="difficulty"
-      v-bind:size="size"
-      v-on:difficulty-changed="onDifficultyChanged"
+      :difficulty="difficulty"
+      :size="size"
+      @difficulty-changed="onDifficultyChanged"
     />
     <Scoreboard
-      v-bind:total-mines="totalMines"
-      v-bind:remaining="remaining"
-      v-bind:time="time"
-      v-bind:shouldBeStarted="timerShouldBeRunning"
+      :total-mines="totalMines"
+      :remaining="remaining"
+      :time="time"
+      :shouldBeStarted="timerShouldBeRunning"
     />
     <Board
-      v-bind:dimensions="JSON.stringify(size)"
-      v-bind:density="density"
-      v-bind:board="board"
-      v-on:board-built="onBoardBuilt"
-      v-on:cell-reveal="onCellReveal"
-      v-on:cell-reveal-nearby="onCellRevealNearby"
-      v-on:cell-flag="onCellFlag"
+      :dimensions="JSON.stringify(size)"
+      :density="density"
+      :board="board"
+      :needsRebuild="needsRebuild"
+      @board-built="onBoardBuilt"
+      @board-building="onBoardBuilding"
+      @cell-reveal="onCellReveal"
+      @cell-reveal-nearby="onCellRevealNearby"
+      @cell-flag="onCellFlag"
     >
     </Board>
+    <Dialog
+      :id="'lost'"
+      :classes="'lost'"
+      :hasClose="true"
+      :shouldBeOpened="hasLost"
+      :shouldBeClosed="!hasLost"
+      @dialog-closed="onDialogClosed()"
+    >
+      <template #header>You Lost!</template>
+      <template><p>You triggered a mine and exploded.</p></template>
+      <template #footer
+        ><button type="button" @click="closeDialog('lost')">
+          Bummer
+        </button></template
+      >
+    </Dialog>
+    <Dialog
+      :id="'won'"
+      :classes="'won'"
+      :hasClose="true"
+      :shouldBeOpened="hasWon"
+      :shouldBeClosed="!hasWon"
+      @dialog-closed="onDialogClosed()"
+    >
+      <template #header>You Won!</template>
+      <template><p>You found all the mines and cleared the field.</p></template>
+      <template #footer
+        ><button type="button" @click="closeDialog('won')">
+          Awesome!
+        </button></template
+      >
+    </Dialog>
   </main>
 </template>
 
@@ -30,6 +64,7 @@ import Difficulty from "./Difficulty.vue";
 import Scoreboard from "./Scoreboard.vue";
 import Board from "./Board.vue";
 import Processing from "./Processing.vue";
+import Dialog from "./Dialog.vue";
 export default {
   name: "Mynsweepr",
   components: {
@@ -37,10 +72,9 @@ export default {
     Scoreboard,
     Board,
     Processing,
+    Dialog,
   },
-  props: {
-    msg: String,
-  },
+  props: {},
   data() {
     return {
       difficulty: 9,
@@ -56,6 +90,9 @@ export default {
       cells: [],
       board: "{}",
       isProcessing: false,
+      hasLost: false,
+      hasWon: false,
+      needsRebuild: false,
     };
   },
   methods: {
@@ -93,14 +130,18 @@ export default {
       console.log(`board built: ${this.board}`);
       this.cells = board.cells.sort((a, b) => a.index - b.index);
       this.remaining = board.remaining;
+      this.hasLost = false;
+      this.hasWon = false;
       this.board = JSON.stringify(board);
       this.isProcessing = false;
+      this.needsRebuild = false;
     },
     lose({ board }) {
       board = this.showAllCells({ board });
       this.cells = board.cells.sort((a, b) => a.index - b.index);
       this.remaining = board.remaining;
       this.timerShouldBeRunning = false;
+      this.hasLost = true;
       console.error("lost");
       return board;
     },
@@ -109,6 +150,7 @@ export default {
       this.cells = board.cells.sort((a, b) => a.index - b.index);
       this.remaining = 0;
       this.timerShouldBeRunning = false;
+      this.hasWon = true;
       return board;
     },
     showAllCells({ board }) {
@@ -126,22 +168,21 @@ export default {
       for (let x = minX; x < maxX + 1; x++) {
         for (let y = minY; y < maxY + 1; y++) {
           const nextCell = board.cells.find((c) => c.x === x && c.y === y);
-          console.log(`minesweeper: clearAround: examining cell at index ${nextCell.index}:\n* is it not the cell we started on? ${nextCell.index !== cell.index}\n* is it hidden? ${nextCell.hidden}\n* is it not a mine? ${!nextCell.mine}\n* are we not showing mines? ${!showMines}\n* is it not flagged? ${!nextCell.flag}`);
           if (
             nextCell.index !== cell.index &&
             nextCell.hidden &&
             (!nextCell.mine || showMines) &&
             (!nextCell.flag || showMines)
           ) {
-            console.log(`minesweeper: clearAround: showing cell at index ${nextCell.index}`);
             board = this.showCell({ cell: nextCell, board });
-            alteredCells.push(board.cells.find(c => c.index === nextCell.index));
+            alteredCells.push(
+              board.cells.find((c) => c.index === nextCell.index)
+            );
           }
         }
       }
       board.cells = board.cells.sort((a, b) => a.index - b.index);
       this.cells = board.cells;
-      console.log(`altered cells: ${JSON.stringify(this.cells.filter(c => alteredCells.some(a => a.index === c.index)))}`);
       return board;
     },
     updateBoard(board) {
@@ -149,12 +190,26 @@ export default {
         !Reflect.has(board, "remaining") &&
         Reflect.defineProperty(board, "remaining", {
           get() {
-            console.log(`getting remaining, which is the count of mines: ${this.cells.filter(cell => cell.mine && cell.hidden).length} minus the number of flagged cells: ${this.cells.filter(cell => cell.flag).length}`);
-            return this.cells.filter(cell => cell.mine && cell.hidden).length - this.cells.filter(cell => cell.flag).length;
+            return (
+              this.cells.filter((cell) => cell.mine && cell.hidden).length -
+              this.cells.filter((cell) => cell.flag).length
+            );
           },
         })
       ) {
-        return board;
+        if (
+          !Reflect.has(board, "isClean") &&
+          Reflect.defineProperty(board, "isClean", {
+            get() {
+              return (
+                this.remaining === 0 &&
+                this.cells.filter((cell) => cell.hidden && !cell.flag).length === 0
+              );
+            },
+          })
+        ) {
+          return board;
+        }
       }
 
       return board;
@@ -189,7 +244,7 @@ export default {
           board = this.lose({ board });
           return board;
         }
-        if (board.remaining === 0) {
+        if (board.isClean) {
           board = this.win({ board });
           return board;
         }
@@ -208,10 +263,25 @@ export default {
       }
       return value;
     },
+    closeDialog(dialogId) {
+      switch (dialogId) {
+        case "lost":
+          this.hasLost = false;
+          break;
+        case "won":
+          this.hasWon = false;
+          break;
+        default:
+          this.hasLost = this.hasWon = false;
+          break;
+      }
+    },
     onCellReveal(data) {
       console.log(`mynsweepr: cell-reveal`, JSON.stringify(data));
       this.isProcessing = true;
-      const cell = this.updateCell(JSON.parse(JSON.stringify(data.cell, this.boardReplacer)));
+      const cell = this.updateCell(
+        JSON.parse(JSON.stringify(data.cell, this.boardReplacer))
+      );
       const reviver = this.boardReviver.bind(this);
       let board = this.updateBoard(
         JSON.parse(JSON.stringify(data.board, this.boardReplacer), reviver)
@@ -225,7 +295,9 @@ export default {
     onCellRevealNearby(data) {
       console.log(`mynsweepr: cell-reveal-nearby`, JSON.stringify(data));
       this.isProcessing = true;
-      const cell = this.updateCell(JSON.parse(JSON.stringify(data.cell, this.boardReplacer)));
+      const cell = this.updateCell(
+        JSON.parse(JSON.stringify(data.cell, this.boardReplacer))
+      );
       const reviver = this.boardReviver.bind(this);
       let board = this.updateBoard(
         JSON.parse(JSON.stringify(data.board, this.boardReplacer), reviver)
@@ -239,22 +311,33 @@ export default {
     onCellFlag(data) {
       console.log(`mynsweepr: cell-flag`, JSON.stringify(data));
       this.isProcessing = true;
-      const cell = this.updateCell(JSON.parse(JSON.stringify(data.cell, this.boardReplacer)));
+      const cell = this.updateCell(
+        JSON.parse(JSON.stringify(data.cell, this.boardReplacer))
+      );
       const reviver = this.boardReviver.bind(this);
       let board = this.updateBoard(
         JSON.parse(JSON.stringify(data.board, this.boardReplacer), reviver)
       );
       if (cell && !cell.hidden) {
-        console.warn(`attempt made to flag unhidden cell at index ${cell.index}`);
+        console.warn(
+          `attempt made to flag unhidden cell at index ${cell.index}`
+        );
       }
       if (cell && cell.hidden) {
         cell.flag = !cell.flag;
         board.cells.splice(cell.index, 1, cell);
         this.remaining = cell.flag ? this.remaining - 1 : this.remaining + 1;
       }
+      if (board.isClean) {
+        board = this.win({ board });
+      }
       this.board = JSON.stringify(board, this.boardReplacer);
       this.timerShouldBeRunning = true;
       this.isProcessing = false;
+    },
+    onDialogClosed() {
+      this.timerShouldBeRunning = false;
+      this.needsRebuild = true;
     },
   },
 };

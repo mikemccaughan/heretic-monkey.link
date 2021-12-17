@@ -1,5 +1,5 @@
 <template>
-  <button type="button" v-bind:class="classes" v-on="buttonListeners">
+  <button type="button" :class="classes" v-on="buttonListeners">
     <span class="overlay">&nbsp;</span>
   </button>
 </template>

@@ -1,5 +1,5 @@
 <template>
-  <div v-bind:class="classes">
+  <div :class="classes">
     <svg
       xmlns="http://www.w3.org/2000/svg"
       xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -122,6 +122,14 @@ export default {
 };
 </script>
 <style scoped>
-.loading { position: absolute; left: 50%; transform: translateX(-50%); top: 100%; z-index: 5; }
-.hidden { display: none; }
+.loading {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 100%;
+  z-index: 5;
+}
+.hidden {
+  display: none;
+}
 </style>

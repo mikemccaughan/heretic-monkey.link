@@ -8,7 +8,7 @@
         name="difficulty"
         value="9"
         v-model="difficulty"
-        v-on:change="setDifficulty"
+        @change="setDifficulty"
       />
       <label for="easy">Easy (9x9)</label>
     </div>
@@ -19,7 +19,7 @@
         name="difficulty"
         value="16"
         v-model="difficulty"
-        v-on:change="setDifficulty"
+        @change="setDifficulty"
       />
       <label for="medium">Medium (16x16)</label>
     </div>
@@ -30,7 +30,7 @@
         name="difficulty"
         value="30"
         v-model="difficulty"
-        v-on:change="setDifficulty"
+        @change="setDifficulty"
       />
       <label for="hard">Hard (30x16)</label>
     </div>
@@ -41,7 +41,7 @@
         name="difficulty"
         value="-1"
         v-model="difficulty"
-        v-on:change="setDifficulty"
+        @change="setDifficulty"
       />
       <label for="custom"
         >Custom (<input
@@ -51,9 +51,9 @@
           step="1"
           value="30"
           size="3"
-          v-bind:disabled="customDisabled"
+          :disabled="customDisabled"
           v-model="size.width"
-          v-on:change="widthOrHeightChanged"
+          @change="widthOrHeightChanged"
         />x<input
           type="number"
           id="difficulty-height"
@@ -61,9 +61,9 @@
           step="1"
           value="16"
           size="3"
-          v-bind:disabled="customDisabled"
+          :disabled="customDisabled"
           v-model="size.height"
-          v-on:change="widthOrHeightChanged"
+          @change="widthOrHeightChanged"
         />)</label
       >
     </div>
