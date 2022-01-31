@@ -88,7 +88,7 @@ export default {
       time: "00:00:00",
       timerShouldBeRunning: false,
       cells: [],
-      board: "{}",
+      board: null,
       isProcessing: false,
       hasLost: false,
       hasWon: false,
@@ -185,7 +185,7 @@ export default {
       this.cells = board.cells;
       return board;
     },
-    updateBoard(board) {
+    addPropertiesToBoard(board) {
       if (
         !Reflect.has(board, "remaining") &&
         Reflect.defineProperty(board, "remaining", {
@@ -214,7 +214,7 @@ export default {
 
       return board;
     },
-    updateCell(cell) {
+    addPropertiesToCell(cell) {
       if (
         !Reflect.has(cell, "mine") &&
         Reflect.defineProperty(cell, "mine", {
@@ -253,7 +253,7 @@ export default {
     },
     boardReviver(key, value) {
       if (key === "cells") {
-        value = value.map((cell) => this.updateCell(cell));
+        value = value.map((cell) => this.addPropertiesToCell(cell));
       }
       return value;
     },
@@ -279,11 +279,11 @@ export default {
     onCellReveal(data) {
       console.log(`mynsweepr: cell-reveal`, JSON.stringify(data));
       this.isProcessing = true;
-      const cell = this.updateCell(
+      const cell = this.addPropertiesToCell(
         JSON.parse(JSON.stringify(data.cell, this.boardReplacer))
       );
       const reviver = this.boardReviver.bind(this);
-      let board = this.updateBoard(
+      let board = this.addPropertiesToBoard(
         JSON.parse(JSON.stringify(data.board, this.boardReplacer), reviver)
       );
       board = this.showCell({ cell, board });
@@ -295,11 +295,11 @@ export default {
     onCellRevealNearby(data) {
       console.log(`mynsweepr: cell-reveal-nearby`, JSON.stringify(data));
       this.isProcessing = true;
-      const cell = this.updateCell(
+      const cell = this.addPropertiesToCell(
         JSON.parse(JSON.stringify(data.cell, this.boardReplacer))
       );
       const reviver = this.boardReviver.bind(this);
-      let board = this.updateBoard(
+      let board = this.addPropertiesToBoard(
         JSON.parse(JSON.stringify(data.board, this.boardReplacer), reviver)
       );
       board = this.clearAround({ cell, board });
@@ -311,11 +311,11 @@ export default {
     onCellFlag(data) {
       console.log(`mynsweepr: cell-flag`, JSON.stringify(data));
       this.isProcessing = true;
-      const cell = this.updateCell(
+      const cell = this.addPropertiesToCell(
         JSON.parse(JSON.stringify(data.cell, this.boardReplacer))
       );
       const reviver = this.boardReviver.bind(this);
-      let board = this.updateBoard(
+      let board = this.addPropertiesToBoard(
         JSON.parse(JSON.stringify(data.board, this.boardReplacer), reviver)
       );
       if (cell && !cell.hidden) {

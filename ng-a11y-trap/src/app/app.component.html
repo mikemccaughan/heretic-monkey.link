@@ -1,0 +1,42 @@
+<app-popover text="popover">
+  <div class="form-group">
+    <label for="sortBy">Sort By</label>
+    <div class="fdl-select">
+      <select id="sortBy" name="sortBy" class="form-control" required>
+        <option selected disabled>Select a Property</option>
+        <option *ngFor="let sort of sortingOptions" value="{{sort}}">{{sort}}</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="displayBy">Display:</label>
+    <div class="fdl-select">
+      <select id="displayBy" name="displayBy" class="form-control" required>
+        <option *ngFor="let status of filterOptions" value="{{status}}">{{status}}</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="dateFrom">From:</label>
+    <div class="date-picker">
+      <input type="text" id="dateFrom" name="dateFrom" placeholder="MM/DD/YYYY" class="form-control">
+      <span class="error error-invalid">Invalid date entered. Please enter a valid date in MM/DD/YYYY format.</span>
+      <span class="error error-out-of-range">Invalid date entered. Please enter a date between {{minDateFrom | date }} and
+        {{maxDateFrom | date }}.</span>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="dateTo">To:</label>
+    <div class="date-picker">
+      <input type="text" id="dateTo" name="dateTo" placeholder="MM/DD/YYYY" class="form-control">
+      <span class="error error-invalid">Invalid date entered. Please enter a valid date in MM/DD/YYYY format.</span>
+      <span class="error error-out-of-range">Invalid date entered. Please enter a date between {{minDateTo | date }} and
+        {{maxDateTo | date }}.</span>
+    </div>
+  </div>
+  <button type="button" class="btn btn-link" id="clear-filter" (click)="clearFilter()">Clear All and Reset Filter</button>
+  <div class="form-buttons">
+    <button type="button" class="btn btn-primary" (click)="applyFilter()">Apply</button>
+    <button type="button" class="btn btn-secondary" (click)="closeFilter()">Close</button>
+  </div>
+</app-popover>

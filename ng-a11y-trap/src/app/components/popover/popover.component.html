@@ -1,0 +1,13 @@
+<button type="button" 
+    class="popover-trigger" 
+    data-trigger="popover" 
+    [attr.id]="id + '-button'"
+    [attr.data-popover]="id" 
+    [attr.aria-expanded]="expanded" 
+    [attr.aria-controls]="id" 
+    (click)="togglePopup($event)">
+    {{text}}
+</button>
+<div class="popover" [id]="id" hidden *a11yTrap="expanded; labelledBy: id + '-button'">
+    <ng-content></ng-content>
+</div>

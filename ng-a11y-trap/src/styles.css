@@ -1,0 +1,30 @@
+/* You can add global styles to this file, and also import other style files */
+[role="dialog"] {
+    border: 1px solid red;
+    display: flex;
+}
+[role="document"] {
+    border: 1px solid green;
+    display: flex;
+    width: fit-content;
+}
+.form-control:focus {
+    outline: 1px dashed steelblue;
+    box-shadow: 0 0 4px 4px rgb(50, 58, 68);
+    border-radius: 3px;
+}
+.error {
+    display: none;
+}
+input:invalid + .error {
+    display: flex;
+}
+.popover {
+    max-width: 200px;
+    border: 1px solid black;
+    padding: 1.25rem 1rem 1.5rem;
+}
+hidden {
+    display: block;
+    visibility: hidden;
+}
