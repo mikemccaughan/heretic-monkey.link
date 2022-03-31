@@ -1,9 +1,23 @@
 const express = require('express');
 const app = express();
 const port = 1234;
-app.use('/', express.static('./', {
-    setHeaders: (res, path, stat) => {
+app.use(express.static('./', {
+    extensions: ['js','mjs'],
+    setHeaders: function (res, path) {
+        console.log(path);
         if (path.includes('.mjs')) {
+            res.set('Content-Type', 'text/javascript');
+        }
+        if (path.includes('.js')) {
+            res.set('Content-Type', 'text/javascript');
+        }
+        if (path.includes('.htm')) {
+            res.set('Content-Type', 'text/html');
+        }
+        if (path.includes('.css')) {
+            res.set('Content-Type', 'text/css');
+        }
+        if (path.includes('.json')) {
             res.set('Content-Type', 'text/javascript');
         }
     }

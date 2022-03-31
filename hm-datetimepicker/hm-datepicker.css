@@ -33,6 +33,10 @@
   height: 100%;
   margin: 1rem 0;
 }
+.use-tabs .date-picker.year-entry .year-entry {
+  max-height: 204px;
+  overflow-y: auto;
+}
 .date-picker.calendar-entry .calendar-entry button,
 .date-picker.year-entry .year-entry button,
 .date-picker.month-entry .month-entry button {

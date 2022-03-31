@@ -483,4 +483,10 @@ export default class BasicUtilities {
     }
     return diff;
   }
+  static firstCapital(value) {
+    return typeof value === 'string' && (value.length < 2 ? value.toUpperCase() : `${value[0].toUpperCase()}${value.slice(1).toLowerCase()}`);
+  }
+  static titleCase(value) {
+    return typeof value === 'string' && value.replace(/\b\w\b/g, (word) => `${word[0].toUpperCase()}${word.slice(1).toLowerCase()}`);
+  }
 }

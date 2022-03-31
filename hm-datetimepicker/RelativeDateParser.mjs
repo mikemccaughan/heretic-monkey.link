@@ -8,6 +8,10 @@ export default class RelativeDateParser {
     );
   }
   static parse(value, relativeTo = new Date(), useUTC = false) {
+    if (typeof relativeTo === 'boolean') {
+      useUTC = relativeTo;
+      relativeTo = new Date();
+    }
     var now = relativeTo != null ? new Date(relativeTo) : new Date();
     value = value.trim().toLowerCase();
     if (value === 'yesterday') {
