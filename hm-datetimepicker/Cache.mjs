@@ -47,6 +47,7 @@ export class CacheExpiration {
   }
 }
 export class Cache {
+  #onExpired;
   static InfiniteAbsoluteExpiration = new CacheExpiration(
     CacheExpirationType.Absolute,
     new Date(0)
@@ -58,7 +59,16 @@ export class Cache {
   constructor(expiration, onExpiration) {
     this.expiration = expiration;
     this.#entries = new Map();
-    this.onExpired = onExpiration;
+    this.#onExpired = this.expiration.onExpired = onExpiration;
+  }
+  get onExpired() {
+    return this.#onExpired;
+  }
+  set onExpired(valued) {
+    if (this.#onExpired !== value) {
+      this.#onExpired = value;
+      this.expiration.onExpired = value;
+    }
   }
   get(key) {
     return this.#entries.get(key);
