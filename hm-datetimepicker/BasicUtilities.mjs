@@ -1,3 +1,6 @@
+/**
+ * Provides an enumeration of the possible granularities by which dates can be compared.
+ */
 export class DateComparisonGranularity {
   static Era = "era";
   static Year = "y";
@@ -13,7 +16,10 @@ export class DateComparisonGranularity {
   static Custom = "?";
 }
 
-export class NumberComparisonGranularity {
+/**
+ * Provides an enumeration of the possible granularities by which numbers can be compared.
+ */
+ export class NumberComparisonGranularity {
   static Thousands = 1000;
   static Hundreds = 100;
   static Tens = 10;
@@ -25,11 +31,18 @@ export class NumberComparisonGranularity {
   static Custom = 0;
 }
 
+/**
+ * Encompasses the properties of the result of a date comparison.
+ */
 export class DateComparisonResult {
   amount = 0;
   units = "ms";
 }
-export class DeepEqualityArgs {
+
+/**
+ * Encompasses the arguments to the BasicUtilities.deepEquals function.
+ */
+ export class DeepEqualityArgs {
   /**
    * Validates the order of the elements in the two arrays. Defaults to false.
    */
@@ -49,7 +62,7 @@ export class DeepEqualityArgs {
    * the Date objects are equal.
    * @param {Date} a The first date to compare.
    * @param {Date} b The second date to compare.
-   * @returns {number} A string that specifies
+   * @returns {boolean} true if the dates are the same at the custom granularity; otherwise, false.
    */
   dateGranularityCustom = (a, b) => a.valueOf() === b.valueOf();
   /**
@@ -67,6 +80,10 @@ export class DeepEqualityArgs {
    */
   numberGranularityCustom = (a, b) => Math.abs(a - b) < Number.EPSILON;
 }
+
+/**
+ * Provides utility methods, mostly around equality.
+ */
 export default class BasicUtilities {
   /**
    * Checks if both items specified have the same value.
@@ -488,5 +505,13 @@ export default class BasicUtilities {
   }
   static titleCase(value) {
     return typeof value === 'string' && value.replace(/\b\w\b/g, (word) => `${word[0].toUpperCase()}${word.slice(1).toLowerCase()}`);
+  }
+  static parseBoolean(value) {
+    if (typeof value === 'string') {
+      // array of common 'true' values; more nuanced than any string = true.
+      return ['true', 'yes', 'y', '1'].includes(value.toLowerCase());
+    } else {
+      return !!value;
+    }
   }
 }

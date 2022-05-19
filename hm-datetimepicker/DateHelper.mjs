@@ -1,3 +1,5 @@
+// Still no reliable import of JSON files; zone1970.mjs is a copy of zone1970.json as
+// an ESM file (basically tacking `export default` before the data).
 import tzdb from './zone1970.mjs';
 /**
  * Provides basic instance and static date and time formatting functionality.

@@ -467,6 +467,72 @@ function runTests() {
       "thrity-month",
       'DateComparisonGranularity.Custom returns the number of periods of thrity days between two dates'
     );
+    Assert.isEqual(
+      BasicUtilities.parseBoolean('True'),
+      true,
+      'parseBoolean',
+      '"True" is true'
+    );
+    Assert.isEqual(
+      BasicUtilities.parseBoolean('No'),
+      false,
+      'parseBoolean',
+      '"No" is false'
+    );
+    Assert.isEqual(
+      BasicUtilities.parseBoolean('Sure'),
+      false,
+      'parseBoolean',
+      '"Sure" is false'
+    );
+    Assert.isEqual(
+      BasicUtilities.parseBoolean('y'),
+      true,
+      'parseBoolean',
+      '"y" is true'
+    );
+    Assert.isEqual(
+      BasicUtilities.parseBoolean('YES'),
+      true,
+      'parseBoolean',
+      '"YES" is true'
+    );
+    Assert.isEqual(
+      BasicUtilities.parseBoolean('1'),
+      true,
+      'parseBoolean',
+      '"1" is true'
+    );
+    Assert.isEqual(
+      BasicUtilities.parseBoolean(1),
+      true,
+      'parseBoolean',
+      '1 is true'
+    );
+    Assert.isEqual(
+      BasicUtilities.parseBoolean(0),
+      false,
+      'parseBoolean',
+      '0 is false'
+    );
+    Assert.isEqual(
+      BasicUtilities.parseBoolean({a: false}),
+      true,
+      'parseBoolean',
+      '{a: false} is true'
+    );
+    Assert.isEqual(
+      BasicUtilities.parseBoolean(undefined),
+      false,
+      'parseBoolean',
+      'undefined is false'
+    );
+    Assert.isEqual(
+      BasicUtilities.parseBoolean(null),
+      false,
+      'parseBoolean',
+      'null is false'
+    );
     console.log(`All tests passed. Exiting.`);
   } catch (e) {
     console.error(e);

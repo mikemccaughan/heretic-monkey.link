@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Heretic-Monkey's TimeSpan Class</title>
+    <link rel="stylesheet" href="index.css" />
+    <script type="module" src="./TimeSpan.mjs"></script>
+    <script type="module" src="./HMDateTimePickerComponent.mjs"></script>
+    <style>
+      em { font-style: normal; font-family: monospace; font-weight: bold; font-size: 18px; color: darkred; }
+    </style>
+  </head>
+  <body>
+    <h1>TimeSpan Demo</h1>
+    <p>
+      Used by the <a href="hm-datepicker-component-poc.html">Date Picker Web Component POC</a>
+    </p>
+    <form>
+      <div class="form-group">
+        <hm-date-time-picker
+          use-utc="true"
+          default-value=""
+          format="MM/dd/yyyy"
+          min-date="today"
+          max-date="+100y"
+          show-on="focus button"
+          title="From:"
+          id="hm-dtp-from"
+        >
+        </hm-date-time-picker>
+      </div>
+      <div class="form-group">
+        <hm-date-time-picker
+          use-utc="true"
+          default-value=""
+          format="MM/dd/yyyy"
+          min-date="today"
+          max-date="+100y"
+          show-on="focus button"
+          title="To:"
+          id="hm-dtp-to"
+        >
+        </hm-date-time-picker>
+      </div>
+      <output id="timespanDiff">
+          <ul></ul>
+      </output>
+    </form>
+    <script async type="module">
+        import TimeSpan from './TimeSpan';
+        let startDate;
+        let endDate;
+        function updateTimeSpan() {
+            if (startDate instanceof Date && endDate instanceof Date) {
+                const ts = TimeSpan.fromSubtractingTwoDates(startDate, endDate);
+                const latest = document.createElement('li');
+                const seconds = ts.seconds + (ts.milliseconds * TimeSpan.msPerMillisecond / TimeSpan.msPerSecond); // Seconds + fractional seconds
+                const durationHtml = `P<em>${ts.days}</em>DT<em>${ts.hours}</em>H<em>${ts.minutes}</em>M<em>${seconds}</em>S`;
+                latest.innerHTML = durationHtml;
+                document.getElementById('timespanDiff').querySelector('ul').prepend(latest);
+            }
+        }
+        document.getElementById('hm-dtp-from').addEventListener('hm-dtp-submit', (e) => {
+            startDate = e.detail.value;
+            updateTimeSpan();
+        });
+        document.getElementById('hm-dtp-to').addEventListener('hm-dtp-submit', (e) => {
+            endDate = e.detail.value;
+            updateTimeSpan();
+        });
+    </script>
+    </body>
+</html>

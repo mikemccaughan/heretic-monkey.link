@@ -1,4 +1,12 @@
+/**
+ * Parses strings to dates relative to the current or specified date.
+ */
 export default class RelativeDateParser {
+  /**
+   * Indicates whether the valuue can be parsed as a relative date.
+   * @param {string} value The string which may or may not be parseable.
+   * @returns true if the string can be parsed; otherwise, false.
+   */
   static canParse(value) {
     return (
       value != null &&
@@ -7,6 +15,14 @@ export default class RelativeDateParser {
         /^([+-]*)(\d+)([yqmwdhnsl]?$)/.test(value))
     );
   }
+  /**
+   * Parses the string to a relative date.
+   * @param {string} value The string to parse.
+   * @param {Date} relativeTo The date the value is relative to (defaults to the current date and time)
+   * @param {boolean} useUTC true to use UTC dates; otherwise, the default, false.
+   * @returns The relative Date object. Note that this could be a Date object with an Invalid Date value,
+   * if the unit is incorrect, one of the key words is misspelled (e.g., "tomorow" or "yest")
+   */
   static parse(value, relativeTo = new Date(), useUTC = false) {
     if (typeof relativeTo === 'boolean') {
       useUTC = relativeTo;

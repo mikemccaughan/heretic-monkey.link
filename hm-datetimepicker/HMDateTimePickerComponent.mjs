@@ -1,6 +1,7 @@
 import RelativeDateParser from './RelativeDateParser.mjs';
 import TokenList from './TokenList.mjs';
 import DateHelper from './DateHelper.mjs';
+import BasicUtilities from './BasicUtilities.mjs';
 class DateCache {
   static allDatesInYear = {};
   static allDatesInMonth = {};
@@ -1230,7 +1231,7 @@ div.picker-footer {
       weekStartsOn,
     } = this.createDataset(this);
 
-    this.useUTC = ['true', 'yes', 'y'].includes(useUTC?.toLowerCase());
+    this.useUTC = BasicUtilities.parseBoolean(useUTC);
     this.useYearAndMonthTabs = useYearAndMonthTabs || !useYearAndMonthSelects;
     this.useYearAndMonthSelects =
       useYearAndMonthSelects || !useYearAndMonthTabs;
@@ -1298,12 +1299,12 @@ div.picker-footer {
       }
     }
 
-    this.showManualEntry = ['true', 'yes', 'y'].includes(showManualEntry?.toLowerCase());
-    this.allowManualEntry = ['true', 'yes', 'y'].includes(allowManualEntry?.toLowerCase());
-    this.closePanelOnDateSelect = ['true', 'yes', 'y'].includes(closePanelOnDateSelect?.toLowerCase());
-    this.closePanelOnTimeSelect = ['true', 'yes', 'y'].includes(closePanelOnTimeSelect?.toLowerCase());
-    this.showAllMonths = ['true', 'yes', 'y'].includes(showAllMonths?.toLowerCase());
-    this.showAllYears = ['true', 'yes', 'y'].includes(showAllYears?.toLowerCase());
+    this.showManualEntry = BasicUtilities.parseBoolean(showManualEntry);
+    this.allowManualEntry = BasicUtilities.parseBoolean(allowManualEntry);
+    this.closePanelOnDateSelect = BasicUtilities.parseBoolean(closePanelOnDateSelect);
+    this.closePanelOnTimeSelect = BasicUtilities.parseBoolean(closePanelOnTimeSelect);
+    this.showAllMonths = BasicUtilities.parseBoolean(showAllMonths);
+    this.showAllYears = BasicUtilities.parseBoolean(showAllYears);
 
     this.showOn = new TokenList(showOn);
     if (showOn.contains('button')) {
