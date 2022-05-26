@@ -68,6 +68,108 @@ class DateCache {
  * | 'hm-dtp-cancel' | Just before closing the panel without submitting the date occurs | Yes (prevents button's default) |
  * | 'hm-dtp-submit' | Just before closing the panel, submitting the date occurs | Yes (prevents button's default) |
  * |------|-------------|-------------|
+ * 
+ * The following CSS custom properties (variables) are defined:
+ * |+-----|+---------|+--------|+------|
+ * | Name | Used for | Default | Notes |
+ * |+-----|+---------|+--------|+------|
+ * | --hm-date-time-picker-host-display | The display property for the host element | flex | |
+ * | --hm-date-time-picker-host-position | The position property for the host element | relative | Should remain relative |
+ * | --hm-date-time-picker-host-max-width | The max-width property for the host element | max-content | |
+ * | --hm-date-time-picker-label-display | The display property for the label element | inline | |
+ * | --hm-date-time-picker-label-font-family | The font-family property for the label element | inherit | |
+ * | --hm-date-time-picker-label-font-size | The font-size property for the label element | 1rem | |
+ * | --hm-date-time-picker-label-after-content | The content property for the label::after pseudo-element | '' | Could be e.g., '*' if required |
+ * | --hm-date-time-picker-label-after-display | The display property for the label::after pseudo-element | none | Could be e.g., inline |
+ * | --hm-date-time-picker-label-after-font-family | The font-family property for the label::after pseudo-element | inherit |  |
+ * | --hm-date-time-picker-label-after-font-size | The font-size property for the label::after pseudo-element | inherit |  |
+ * | --hm-date-time-picker-label-after-color | The color property for the label::after pseudo-element | inherit | Could be e.g., red |
+ * | --hm-date-time-picker-input-background | The background property for the input element |  | |
+ * | --hm-date-time-picker-input-color | The color property for the input element |  | |
+ * | --hm-date-time-picker-input-display | The display property for the input element |  | |
+ * | --hm-date-time-picker-input-font-family | The font-family property for the input element |  | |
+ * | --hm-date-time-picker-input-font-size | The font-size property for the input element |  | |
+ * | --hm-date-time-picker-input-padding | The padding property for the input element |  | |
+ * | --hm-date-time-picker-display | The display property for the panel element (the "drop-down" element) when displayed | flex | |
+ * | --hm-date-time-picker-bg-color | The background-color property for the panel element (the "drop-down" element) when displayed | white | |
+ * | --hm-date-time-picker-flex-flow | The flex-flow property for the panel element (the "drop-down" element) when displayed | column nowrap | |
+ * | --hm-date-time-picker-position | The position property for the panel element (the "drop-down" element) when displayed | absolute | A lot of the code depends on this, so change at your own risk... |
+ * | --hm-date-time-picker-top | The top property for the panel element (the "drop-down" element) when displayed | 0.5rem | May need to change based on font-family and font-size, and whether you want the thing to drop up or down |
+ * | --hm-date-time-picker-right | The right property for the panel element (the "drop-down" element) when displayed | 0 | May need to change based on whether you want the thing to drop left or right |
+ * | --hm-date-time-picker-bottom | The bottom property for the panel element (the "drop-down" element) when displayed | auto | May need to change based on font-family and font-size, and whether you want the thing to drop up or down |
+ * | --hm-date-time-picker-left | The left property for the panel element (the "drop-down" element) when displayed | auto | May need to change based on whether you want the thing to drop left or right |
+ * | --hm-date-time-picker-width | The width property for the panel element (the "drop-down" element) when displayed | 18rem | May need to change based on font-family and font-size |
+ * | --hm-date-time-picker-z-index | The z-index property for the panel element (the "drop-down" element) when displayed | 2 | May need to change based on other positioned items you have |
+ * | --hm-date-time-picker-border | The border property for the panel element (the "drop-down" element) when displayed | 1px solid #e0e0e0 |  |
+ * | --hm-date-time-picker-box-shadow | The box-shadow property for the panel element (the "drop-down" element) when displayed | 0 0 4px 1px #ececec |  |
+ * | --hm-date-time-picker-padding | The padding property for the panel element (the "drop-down" element) when displayed | 0.5rem 1rem |  |
+ * | --hm-date-time-picker-entry-button-height | The height property for the buttons displayed as days, months, or years | 34px |  |
+ * | --hm-date-time-picker-entry-button-font-size | The font-size property for the buttons displayed as days, months, or years | 13.3333px |  |
+ * | --hm-date-time-picker-entry-button-border-width | The border-width property for the buttons displayed as days, months, or years | 1px |  |
+ * | --hm-date-time-picker-entry-button-padding | The padding property for the buttons displayed as days, months, or years | 1px 6px |  |
+ * | --hm-date-time-picker-entry-select-border-width | The border-width property for the select element displaying months, or years | 1px |  |
+ * | --hm-date-time-picker-transition | The transition property for the transition between calendar -> year -> month views | all ease-in 150ms | The property portion of the transition shorthand should remain ('all'), unless changed to 'none' |
+ * | --hm-date-time-picker-tab-entry-display | The display property for the tabs displaying months, or years for entry | grid | Defaults to using CSS Grid. The entries below depend on that selection and will not apply if changed  |
+ * | --hm-date-time-picker-tab-entry-grid-columns | The grid-template-columns property the tabs displaying months, or years for entry | repeat(4, fr) | Defaults to four buttons across |
+ * | --hm-date-time-picker-tab-entry-grid-rows | The grid-template-rows property the tabs displaying months, or years for entry | repeat(6, fr) | Defaults to six buttons down |
+ * | --hm-date-time-picker-tab-entry-place-items | The place-items property the tabs displaying months, or years for entry | stretch center | Defaults to stretching the buttons to fit 4 across and 6 down |
+ * | --hm-date-time-picker-calendar-header-label-display | The display property for labels within the calendar header | inline-block | Note that labels by default are positioned -100000px left (see below) and thus not visible, but still readable by assistive technologies |
+ * | --hm-date-time-picker-calendar-header-label-position | The position property for labels within the calendar header | absolute | |
+ * | --hm-date-time-picker-calendar-header-label-left | The left property for labels within the calendar header | -10000px | |
+ * | --hm-date-time-picker-month-select-entry-flex | The flex property for the select element used for selecting a month | 1 1 39% | |
+ * | --hm-date-time-picker-year-select-entry-flex | The flex property for the select element used for selecting a year | 1 1 39% | |
+ * | --hm-date-time-picker-tab-entry-month-year-flex | The flex property for the button element used for opening the tab for year selection | 1 1 69% | |
+ * | --hm-date-time-picker-month-nav-background | The background property for the button elements used for navigating months | transparent | |
+ * | --hm-date-time-picker-month-nav-border | The border property for the button elements used for navigating months | 1px solid transparent | |
+ * | --hm-date-time-picker-month-nav-border-radius | The border-radius property for the button elements used for navigating months | 0 | |
+ * | --hm-date-time-picker-month-nav-color | The color property for the button elements used for navigating months | inherit | |
+ * | --hm-date-time-picker-month-nav-min-height | The min-height property for the button elements used for navigating months | 24px | |
+ * | --hm-date-time-picker-month-nav-min-width | The min-width property for the button elements used for navigating months | 24px | |
+ * | --hm-date-time-picker-month-nav-position | The position property for the button elements used for navigating months | relative | |
+ * | --hm-date-time-picker-month-nav-padding | The padding property for the button elements used for navigating months | 0 | |
+ * | --hm-date-time-picker-month-nav-text-indent | The text-indent property for the button elements used for navigating months | -10000px | Text placed in the button itself is off screen, but available for accessibility technology. |
+ * | --hm-date-time-picker-month-nav-before-color | The color property for the ::before pseudo-elements used for navigating months | black | The ::before pseudo-elements are used for the icons |
+ * | --hm-date-time-picker-month-nav-before-font-size | The font-size property for the ::before pseudo-elements used for navigating months | 1rem | The ::before pseudo-elements are used for the icons |
+ * | --hm-date-time-picker-month-nav-before-height | The height property for the ::before pseudo-elements used for navigating months | 24px | The ::before pseudo-elements are used for the icons |
+ * | --hm-date-time-picker-month-nav-before-left | The left property for the ::before pseudo-elements used for navigating months | 0 | The ::before pseudo-elements are used for the icons |
+ * | --hm-date-time-picker-month-nav-before-position | The position property for the ::before pseudo-elements used for navigating months | absolute | The ::before pseudo-elements are used for the icons |
+ * | --hm-date-time-picker-month-nav-before-text-indent | The text-indent property for the ::before pseudo-elements used for navigating months | 0 | The ::before pseudo-elements are used for the icons |
+ * | --hm-date-time-picker-month-nav-before-top | The top property for the ::before pseudo-elements used for navigating months | 0 | The ::before pseudo-elements are used for the icons |
+ * | --hm-date-time-picker-month-nav-before-width | The width property for the ::before pseudo-elements used for navigating months | 24px | The ::before pseudo-elements are used for the icons |
+ * | --hm-date-time-picker-month-prev-before-content | The content property for the ::before pseudo-element used for navigating to the previous month | '⮜' | The ::before pseudo-elements are used for the icons |
+ * | --hm-date-time-picker-month-next-before-content | The content property for the ::before pseudo-element used for navigating to the next month | '⮞' | The ::before pseudo-elements are used for the icons |
+ * | --hm-date-time-picker-calendar-entry-body-display | The display property for the body of the calendar entry tab | grid | Defaults to using CSS Grid with 7 columns. Other properties depend on this value |
+ * | --hm-date-time-picker-calendar-entry-body-grid-columns | The grid-template-columns property for the body of the calendar entry tab | repeat(7, 1fr) |  |
+ * | --hm-date-time-picker-calendar-entry-body-grid-place-items | The place-items property for the body of the calendar entry tab | stretch center |  |
+ * | --hm-date-time-picker-calendar-entry-body-margin | The margin property for the body of the calendar entry tab | 1rem 0 |  |
+ * | --hm-date-time-picker-entry-button-background | The background shorthand property for the buttons used to select a day, month, or year | white | |
+ * | --hm-date-time-picker-entry-button-border | The border shorthand property for the buttons used to select a day, month, or year | 1px solid #e0e0e0 | |
+ * | --hm-date-time-picker-entry-button-border-radius | The border-radius shorthand property for the buttons used to select a day, month, or year | 0 | |
+ * | --hm-date-time-picker-entry-button-width | The width property for the buttons used to select a day, month, or year | 100% | |
+ * | --hm-date-time-picker-entry-button-hover-background-color | The background-color property for when the buttons used to select a day, month, or year are hovered | #e0e0e0 | |
+ * | --hm-date-time-picker-entry-button-hover-cursor | The cursor property for when the buttons used to select a day, month, or year are hovered | pointer | |
+ * | --hm-date-time-picker-entry-button-disabled-background-color | The background-color property for when the buttons used to select a day, month, or year are disabled | #e0e0e0 | |
+ * | --hm-date-time-picker-entry-button-disabled-cursor | The cursor property for when the buttons used to select a day, month, or year are disabled | not-allowed | |
+ * | --hm-date-time-picker-entry-button-other-background-color | The background-color property for when the buttons used to select a day, month, or year are from another month | rgba(0, 0, 0, 0.025) | |
+ * | --hm-date-time-picker-entry-button-other-color | The color property for when the buttons used to select a day, month, or year are from another month | #595959 | |
+ * | --hm-date-time-picker-entry-button-other-font-style | The font-style property for when the buttons used to select a day, month, or year are from another month | italic | |
+ * | --hm-date-time-picker-entry-button-other-disabled-background-color | The background-color property for when the buttons used to select a day, month, or year are from another month and disabled | rgba(0, 0, 0, 0.025) | |
+ * | --hm-date-time-picker-entry-button-other-disabled-cursor | The cursor property for when the buttons used to select a day, month, or year are from another month and disabled | not-allowed | |
+ * | --hm-date-time-picker-entry-button-today-background-color | The background-color property for when the button used to select a day, month, or year is not from another month and is today | lemonchiffon | |
+ * | --hm-date-time-picker-entry-button-today-color | The color property for when the button used to select a day, month, or year is not from another month and is today  | #000000 | |
+ * | --hm-date-time-picker-entry-button-today-disabled-background-color | The background-color property for when the button used to select a day, month, or year is not from another month and is today and is disabled | white | |
+ * | --hm-date-time-picker-entry-button-today-disabled-color | The color property for when the button used to select a day, month, or year is not from another month and is today and is disabled | #000000 | |
+ * | --hm-date-time-picker-entry-button-selected-background-color | The background-color property for when the button used to select a day, month, or year is not from another month and is selected | lightblue | |
+ * | --hm-date-time-picker-entry-button-selected-color | The color property for when the button used to select a day, month, or year is not from another month and is selected | #000000 | |
+ * | --hm-date-time-picker-entry-button-selected-disabled-background-color | The background-color property for when the button used to select a day, month, or year is not from another month and is selected and disabled | lightpink | |
+ * | --hm-date-time-picker-entry-button-selected-disabled-color | The color property for when the button used to select a day, month, or year is not from another month and is selected and disabled | #000000 | |
+ * | --hm-date-time-picker-entry-input-min-height | The min-height property for the input element used for raw entry of values | 32px | |
+ * | --hm-date-time-picker-footer-button-min-height | The min-height property for the buttons in the footer | 34px | |
+ * | --hm-date-time-picker-footer-button-border | The border property for the buttons in the footer | 1px solid | Note that by default no color is provided so any existing colors for the borders remain |
+ * | --hm-date-time-picker-footer-text-align | The text-align property for the footer | right | |
+ * | --hm-date-time-picker-footer-button-cancel-background | The background shorthand property for the cancel button in the footer | transparent | |
+ * | --hm-date-time-picker-footer-button-submit-background | The background shorthand property for the submit button in the footer | orange | |
+ * | --hm-date-time-picker-footer-button-submit-color | The color property for the submit button in the footer | black | |
  */
 class HMDateTimePicker extends HTMLElement {
   #format = undefined;
@@ -96,6 +198,7 @@ class HMDateTimePicker extends HTMLElement {
   display: var(--hm-date-time-picker-label-after-display, none);
   font-family: var(--hm-date-time-picker-label-after-font-family, inherit); 
   font-size: var(--hm-date-time-picker-label-after-font-size, 1rem); 
+  color: var(--hm-date-time-picker-label-after-color, inherit); 
 }
 input.date-time {
   background: var(--hm-date-time-picker-input-background, );
@@ -194,37 +297,37 @@ input.date-time {
 .date-picker:not(.date-time-picker) .calendar-entry button,
 .date-picker:not(.date-time-picker) .year-entry button,
 .date-picker:not(.date-time-picker) .month-entry button {
-  transition: all ease-in 150ms;
+  transition: var(--hm-date-time-picker-transition, all ease-in 150ms);
 }
 .date-picker:not(.date-time-picker) .year-entry,
 .date-picker:not(.date-time-picker) .month-entry {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(6, 1fr);
-  place-items: stretch center;
-  transition: all ease-in 150ms;
+  display: var(--hm-date-time-picker-tab-entry-display, grid);
+  grid-template-columns: var(--hm-date-time-picker-tab-entry-grid-columns, repeat(4, 1fr));
+  grid-template-rows: var(--hm-date-time-picker-tab-entry-grid-rows, repeat(6, 1fr));
+  place-items: var(--hm-date-time-picker-tab-entry-grid-place-items, stretch center);
+  transition: var(--hm-date-time-picker-transition, all ease-in 150ms);
 }
 
 .calendar-entry-header {
-  display: flex;
+  display: var(--hm-date-time-picker-calendar-header-display, flex);
 }
 
 .calendar-entry-header label {
-  display: inline-block;
-  position: absolute;
-  left: -10000px;
+  display: var(--hm-date-time-picker-calendar-header-label-display, inline-block);
+  position: var(--hm-date-time-picker-calendar-header-label-position, absolute);
+  left: var(--hm-date-time-picker-calendar-header-label-left, -10000px);
 }
 
 .month-utc {
-  flex: 1 1 30%;
+  flex: var(--hm-date-time-picker-month-select-entry-flex, 1 1 30%);
 }
 
 .year-utc {
-  flex: 1 1 30%;
+  flex: var(--hm-date-time-picker-year-select-entry-flex, 1 1 30%);
 }
 
 .month-year-selector {
-  flex: 1 1 60%;
+  flex: var(--hm-date-time-picker-tab-entry-month-year-flex, 1 1 60%);
 }
 
 .date-time-picker.show.use-tabs .month-utc,
@@ -236,86 +339,87 @@ input.date-time {
 }
 
 .month-nav {
-  text-indent: -10000px;
-  min-width: 24px;
-  border: 1px solid transparent;
-  border-radius: 0;
-  background: transparent;
-  position: relative;
-  min-height: 24px;
-  padding: 0;
+  background: var(--hm-date-time-picker-month-nav-background, transparent);
+  border: var(--hm-date-time-picker-month-nav-border, 1px solid transparent);
+  border-radius: var(--hm-date-time-picker-month-nav-border-radius, 0);
+  color: var(--hm-date-time-picker-month-nav-color, inherit);
+  min-height: var(--hm-date-time-picker-month-nav-min-height, 24px);
+  min-width: var(--hm-date-time-picker-month-nav-min-width, 24px);
+  position: var(--hm-date-time-picker-month-nav-position, relative);
+  padding: var(--hm-date-time-picker-month-nav-padding, 0);
+  text-indent: var(--hm-date-time-picker-month-nav-text-indent, -10000px);
 }
 
 .month-nav::before {
-  left: 0;
-  position: absolute;
-  font-size: 1rem;
-  top: 0;
-  width: 24px;
-  height: 24px;
-  color: black;
-  text-indent: 0;
+  color: var(--hm-date-time-picker-month-nav-before-color, black);
+  font-size: var(--hm-date-time-picker-month-nav-before-font-size, 1rem);
+  height: var(--hm-date-time-picker-month-nav-before-height, 24px);
+  left: var(--hm-date-time-picker-month-nav-before-left, 0);
+  position: var(--hm-date-time-picker-month-nav-before-position, absolute);
+  text-indent: var(--hm-date-time-picker-month-nav-before-text-indent, 0);
+  top: var(--hm-date-time-picker-month-nav-before-top, 0);
+  width: var(--hm-date-time-picker-month-nav-before-width, 24px);
 }
 
 .month-prev-utc::before {
-  content: '⮜';
+  content: var(--hm-date-time-picker-month-prev-before-content, '⮜');
 }
 
 .month-next-utc::before {
-  content: '⮞';
+  content: var(--hm-date-time-picker-month-next-before-content, '⮞');
 }
 
 .calendar-entry-body {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr [day]);
-  place-items: stretch center;
-  margin: 1rem 0;
+  display: var(--hm-date-time-picker-calendar-entry-body-display, grid);
+  grid-template-columns: var(--hm-date-time-picker-calendar-entry-body-grid-columns, repeat(7, 1fr));
+  place-items: var(--hm-date-time-picker-calendar-entry-body-grid-place-items, stretch center);
+  margin: var(--hm-date-time-picker-calendar-entry-body-margin, 1rem 0);
 }
 button.calendar-entry-body-date,
 button.year-entry-year,
 button.month-entry-month {
-  width: 100%;
-  height: 34px;
-  border: 1px solid #e0e0e0;
-  border-radius: 0;
-  background: white;
+  width: var(--hm-date-time-picker-entry-button-width, 100%);
+  height: var(--hm-date-time-picker-entry-button-height, 34px);
+  border: var(--hm-date-time-picker-entry-button-border, 1px solid #e0e0e0);
+  border-radius: var(--hm-date-time-picker-entry-button-border-radius, 0);
+  background: var(--hm-date-time-picker-entry-button-background, white);
 }
 button.calendar-entry-body-date:hover,
 button.year-entry-year:hover,
 button.month-entry-month:hover {
-  background-color: #e0e0e0;
-  cursor: pointer;
+  background-color: var(--hm-date-time-picker-entry-button-hover-background-color, #e0e0e0);
+  cursor: var(--hm-date-time-picker-entry-button-hover-cursor, pointer);
 }
 button.calendar-entry-body-date:disabled,
 button.year-entry-year:disabled,
 button.month-entry-month:disabled {
-  background: white;
-  cursor: not-allowed;
+  background-color: var(--hm-date-time-picker-entry-button-disabled-background-color, white);
+  cursor: var(--hm-date-time-picker-entry-button-disabled-cursor, not-allowed);
 }
 button.calendar-entry-body-date[data-date-other='true'],
 button.year-entry-year[data-date-other='true'],
 button.month-entry-month[data-date-other='true'] {
-  background-color: rgba(0, 0, 0, 0.025);
-  color: #595959;
-  font-style: italic;
+  background-color: var(--hm-date-time-picker-entry-button-other-background-color, rgba(0, 0, 0, 0.025));
+  color: var(--hm-date-time-picker-entry-button-other-color, #595959);
+  font-style: var(--hm-date-time-picker-entry-button-other-font-style, italic);
 }
 button.calendar-entry-body-date[data-date-other='true']:disabled,
 button.year-entry-year[data-date-other='true']:disabled,
 button.month-entry-month[data-date-other='true']:disabled {
-  background-color: rgba(0, 0, 0, 0.025);
-  cursor: not-allowed;
+  background-color: var(--hm-date-time-picker-entry-button-other-disabled-background-color, rgba(0, 0, 0, 0.025));
+  cursor: var(--hm-date-time-picker-entry-button-other-disabled-cursor, not-allowed);
 }
 button.calendar-entry-body-date[data-is-today='true'][data-date-other='false'],
 button.year-entry-year[data-is-today='true'][data-date-other='false'],
 button.month-entry-month[data-is-today='true'][data-date-other='false'] {
-  background-color: lemonchiffon;
-  color: #000000;
+  background-color: var(--hm-date-time-picker-entry-button-today-background-color, lemonchiffon);
+  color: var(--hm-date-time-picker-entry-button-today-color, #000000);
 }
 button.calendar-entry-body-date[data-is-today='true'][data-date-other='false']:disabled,
 button.year-entry-year[data-is-today='true'][data-date-other='false']:disabled,
 button.month-entry-month[data-is-today='true'][data-date-other='false']:disabled {
-  background-color: white;
-  color: #000000;
+  background-color: var(--hm-date-time-picker-entry-button-today-disabled-background-color, white);
+  color: var(--hm-date-time-picker-entry-button-today-disabled-color, #000000);
 }
 button.calendar-entry-body-date[data-is-selected='true'],
 button.year-entry-year[data-is-selected='true'],
@@ -323,36 +427,35 @@ button.month-entry-month[data-is-selected='true'],
 button.calendar-entry-body-date[data-is-today='true'][data-date-other='false'][data-is-selected='true'],
 button.year-entry-year[data-is-today='true'][data-date-other='false'][data-is-selected='true'],
 button.month-entry-month[data-is-today='true'][data-date-other='false'][data-is-selected='true'] {
-  background-color: lightblue;
-  color: #000000;
+  background-color: var(--hm-date-time-picker-entry-button-selected-background-color, lightblue);
+  color: var(--hm-date-time-picker-entry-button-selected-color, #000000);
 }
 button.calendar-entry-body-date[data-is-selected='true'][data-date-other='false']:disabled,
 button.year-entry-year[data-is-selected='true'][data-date-other='false']:disabled,
 button.month-entry-month[data-is-selected='true'][data-date-other='false']:disabled {
-  background-color: lightpink;
-  color: #000000;
+  background-color: var(--hm-date-time-picker-entry-button-selected-disabled-background-color, lightpink);
+  color: var(--hm-date-time-picker-entry-button-selected-disabled-color, #000000);
 }
 .date-time-picker input {
-  min-height: 32px;
+  min-height: var(--hm-date-time-picker-entry-input-min-height, 32px);
 }
 
 button.picker-footer {
-  min-height: 34px;
-  border-style: solid;
-  border-width: 1px;
+  min-height: var(--hm-date-time-picker-footer-button-min-height, 34px);
+  border: var(--hm-date-time-picker-footer-button-border, 1px solid);
 }
 
 div.picker-footer {
-  text-align: right;
+  text-align: var(--hm-date-time-picker-footer-text-align, right);
 }
 
 .picker-footer-cancel {
-  background: transparent;
+  background: var(--hm-date-time-picker-footer-button-cancel-background, transparent);
 }
 
 .picker-footer-submit {
-  background: orange;
-  color: black;
+  background: var(--hm-date-time-picker-footer-button-submit-background, orange);
+  color: var(--hm-date-time-picker-footer-button-submit-color, black);
 }`;
     this.shadowRoot.appendChild(cssLink);
 
@@ -410,6 +513,12 @@ div.picker-footer {
     );
     console.timeEnd(`constructor for instance ${this.instanceId}`);
   }
+  /**
+   * Gets or sets the format or formats for this picker.
+   * @description Allows for multiple formats for validation, but the first format in the array 
+   * will be used for formatting selected dates. Uses the format described by the document's or 
+   * browser's default language if not provided.
+   */
   get format() {
     return this.#format;
   }
@@ -421,6 +530,12 @@ div.picker-footer {
       }
     }
   }
+  /**
+   * Gets or sets the language code(s) ("locale(s)") to be used by the formatter and parser for dates.
+   * @description Allows for multiple languages for validation, but the first language in the array 
+   * will be used for formatting selected dates. Uses the language described by the document's or 
+   * browser's default language if not provided.
+   */
   get lang() {
     return this.#lang;
   }
@@ -432,6 +547,10 @@ div.picker-footer {
       }
     }
   }
+  /**
+   * Gets or sets the IANA time zone code to be used by the formatter and parser for dates.
+   * @description Allows for only a single time zone to be used. Defaults to 'UTC'.
+   */
   get timeZone() {
     return this.#timeZone;
   }
@@ -443,6 +562,9 @@ div.picker-footer {
       }
     }
   }
+  /**
+   * Gets the language codes, formats, and time zone as an object (with language code presented as locale).
+   */
   get dateHelperOptions() {
     return {
       locale: this.lang,
@@ -450,30 +572,66 @@ div.picker-footer {
       timeZone: this.timeZone
     };
   }
+  /**
+   * Invoked when the HMDateTimePicker is first connected to the document's DOM.
+   */
   connectedCallback() {
-    console.log('connectedCallback');
     if (this.isConnected) {
       this.init();
     }
   }
+  /**
+   * Invoked when the HMDateTimePicker is disconnected from the document's DOM.
+   */
   disconnectedCallback() {
     this.destroy();
-    console.log('disconnectedCallback');
   }
+  /**
+   * Invoked when the HMDateTimePicker is moved to a new document.
+   */
   adoptedCallback() {
-    console.log('adoptedCallback');
+    // Currently no-op
   }
+  /**
+   * Invoked when one of the HMDateTimePicker's attributes is added, removed, or changed.
+   */
   attributeChangedCallback(name, oldValue, newValue) {
     console.log('attributeChangedCallback', name, oldValue, newValue);
+    switch (name) {
+      case 'min-date':
+        case 'minDate':
+          this.minDate = newValue;
+          break;
+          case 'max-date':
+            case 'maxDate':
+              this.maxDate = newValue;
+              break;
+              case 'show-on':
+                case 'showOn':
+                  this.showOn = newValue;
+                  break;
+        }
   }
+  /**
+   * Gets an array of attributes that should cause attributeChangedCallback to be called during the 
+   * lifetime of the HMDateTimePicker.
+   */
   static get observedAttributes() {
-    return ['min-date', 'max-date', 'show-on'];
+    return ['min-date', 'minDate', 'max-date', 'maxDate', 'show-on', 'showOn'];
   }
+  /**
+   * Gets a NodeList of the buttons used for selecting a specific date, whether they are disabled or not.
+   */
   get dateButtons() {
     return this.panelElement.querySelectorAll(
       'button.calendar-entry-body-date'
     );
   }
+  /**
+   * Gets an object from the attributes of the element
+   * @param {HTMLElement} element The element from which to create an object.
+   * @returns {object} A hash of the attributes of the element.
+   */
   createDataset(element) {
     return {
       inputClassName:
@@ -560,6 +718,11 @@ div.picker-footer {
       showAllYears: element.getAttribute('showAllYears') ?? element.getAttribute('show-all-yYears') ?? element.getAttribute('show-all'),
     };
   }
+  /**
+   * Parses a weekday from a name or number.
+   * @param {string|number|null} value value to parse as an English weekday name, or a number, or null
+   * @returns if null, null; if string, 0 for Sunday through 6 for Saturday; if number, the number.
+   */
   parseWeekday(value) {
     if (value == null) {
       return value;
@@ -603,6 +766,11 @@ div.picker-footer {
       return parseInt(value, 10);
     }
   }
+  /**
+   * Normalizes a Date (creates a UTC date from a local date, creates a local date from a UTC date)
+   * @param {Date} value The Date from which to extract a normalized Date value
+   * @returns {Date} The normalized Date
+   */
   getDate(value) {
     if (typeof value !== 'object' || Number.isNaN(value.valueOf())) {
       return value;
@@ -622,9 +790,22 @@ div.picker-footer {
     returnValue.wasParsed = true;
     return returnValue;
   }
+  /**
+   * Gets the current Date, using the presently set options.
+   * @returns The current Date, according to the current options.
+   */
   getNow() {
     return DateHelper.now(this.dateHelperOptions);
   }
+  /**
+   * Parses a value as a Date.
+   * @param {Date|undefined|number|string} value The value to parse.
+   * @param {Date|undefined|number|string} defaultValue The default value to use if value is unparseable.
+   * @param {string|string[]} format Defaults to the value of the format property; the format(s) to use
+   * when parsing the value.
+   * @returns The Date, if value was parseable, or the defaultValue, if that was parseable, or an invalid 
+   * Date if nothing worked (anything returned is marked as "parsed")
+   */
   parseDate(value, defaultValue, format = this.format) {
     let returnValue = new Date('Invalid');
     if (typeof value === 'object' && value instanceof Date) {
@@ -657,6 +838,10 @@ div.picker-footer {
     returnValue.wasParsed = true;
     return returnValue;
   }
+  /**
+   * Formats the current value as a string and sets the internal input element's value 
+   * to the formatted value.
+   */
   formatDate() {
     const val = this.value;
     const formatted = DateHelper.formatDate(val, this.dateHelperOptions);
@@ -668,16 +853,30 @@ div.picker-footer {
       ).textContent = myFormatted;
     }
   }
+  /**
+   * Formats the current value as a string and sets the external input element's value 
+   * to the formatted value.
+   */
   setSelectedValue() {
     const val = this.value;
     const formatted = DateHelper.formatDate(val, this.dateHelperOptions);
     this.inputElement.value = formatted;
   }
+  /**
+   * Gets the value of the external input, parses it as a date, and sets the value of
+   * the control to that value (effectively formatting what the user enters in the
+   * format specified)
+   */
   parseInputValue() {
     const val = this.inputElement.value;
     this.value = this.parseDate(val, this.defaultDate);
     this.setSelectedValue();
   }
+  /**
+   * Populates the select element with options representing the months of the year.
+   * @param {Date} monthDate A Date, set to any day in the month to be populated.
+   * @param {number} monthCurrent The currently displayed month, using 0-based indexing
+   */
   populateMonthSelect(monthDate, monthCurrent) {
     console.time('populateMonthSelect');
     this.monthSelect.innerHTML = '';
@@ -695,6 +894,11 @@ div.picker-footer {
     }
     console.timeEnd('populateMonthSelect');
   }
+  /**
+   * Populates the tab with buttons representing the months of the year.
+   * @param {Date} monthDate A Date, set to any date in the month to use
+   * @param {Date} dateDate The Date to use as the selected month
+   */
   populateMonthTab(monthDate, dateDate) {
     console.time('populateMonthTab');
     this.monthEntry.innerHTML = '';
@@ -729,6 +933,10 @@ div.picker-footer {
     }
     console.timeEnd('populateMonthTab');
   }
+  /**
+   * Populates the months of the year, either the select element or the
+   * tab, depending on what the control has been set to use.
+   */
   populateMonths() {
     console.time('populateMonths');
     const dateDate = this.getDate(this.value);
@@ -742,6 +950,12 @@ div.picker-footer {
     }
     console.timeEnd('populateMonths');
   }
+  /**
+   * Populates a select element with years around the current year.
+   * @param {Date} yearDate A Date set to the year to display
+   * @param {number} yearCurrent The current year
+   * @param {number} yearSelected The selected year
+   */
   populateYearSelect(yearDate, yearCurrent, yearSelected) {
     console.time('populateYearSelect');
     // Faster method for emptying select of its options
@@ -760,6 +974,12 @@ div.picker-footer {
     }
     console.timeEnd('populateYearSelect');
   }
+  /**
+   * Populates the years as buttons shown when the user is selecting a year in a tab
+   * @param {Date} yearDate A Date, set to the year on which to start
+   * @param {number} yearCurrent The current Year
+   * @param {Date} dateDate The selected Date
+   */
   populateYearTab(yearDate, yearCurrent, dateDate) {
     console.time('populateYearTab');
     this.yearEntry.innerHTML = '';
@@ -790,6 +1010,10 @@ div.picker-footer {
     }
     console.timeEnd('populateYearTab');
   }
+  /**
+   * Populates the years, either the select element or the
+   * tab, depending on what the control has been set to use.
+   */
   populateYears() {
     console.time('populateYears');
     const dateDate = this.getDate(this.value);
@@ -804,6 +1028,11 @@ div.picker-footer {
     }
     console.timeEnd('populateYears');
   }
+  /**
+   * Indicates if the specified date is disabled or not
+   * @param {Date} date The Date to determine whether it is disabled
+   * @returns true if the date is to be disabled; otherwise, false
+   */
   dateIsDisabled(date) {
     return (
       this.disableDate(date) ||
@@ -812,6 +1041,10 @@ div.picker-footer {
       DateHelper.isAfterDay(date, this.maxDate)
     );
   }
+  /**
+   * Clears the values of any data in the element.
+   * @param {HTMLOrForeignElement} el The element whose dataset will be cleared.
+   */
   clearDataset(el) {
     if (!el || !el.dataset) {
       throw new Error(
@@ -822,6 +1055,9 @@ div.picker-footer {
       delete el.dataset[key];
     }
   }
+  /**
+   * Populates the buttons for the days of the month in the calendar view.
+   */
   populateDates() {
     console.time('populateDates');
     const dateDate = new Date(this.value);
@@ -860,6 +1096,11 @@ div.picker-footer {
     }
     console.timeEnd('populateDates');
   }
+  /**
+   * Calculates all of the Dates in the month and year of the given monthDate
+   * @param {Date} monthDate A Date in the month for which dates will be calculated
+   * @returns An array of all Dates in the given month and year (may be cached)
+   */
   calculateAllDatesInMonth(monthDate) {
     const keyParts = this.monthKeyFormatter.formatToParts(monthDate);
     const key =
@@ -879,6 +1120,11 @@ div.picker-footer {
     DateCache.allDatesInMonth[key] = allDates;
     return allDates;
   }
+  /**
+   * Calculates all dates in a year, caches and returns the array
+   * @param {Date} yearDate A Date in the year whose Dates will be calculated
+   * @returns An array of all Dates in the given year (may be cached)
+   */
   calculateAllDatesInYear(yearDate) {
     const year = this.useUTC
       ? yearDate.getUTCFullYear()
@@ -901,12 +1147,20 @@ div.picker-footer {
     DateCache.allDatesInYear[key] = allDates;
     return allDates;
   }
+  /**
+   * Indicates whether all dates in the array given are to be disabled or not.
+   * @param {Date[]} dates The array of Dates to examine.
+   * @returns true if all dates in the array are to be disabled; otherwise, false.
+   */
   allDatesAreDisabled(dates) {
     //console.time(`allDatesAreDisabled (${dates.length} dates)`);
     const allDatesDisabled = dates.every((dt) => this.dateIsDisabled(dt));
     //console.timeEnd(`allDatesAreDisabled (${dates.length} dates)`);
     return allDatesDisabled;
   }
+  /**
+   * Repopulates the months, years, and dates of the control.
+   */
   repopulate() {
     console.time('repopulate');
     this.populateMonths();
@@ -922,6 +1176,15 @@ div.picker-footer {
     this.nextMonth.disabled = this.allDatesAreDisabled(nextMonthDates);
     console.timeEnd('repopulate');
   }
+  /**
+   * Dispatches an event of the given name and reports on whether consumers should
+   * proceed or not.
+   * @param {string} eventName The name of the event to dispatch
+   * @param {Event} originalEvent The original event raised
+   * @param {any} value The value to pass along to consumers of the event
+   * @returns true if either the event's cancelable attribute value is false, 
+   * or the event's preventDefault method was not triggered; otherwise, false
+   */
   dispatchEventAndReport(eventName, originalEvent, value) {
     let proceed = true;
     const event = new CustomEvent(eventName, {
@@ -934,6 +1197,10 @@ div.picker-footer {
     proceed = this.dispatchEvent(event);
     return proceed;
   }
+  /**
+   * Opens the panel if the 'hm-dtp-open' event is not prevented from occurring.
+   * @returns void
+   */
   openPanel() {
     let proceed = this.dispatchEventAndReport('hm-dtp-open', undefined, this.value);
     if (!proceed) {
@@ -944,6 +1211,10 @@ div.picker-footer {
     this.panelElement.setAttribute('aria-expanded', 'true');
     this.shadowRoot.host.setAttribute('aria-expanded', 'true');
   }
+  /**
+   * Closes the panel if the 'hm-dtp-close' event is not prevented.
+   * @returns void
+   */
   closePanel() {
     let proceed = this.dispatchEventAndReport('hm-dtp-close', undefined, this.value);
     if (!proceed) {
@@ -954,11 +1225,19 @@ div.picker-footer {
     this.panelElement.setAttribute('aria-expanded', 'false');
     this.shadowRoot.host.setAttribute('aria-expanded', 'false');
   }
+  /**
+   * Parses the current value of the external input and resets the control
+   * to use the parsed value (or the default if not parseable)
+   */
   parseCurrentText() {
     this.value = this.parseDate(this.inputElement.value, this.defaultDate);
     this.repopulate();
     this.formatDate();
   }
+  /**
+   * Raised when a key is moved down
+   * @param {Event} e The keydown event that triggered this event
+   */
   keyDown(e) {
     console.log('keyDown', e.target, e.key);
     if (
@@ -969,15 +1248,28 @@ div.picker-footer {
       this.openPanel();
     }
   }
+  /**
+   * Raised when the external input element in the control gets focus, 
+   * or the button element is clicked (if the control has one)
+   * @param {Event} e The focus event that triggered this event handler
+   */
   gotFocus(e) {
     console.log('gotFocus', e.target);
     this.parseCurrentText();
     this.openPanel();
   }
+  /**
+   * Raised when the external input element in the control loses focus
+   * @param {Event} e The focusout event that triggered this event handler
+   */
   lostFocus(e) {
     console.log('lostFocus', e.target);
     this.parseInputValue();
   }
+  /**
+   * Raised when the HTML element receives the click event
+   * @param {Event} e The focus event that triggered this event handler
+   */
   somethingElseGotFocus(e) {
     console.log('somethingElseGotFocus', e.target);
     if (
@@ -994,6 +1286,11 @@ div.picker-footer {
       e.stopPropagation();
     }
   }
+  /**
+   * Raised when an entry button in the control is clicked (e.g., calendar date, year, month)
+   * @param {Event} e The event which triggered this event handler
+   * @returns void
+   */
   dateSelected(e) {
     console.log('dateSelected', e.target);
     const newValue = this.parseDate(e.target.dataset.date, undefined, 'yyyy-MM-dd');
@@ -1025,6 +1322,11 @@ div.picker-footer {
         });
     }
   }
+  /**
+   * Raised when the user clicks on the button to navigage to the previous month
+   * @param {Event} e The Event information
+   * @returns void
+   */
   prevClicked(e) {
     console.log('prevClicked', e.target);
     // Make sure that keeping the same selected day (e.g., 31st),
@@ -1051,6 +1353,11 @@ div.picker-footer {
     this.formatDate();
     this.repopulate();
   }
+  /**
+   * Raised when the button is clicked to go to the next month
+   * @param {Event} e Information about the event
+   * @returns void
+   */
   nextClicked(e) {
     console.log('nextClicked', e.target);
     // Make sure that keeping the same selected day (e.g., 31st),
@@ -1077,6 +1384,11 @@ div.picker-footer {
     this.formatDate();
     this.repopulate();
   }
+  /**
+   * Raised when a month is selected from a month select element
+   * @param {Event} e Information about the event
+   * @returns void
+   */
   monthSelected(e) {
     console.log('monthSelected', e.target);
     let newValue = DateHelper.setClosestDayInMonth(this.value, +e.target.value, this.value.getDate());
@@ -1090,6 +1402,11 @@ div.picker-footer {
     this.formatDate();
     this.repopulate();
   }
+  /**
+   * Raise when a year is selected via the year select element
+   * @param {Event} e Information about the event
+   * @returns void
+   */
   yearSelected(e) {
     console.log('yearSelected', e.target);
     let newValue = DateHelper.setClosestDayInYear(this.value, +e.target.value, this.value.getDate());
@@ -1103,12 +1420,21 @@ div.picker-footer {
     this.formatDate();
     this.repopulate();
   }
+  /**
+   * Raised when the button showing the month and year above the calendar is clicked
+   * @param {Event} e Information about the event
+   */
   monthYearClicked(e) {
     console.log('monthYearClicked', e.target);
     e.preventDefault();
     this.datePickerElement.classList.remove('calendar-entry');
     this.datePickerElement.classList.add('year-entry');
   }
+  /**
+   * Raised when the cancel button in the footer is clicked (preventable via hm-dtp-cancel event)
+   * @param {Event} e Information about the event
+   * @returns void
+   */
   cancelClicked(e) {
     console.log('cancelClicked', e.target);
     let proceed = this.dispatchEventAndReport('hm-dtp-cancel', e, this.value);
@@ -1119,6 +1445,11 @@ div.picker-footer {
 
     this.closePanel();
   }
+  /**
+   * Raised when the OK button is clicked in the footer (preventable via the hm-dtp-submit event)
+   * @param {Event} e Information about the event
+   * @returns void
+   */
   submitClicked(e) {
     console.log('submitClicked', e.target);
     let proceed = this.dispatchEventAndReport('hm-dtp-submit', e, this.value);
@@ -1130,6 +1461,10 @@ div.picker-footer {
     this.setSelectedValue();
     this.closePanel();
   }
+  /**
+   * Raised when the panel is clicked. Used for delegation of the entry buttons.
+   * @param {Event} e Information about the event
+   */
   panelClicked(e) {
     console.log('panelClicked', e.target);
     if (
@@ -1140,6 +1475,13 @@ div.picker-footer {
       this.dateSelected(e);
     }
   }
+  /**
+   * Gets a single function that will run all of the bound event handlers for a given
+   * event for a given element.
+   * @param {HTMLElement} element The element whose event handler will be retrieved
+   * @param {string} eventName The name of the event whose handler will be retrieved
+   * @returns {Function} The event handler, as a function
+   */
   getBoundEventHandlersAsFunction(element, eventName) {
     return function () {
       const allHandlers = this.boundEventHandlers.get(element) ?? {};
@@ -1152,11 +1494,26 @@ div.picker-footer {
       return wrappedHandlers;
     }.bind(this);
   }
+  /**
+   * Gets the merged bound event handlers for the event named by event name on the element
+   * @param {HTMLElement} element The element for which to retrieve bound handlers
+   * @param {string} eventName The name of the event for which to retrieve bound handlers
+   * @returns The handler which will be fired when the event named by eventName occurs on
+   * element.
+   */
   getMergedBoundEventHandlers(element, eventName) {
     const handlers = this.boundEventHandlers.get(element) ?? {};
     const mergedBoundHandler = handlers['get' + eventName]();
     return mergedBoundHandler;
   }
+  /**
+   * Merges the specified handler with other handlers for the event named by eventName on the
+   * given element.
+   * @param {HTMLElement} element The element for which to merge bound event handlers
+   * @param {string} eventName The name of the event for which to merge bound event handlers
+   * @param {Function} newBoundHandler The handler which will be merged with any existing
+   * bound handlers to form a new handler.
+   */
   mergeBoundHandlers(element, eventName, newBoundHandler) {
     const existingBoundHandlers =
       this.boundEventHandlers.get(element)?.[eventName] ?? [];
@@ -1173,6 +1530,9 @@ div.picker-footer {
       this.getMergedBoundEventHandlers(element, eventName)
     );
   }
+  /**
+   * Removes any bound handlers for events registered for this control.
+   */
   removeBoundHandlers() {
     for (let element of this.elements.filter((el) =>
       this.boundEventHandlers.has(el)
@@ -1189,6 +1549,9 @@ div.picker-footer {
       this.elements.splice(i, 1);
     }
   }
+  /**
+   * Initializes the control.
+   */
   init() {
     console.time('init');
     this.boundEventHandlers = new WeakMap();
@@ -1656,6 +2019,9 @@ div.picker-footer {
 
     console.timeEnd('init');
   }
+  /**
+   * Destroys the control, removing any event handlers and closing the panel if open.
+   */
   destroy() {
     console.time('destroy');
     this.closePanel();
@@ -1663,4 +2029,5 @@ div.picker-footer {
     console.timeEnd('destroy');
   }
 }
+// Registers the element as a Custom Element with the DOM
 customElements.define('hm-date-time-picker', HMDateTimePicker);
