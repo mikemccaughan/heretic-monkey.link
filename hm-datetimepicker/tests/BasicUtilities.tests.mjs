@@ -456,8 +456,8 @@ function runTests() {
       DateComparisonGranularity.Quarter,
       'DateComparisonGranularity.Quarter returns the number of months between two dates divided by three'
     );
-    a = new Date(2021, 0, 1, 0, 0, 0, 0);
-    b = new Date(2021, 6, 1, 0, 0, 0, 0);
+    a = new Date(2021, 6, 1, 0, 0, 0, 0);
+    b = new Date(2021, 0, 1, 0, 0, 0, 0);
     testDiffDates(
       a,
       b,
