@@ -2,9 +2,55 @@
 // an ESM file (basically tacking `export default` before the data).
 import tzdb from './zone1970.mjs';
 /**
+ * Provides an enumeration of the possible granularities by which dates can be compared.
+ */
+ export class DateComparisonGranularity {
+  static Era = "era";
+  static Year = "y";
+  static Quarter = "q";
+  static Month = "mo";
+  static Week = "w";
+  static Day = "d";
+  static Hour = "h";
+  static Minute = "mn";
+  static Second = "s";
+  static Millisecond = "ms";
+  static Default = "ms";
+  static Custom = "?";
+}
+/**
  * Provides basic instance and static date and time formatting functionality.
  */
 export default class DateHelper {
+  // Basic constants of time.
+  /**
+   * Number of milliseconds per second
+   */
+  static msPerSecond = 1000;
+  /**
+   * Number of milliseconds per minute
+   */
+  static msPerMinute = DateHelper.msPerSecond * 60;
+  /**
+   * Number of milliseconds per hour
+   */
+  static msPerHour = DateHelper.msPerMinute * 60;
+  /**
+   * Number of milliseconds per day
+   */
+  static msPerDay = DateHelper.msPerHour * 24;
+  /**
+   * Number of milliseconds per week
+   */
+  static msPerWeek = DateHelper.msPerDay * 7;
+  /**
+   * Number of milliseconds per standard year
+   */
+  static msPerYear = DateHelper.msPerDay * 365;
+  /**
+   * Number of milliseconds per leap year
+   */
+  static msPerLeapYear = DateHelper.msPerDay * 366;
   /***
    * Regular expression for validating BCP 47 language tags, for use as a locale.
    */
@@ -46,7 +92,7 @@ export default class DateHelper {
       name: 'time-full',
     },
     /**
-     * Formats a date and time in a "full" format; cannot be combined with other formatting string.
+     * Formats a date and time in a "full" format; cannot be combined with other formatting strings.
      */
     u: {
       dateStyle: 'full',
@@ -68,7 +114,7 @@ export default class DateHelper {
       name: 'time-long',
     },
     /**
-     * Formats a date and time in a "long" format; cannot be combined with other formatting string.
+     * Formats a date and time in a "long" format; cannot be combined with other formatting strings.
      */
     l: {
       dateStyle: 'long',
@@ -90,7 +136,7 @@ export default class DateHelper {
       name: 'time-medium',
     },
     /**
-     * Formats a date and time in a "medium" format; cannot be combined with other formatting string.
+     * Formats a date and time in a "medium" format; cannot be combined with other formatting strings.
      */
     eu: {
       dateStyle: 'medium',
@@ -112,7 +158,7 @@ export default class DateHelper {
       name: 'time-short',
     },
     /**
-     * Formats a date and time in a "short" format; cannot be combined with other formatting string.
+     * Formats a date and time in a "short" format; cannot be combined with other formatting strings.
      */
     r: {
       dateStyle: 'short',
@@ -212,7 +258,7 @@ export default class DateHelper {
       name: 'weekday-short',
     },
     /**
-     * Formats the weekday name in a "narrow" format; e.g., S, T, S (note that two days can share a narrow name)
+     * Formats the weekday name in a "narrow" format; e.g., S, T, S (note that two different days can share a narrow name)
      */
     EEEEE: {
       weekday: 'narrow',
@@ -509,7 +555,9 @@ export default class DateHelper {
     // (non-leap year) or March 1st (leap year). If such a thing happens, subtract days until the original
     // month is achieved.
     if (useUTC) {
-      if (newValue.getUTCMonth() > month) console.warn(`The date set, "${newValue.toISOString().substring(0, 10)}" is not in the month desired`);
+      if (newValue.getUTCMonth() > month) {
+        console.warn(`The date set, "${newValue.toISOString().substring(0, 10)}" is not in the month desired`);
+      }
       while (newValue.getUTCMonth() > month) {
         newValue.setUTCDate(newValue.getUTCDate() - 1);
       }
@@ -519,7 +567,9 @@ export default class DateHelper {
         newValue.setUTCDate(originalDay);
       }  
     } else {
-      if (newValue.getMonth() > month) console.warn(`The date set, "${newValue.toISOString().substring(0, 10)}" is not in the month desired`);
+      if (newValue.getMonth() > month) {
+        console.warn(`The date set, "${newValue.toISOString().substring(0, 10)}" is not in the month desired`);
+      }
       while (newValue.getMonth() > month) {
         newValue.setDate(newValue.getDate() - 1);
       }
@@ -546,13 +596,17 @@ export default class DateHelper {
       new Date(value.valueOf()) : DateHelper.parseDate(value, {});
     DateHelper.unitToSetter['y'](newValue, year, useUTC);
     if (useUTC) {
-      if (newValue.getUTCFullYear() > year) console.warn(`The date set, "${newValue.toISOString().substring(0, 10)}" is not in the year desired`);
+      if (newValue.getUTCFullYear() > year) {
+        console.warn(`The date set, "${newValue.toISOString().substring(0, 10)}" is not in the year desired`);
+      }
       while (newValue.getUTCFullYear() > year) {
         newValue.setUTCDate(newValue.getUTCDate() - 1);
       }
     // Setting the year to, say, 2021 when the date is Feb 29, 2020, will cause the date to be
     // March 1, 2021 instead of Feb 2021. This makes it Feb 28, 2021.
-    if (newValue.getUTCMonth() > month) console.warn(`The date set, "${newValue.toISOString().substring(0, 10)}" is not in the month desired`);
+    if (newValue.getUTCMonth() > month) {
+      console.warn(`The date set, "${newValue.toISOString().substring(0, 10)}" is not in the month desired`);
+    }
       while (newValue.getUTCMonth() > month) {
         newValue.setUTCDate(newValue.getUTCDate() - 1);
       }
@@ -562,11 +616,15 @@ export default class DateHelper {
         newValue.setUTCDate(originalDay);
       } 
     } else {
-      if (newValue.getFullYear() > year) console.warn(`The date set, "${newValue.toISOString().substring(0, 10)}" is not in the year desired`);
+      if (newValue.getFullYear() > year) {
+        console.warn(`The date set, "${newValue.toISOString().substring(0, 10)}" is not in the year desired`);
+      }
       while (newValue.getFullYear() > year) {
         newValue.setDate(newValue.getDate() - 1);
       }
-      if (newValue.getMonth() > month) console.warn(`The date set, "${newValue.toISOString().substring(0, 10)}" is not in the month desired`);
+      if (newValue.getMonth() > month) {
+        console.warn(`The date set, "${newValue.toISOString().substring(0, 10)}" is not in the month desired`);
+      }
       while (newValue.getMonth() > month) {
         newValue.setDate(newValue.getDate() - 1);
       }
@@ -667,7 +725,7 @@ export default class DateHelper {
    *  "error", a string, containing the errors that have occurred, if any;
    */
   static parseLocales(locales) {
-    if (typeof locales === 'undefined') {
+    if (typeof locales === 'undefined' || locales === null) {
       return { valid: true, value: [] };
     } else if (Array.isArray(locales)) {
       const aggregateResult = locales.reduce(
@@ -739,6 +797,35 @@ export default class DateHelper {
     return tzdb.map((tz) => tz.timeZoneName).sort();
   }
   /**
+   * Gets data about the likely time zone from the IANA Time Zone database
+   * @param {string|string[]|undefined|null} locales The locale "A string with a BCP 47 language tag,
+   * or an array of such strings. To use the browser's default locale, pass
+   * an empty array."
+   * @returns The time zone object, if found in the IANA Time Zone database.
+   */
+  static getProbableClientTimeZone(locales) {
+    const probableClientTimeZoneName = getProbableClientTimeZoneName(locales);
+    return tzdb.find((tz) => tz.timeZoneName === probableClientTimeZoneName);
+  }
+  /**
+   * Gets the name of the time zone of the current environment.
+   * @param {string|string[]|undefined|null} locales The locale "A string with a BCP 47 language tag,
+   * or an array of such strings. To use the browser's default locale, pass
+   * an empty array."
+   * @returns The time zone name, from the resolved options given by Intl.DateTimeFormat. Contrast with
+   * getPossibleClientTimeZoneNames which guesses based on offset from UTC. However, there is nothing
+   * forcing implementations to provide `timeZone` with the resolvedOptions.
+   */
+  static getProbableClientTimeZoneName(locales) {
+    const localesResult = DateHelper.parseLocales(locales);
+    if (!localesResult.valid) {
+      throw new Error(localesResult.error);
+    }
+    const defaultFormat = new Intl.DateTimeFormat(localesResult.value);
+    const options = defaultFormat.resolvedOptions();
+    return options?.timeZone;
+  }
+  /**
    * Gets an array of IANA time zones that match the offset from UTC returned by getTimezoneOffset.
    * @returns {string[]} The array of IANA time zones.
    */
@@ -783,7 +870,7 @@ export default class DateHelper {
     const resolved = defaultFormat.resolvedOptions();
     const parts = defaultFormat.formatToParts(Date.now());
     const formatParts = Object.fromEntries(parts.map((part) => ([part.type, resolved[part.type]])));
-    console.log(formatParts);
+    //console.log(formatParts);
     return formatParts;
   }
   /**
@@ -983,6 +1070,252 @@ export default class DateHelper {
     );
   }
   /**
+   * Gets the differences between two date objects.
+   * @param {Date} a The first date to compare
+   * @param {Date} b The second date to compare
+   * @param {DateComparisonGranularity} dateGranularity The granularity at which to compare the dates
+   * @param {(Date a, Date b) => {amount: number, unit: string})} dateGranularityCustom A custom function by which to compare the dates
+   * @returns {} An object containing the amount and unit by which the two values differ
+   */
+   static diffDates(a, b,
+    dateGranularity = DateComparisonGranularity.Default,
+    dateGranularityCustom = (a, b) => ({ amount: a.valueOf() - b.valueOf(), unit: "ms" })) {
+    const diff = Math.abs(b.valueOf() - a.valueOf());
+    switch (dateGranularity) {
+      case DateComparisonGranularity.Custom:
+        return dateGranularityCustom(a, b);
+      case DateComparisonGranularity.Millisecond:
+        return { amount: diff, unit: DateComparisonGranularity.Millisecond };
+      case DateComparisonGranularity.Second:
+        return { amount: diff / DateHelper.msPerSecond, unit: DateComparisonGranularity.Second };
+      case DateComparisonGranularity.Minute:
+        return { amount: diff / DateHelper.msPerMinute, unit: DateComparisonGranularity.Minute };
+      case DateComparisonGranularity.Hour:
+        return { amount: diff / DateHelper.msPerHour, unit: DateComparisonGranularity.Hour };
+      case DateComparisonGranularity.Day:
+        return { amount: diff / DateHelper.msPerDay, unit: DateComparisonGranularity.Day };
+      case DateComparisonGranularity.Week:
+        return { amount: diff / DateHelper.msPerWeek, unit: DateComparisonGranularity.Week };
+      case DateComparisonGranularity.Month:
+        {
+          // Counting months is a PITA
+          let monthDays = [];
+          const aDate = a.getDate();
+          const aMonth = a.getMonth();
+          const aYear = a.getFullYear();
+          let aDayCount = new Date(aYear, aMonth + 1, 0).getDate();
+          const bDate = b.getDate();
+          const bMonth = b.getMonth();
+          const bYear = b.getFullYear();
+          let bDayCount = new Date(bYear, bMonth + 1, 0).getDate();
+          if (aYear === bYear && aMonth === bMonth) {
+            // e.g. a like 2021-01-01; b like 2021-01-23
+            // -1 to take into account partial days (added back afterwards)
+            monthDays = [{ month: aMonth, dayCount: Math.abs(bDate - aDate) - 1 }];
+          } else if (aYear === bYear && (bMonth - aMonth) === 1) {
+            // e.g. a like 2021-01-01; b like 2021-02-23
+            // -1 to take into account partial days (added back afterwards)
+            aDayCount = aDayCount - aDate - 1;
+            bDayCount = bDate - 1;
+            monthDays = [{ month: aMonth, dayCount: aDayCount }, { month: bMonth, dayCount: bDayCount }];
+          } else if (aYear === bYear && (aMonth - bMonth) === 1) {
+            // e.g. a like 2021-02-01; b like 2021-01-23
+            // -1 to take into account partial days (added back afterwards)
+            aDayCount = aDate - 1;
+            bDayCount = bDayCount - bDate - 1;
+            monthDays = [{ month: aMonth, dayCount: aDayCount }, { month: bMonth, dayCount: bDayCount }];
+          } else if (aYear === bYear && bMonth > aMonth) {
+            // e.g. a like 2021-01-01; b like 2021-04-23
+            // -1 to take into account partial days (added back afterwards)
+            // Make an array of months with the number of days in that month that were used
+            monthDays = Array.from(new Array(bMonth - aMonth), (_, i) => aMonth + i)
+              .map((m) => (
+                m === aMonth ?
+                  // For the month of the earlier date passed in, that's the number of days from that date to
+                  // the end of that month.
+                  { month: m, dayCount: new Date(aYear, m + 1, 0).getDate() - aDate } :
+                  m === bMonth ?
+                    // For the month of the later date passed in, that's the date of that month
+                    { month: m, dayCount: bDate - 1 } :
+                    // For every other year and month, it's the total number of days in the month for that year
+                    { month: m, dayCount: new Date(aYear, m + 1, 0).getDate() }
+              ));
+          } else if (aYear === bYear && aMonth > bMonth) {
+            monthDays = Array.from(new Array(aMonth - bMonth), (_, i) => bMonth + i)
+              .map((m) => (
+                m === bMonth ?
+                  { month: m, dayCount: new Date(bYear, m + 1, 0).getDate() - bDate } :
+                  m === aMonth ?
+                    { month: m, dayCount: aDate - 1 } :
+                    { month: m, dayCount: new Date(bYear, m + 1, 0).getDate() }
+              ));
+          } else if (bYear > aYear) {
+            monthDays = Array.from(new Array(bYear - aYear + 1), (_, i) => aYear + i)
+              .map((y) => {
+                if (y === aYear) {
+                  // If it's the year of the earlier date passed in, get the year, plus an array of months 
+                  // from the month passed in to the end of that year
+                  return [y, Array.from(new Array(12 - aMonth), (_, i) => aMonth + i)];
+                } else if (y !== aYear && y !== bYear) {
+                  // If it's one of the years between the earlier and later dates, get the year, plus an
+                  // array of 12 months.
+                  return [y, Array.from(new Array(12), (_, i) => i)];
+                }
+
+                // Otherwise, it's the year of the later date passed in, so get the yet, plus an array of
+                // months from the month of the later date to the beginning of the year.
+                return [y, Array.from(new Array(bMonth + 1), (_, i) => bMonth - i)];
+              })
+              // Reorganize data from a 2d array to a flat array of objects with year and month properties
+              .map(([year, months]) => [...months.map((month) => ({ year, month }))])
+              .flat()
+              // Sort the array of object by year then month
+              .sort((x, y) => x.year - y.year === 0 ? (x.month - y.month) : (x.year - y.year))
+              // Then add a dayCount property counting the number of days used in that year and month
+              .map(({ y, m }) => (
+                y === aYear && m === aMonth ?
+                  // For the month of the first date passed in, that's the number of days from that date to
+                  // the end of that month.
+                  { year: y, month: m, dayCount: new Date(aYear, m + 1, 0).getDate() - aDate } :
+                  y === bYear && m === bMonth ?
+                    // For the month of the second date passed in, that's the date of that month
+                    { year: y, month: m, dayCount: bDate - 1 } :
+                    // For every other year and month, it's the total number of days in the month for that year
+                    { year: y, month: m, dayCount: new Date(y, m + 1, 0).getDate() }
+              ));
+          } else if (aYear > bYear) {
+            monthDays = Array.from(new Array(aYear - bYear + 1), (_, i) => bYear + i)
+              .map((y) => {
+                if (y === bYear) {
+                  return [y, Array.from(new Array(12 - bMonth), (_, i) => bMonth + i)];
+                } else if (y !== aYear && y !== bYear) {
+                  return [y, Array.from(new Array(12), (_, i) => i)];
+                }
+
+                return [y, Array.from(new Array(aMonth + 1), (_, i) => aMonth - i)];
+              })
+              .map(([year, months]) => [...months.map((month) => ({ year, month }))])
+              .flat()
+              .sort((x, y) => x.year - y.year === 0 ? (x.month - y.month) : (x.year - y.year))
+              .map(({ y, m }) => (
+                y === bYear && m === bMonth ?
+                  { year: y, month: m, dayCount: new Date(bYear, m + 1, 0).getDate() - bDate } :
+                  y === aYear && m === aMonth ?
+                    { year: y, month: m, dayCount: aDate - 1 } :
+                    { year: y, month: m, dayCount: new Date(y, m + 1, 0).getDate() }
+              ));
+          }
+          // Got total number of days, need to add on number of ms difference
+          let addOnTime = 0;
+          // Creates four variables with the number of milliseconds from one of the Dates specified to midnight of the same day,
+          // and to midnight of the next day. BOD = Beginning of Day = midnight on the date given. EOD = End of Day = midnight on the next day.
+          const aTimeFromBOD = a.valueOf() - (new Date(a.getFullYear(), a.getMonth(), a.getDate(), 0, 0, 0, 0).valueOf());
+          const aTimeToEOD = (new Date(a.getFullYear(), a.getMonth(), a.getDate() + 1, 0, 0, 0, 0).valueOf()) - a.valueOf();
+          const bTimeFromBOD = b.valueOf() - (new Date(b.getFullYear(), b.getMonth(), b.getDate(), 0, 0, 0, 0).valueOf());
+          const bTimeToEOD = (new Date(b.getFullYear(), b.getMonth(), b.getDate() + 1, 0, 0, 0, 0).valueOf()) - b.valueOf();
+          if (a.valueOf() > b.valueOf()) {
+            addOnTime = aTimeFromBOD + bTimeToEOD;
+          } else if (a.valueOf() < b.valueOf()) {
+            addOnTime = aTimeToEOD + bTimeFromBOD;
+          }
+          monthDays = monthDays.map(({ dayCount, month, year }) => ({
+            totalMs: new Date(year ?? aYear, month + 1, 0).getDate() * DateHelper.msPerDay,
+            year: (year ?? aYear),
+            ms: dayCount * DateHelper.msPerDay,
+            month
+          }));
+          // The additional time is added to the first month's number of milliseconds because a) there could be only one month and
+          // b) it seemed like a good idea at the time.
+          return {
+            amount: monthDays.reduce((agg, cur, idx) => agg + ((cur.ms + (idx === 0 ? addOnTime : 0)) / cur.totalMs), 0),
+            unit: DateComparisonGranularity.Month
+          };
+        }
+      case DateComparisonGranularity.Quarter:
+        return {
+          amount: DateHelper.diffDates(a, b, DateComparisonGranularity.Month).amount / 3,
+          unit: DateComparisonGranularity.Quarter,
+        };
+      case DateComparisonGranularity.Year:
+        {
+          const aYear = a.getFullYear();
+          const bYear = b.getFullYear();
+          const mod4 = (y) => y % 4 === 0;
+          const mod100 = (y) => y % 100 === 0;
+          const mod400 = (y) => y % 400 === 0;
+          const isLeap = (year) => mod4(year) && !mod100(year) || mod400(year);
+          // years will be an array of all of the years between a and b (might be one year)
+          const years = bYear > aYear ?
+            Array.from(new Array(bYear - aYear + 1), (_, i) => aYear + i) :
+            bYear === aYear ?
+              [bYear] :
+              Array.from(new Array(aYear - bYear + 1), (_, i) => bYear + i);
+          const hasLeap = years.some(y => isLeap(y));
+          if (!hasLeap) {
+            return { amount: diff / DateHelper.msPerYear, unit: DateComparisonGranularity.Year };
+          } else {
+            const yearCounts = years.map(y => ({
+              year: y,
+              ms: isLeap(y) ?
+                DateHelper.msPerLeapYear :
+                DateHelper.msPerYear
+            }))
+            .map(({ year, ms }) =>
+              year === aYear ?
+                ({
+                  year,
+                  ms,
+                  message: `diff "${a.toISOString()}" and "${new Date(aYear + 1, 0, 1, 0, 0, 0, 0).toISOString()}"`,
+                  amt: DateHelper.diffDates(a, new Date(aYear + 1, 0, 1, 0, 0, 0, 0)).amount,
+                  count: DateHelper.diffDates(a, new Date(aYear + 1, 0, 1, 0, 0, 0, 0)).amount / ms
+                }) :
+                year === bYear ?
+                  ({
+                    year,
+                    ms,
+                    message: `diff "${new Date(bYear - 1, 11, 32, 0, 0, 0, 0).toISOString()}" and "${b.toISOString()}"`,
+                    amt: DateHelper.diffDates(new Date(bYear - 1, 11, 32, 0, 0, 0, 0), b).amount,
+                    count: DateHelper.diffDates(new Date(bYear - 1, 11, 32, 0, 0, 0, 0), b).amount / ms
+                  }) :
+                  ({
+                    year,
+                    ms,
+                    message: 'whole year',
+                    amt: ms,
+                    count: ms / ms
+                  })
+            );
+            return {
+              amount: yearCounts.reduce((agg, cur) => agg + cur.count, 0),
+              unit: DateComparisonGranularity.Year
+            };
+          }
+        }
+      case DateComparisonGranularity.Era:
+        // Era in this case is defined the same as in Intl.DateTimeFormat, i.e., are both dates in AD or BC?
+        const eraFormatter = new Intl.DateTimeFormat([], { era: 'short' });
+        const eraIsTheSame = eraFormatter.formatToParts(a).find(p => p.type === 'era').value === 
+          eraFormatter.formatToParts(b).find(p => p.type === 'era').value;
+        return { 
+            amount: eraIsTheSame ? 0 : Number.POSITIVE_INFINITY, 
+            unit: DateComparisonGranularity.Era 
+          };
+    }
+    return diff;
+  }
+  /**
+   * Indicates whether a is the same date as b at the specified granularity.
+   * @param {Date} a The Date that may be the same as a
+   * @param {Date} b The Date that is the subject of comparison
+   * @param {DateComparisonGranularity} granularity The granularity at which the specified values can be considered the same.
+   * @returns {boolean} true of a and b have the same date at the specified granularity. Uses local time.
+   */
+  static isSame(a, b, granularity) {
+    var similarity = DateHelper.diffDates(a, b, granularity);
+    console.log('isSame: similarity: ', JSON.stringify(similarity));
+    return similarity.amount <= 1 && similarity.unit === granularity;
+  }
+  /**
    * Indicates whether a is the same date as b.
    * @param {Date} a The Date that may be the same as a
    * @param {Date} b The Date that is the subject of comparison
@@ -999,6 +1332,17 @@ export default class DateHelper {
    * Indicates whether a is before b.
    * @param {Date} a The Date that may be before b
    * @param {Date} b The Date that is the subject of comparison
+   * @param {DateComparisonGranularity} granularity The granularity at which the specified values are to be compared.
+   * @returns {boolean} true if a is before b at the specified granularity. Uses local time.
+   */
+  static isBefore(a, b, granularity) {
+    var similarity = DateHelper.diffDates(a, b, granularity);
+    return similarity.amount <= 1 && similarity.unit === granularity;
+  }
+  /**
+   * Indicates whether a is before b.
+   * @param {Date} a The Date that may be before b
+   * @param {Date} b The Date that is the subject of comparison
    * @returns {boolean} true if a is before b, irrespective of time. Uses local time.
    */
   static isBeforeDay(a, b) {
@@ -1009,6 +1353,17 @@ export default class DateHelper {
         a.getMonth() === b.getMonth() &&
         a.getDate() < b.getDate())
     );
+  }
+  /**
+   * Indicates whether a is after b.
+   * @param {Date} a The Date that may be after b
+   * @param {Date} b The Date that is the subject of comparison
+   * @param {DateComparisonGranularity} granularity The granularity at which the specified values are to be compared.
+   * @returns {boolean} true if a is after b at the specified granularity. Uses local time.
+   */
+  static isAfter(a, b, granularity) {
+    var similarity = DateHelper.diffDates(a, b, granularity);
+    return similarity.amount > 1 && similarity.unit === granularity;
   }
   /**
    * Indicates whether a is after b.
@@ -1144,16 +1499,16 @@ export default class DateHelper {
     }
     const indexOfPartEndByAlphaNum = options.indexesOfNonAlphaNumChars.find((i) => i > part.index);
     const indexOfPartEndByNum = options.indexesOfNonNumChars.find((i) => i > part.index);
-    console.log('indexOfPartEndByAlphaNum',indexOfPartEndByAlphaNum);
-    console.log('indexOfPartEndByNum',indexOfPartEndByNum);
-    console.log('part.index + part.length',part.index + part.length);
+    //console.log('indexOfPartEndByAlphaNum',indexOfPartEndByAlphaNum);
+    //console.log('indexOfPartEndByNum',indexOfPartEndByNum);
+    //console.log('part.index + part.length',part.index + part.length);
     const endingIndex = Math.max(Math.min(
       indexOfPartEndByAlphaNum ?? Number.POSITIVE_INFINITY, 
       indexOfPartEndByNum ?? Number.POSITIVE_INFINITY), 
       part.index + part.length);
     part.end = endingIndex;
     let partValue = value.slice(part.index, part.end).replace(/[^\p{N}]/ug, '');
-    console.log(partValue);
+    //console.log(partValue);
     if (!Number.isNaN(+partValue) && +partValue !== 0) {
       if (part.name.startsWith('month')) {
         partValue = +partValue - 1;
@@ -1183,7 +1538,7 @@ export default class DateHelper {
   static #getDateFromParts(value, parts, options) {
     // Currently only parsing numeric values and month names, but not weekdays; not sure what to do with a weekday even if I did
     // parse it successfully; Given a year, a month, and a day, I'd already know the weekday, so what if the parsed one is 
-    // different? If I get a year, a month, and a weekday, I'd need a week number to know what day it is, and there current is no
+    // different? If I get a year, a month, and a weekday, I'd need a week number to know what day it is, and there currently is no
     // token for week number.
     const nonAlphaNumChars = new Set([...value].filter((c) => /[^\p{L}\p{N}]/u.test(c)));
     const indexesOfNonAlphaNumChars = [...value].map((c, i) => (nonAlphaNumChars.has(c) ? i : null)).filter((i) => i !== null);
@@ -1191,9 +1546,9 @@ export default class DateHelper {
     const nonNumChars = new Set([...value].filter((c) => /[^\p{N}]/u.test(c)));
     const indexesOfNonNumChars = [...value].map((c, i) => (nonNumChars.has(c) ? i : null)).filter((i) => i !== null);
     options.indexesOfNonNumChars = indexesOfNonNumChars;
-    let indexOfPartEnd = undefined;
-    let hasNonAlphaNumCharAfter = false;
-    let endingIndex = indexOfPartEnd;
+    //let indexOfPartEnd = undefined;
+    //let hasNonAlphaNumCharAfter = false;
+    //let endingIndex = indexOfPartEnd;
     let month;
     const date = new Date();
     date.setHours(0, 0, 0, 0);
@@ -1226,7 +1581,7 @@ export default class DateHelper {
           .map((d) => d.toLocaleString(options.locale, { month: form }));
         month = months.indexOf(value.slice(monthPart.index, monthPart.end));
         if (month > -1) {
-          console.log('month', month);
+          //console.log('month', month);
           monthPart.setter(date, month, options.timeZone === 'UTC');
         } else {
           console.warn(`The month portion, "${value.slice(monthPart.index, monthPart.end)}" was not able to be parsed as a month name`);
