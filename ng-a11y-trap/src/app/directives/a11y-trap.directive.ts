@@ -38,6 +38,9 @@ export class A11yTrapDirective implements AfterViewInit, OnInit, OnDestroy {
     return this.label;
   }
 
+  /**
+   * Gets the id of the element, or, if not set, creates a new one (uniquish by way of Date.now())
+   */
   get id(): string {
     let elementId: string | undefined | null;
     if (this.element && this.element.id && this.element.id.length) {
@@ -56,7 +59,7 @@ export class A11yTrapDirective implements AfterViewInit, OnInit, OnDestroy {
     private elementRef: ElementRef,
     private templateRef: TemplateRef<any>,
     private viewContainer: ViewContainerRef,
-  ) { 
+  ) {
     this.element = this.elementRef.nativeElement;
     this.elementCache = new Map<HTMLElement, {ariaHidden:string|null,tabIndex:string|null}>();
   }
@@ -81,9 +84,9 @@ export class A11yTrapDirective implements AfterViewInit, OnInit, OnDestroy {
   /**
    * Gets accessibility-relevant siblings of a given element.
    * @param el {HTMLElement | null} The HTMLElement to find siblings of, or null
-   * @param excludeHidden {boolean} true to exclude elements that are already hidden by virtue of 
+   * @param excludeHidden {boolean} true to exclude elements that are already hidden by virtue of
    * being descendants of elements that are hidden; otherwise, false (default)
-   * @returns {HTMLElement[]} The siblings of the given element (except for elements that are 
+   * @returns {HTMLElement[]} The siblings of the given element (except for elements that are
    * irrelevant to a11y, like style, script, head, etc.)
    */
   getRelevantSiblings(el: HTMLElement | null, excludeHidden = false): HTMLElement[] {
@@ -153,16 +156,16 @@ export class A11yTrapDirective implements AfterViewInit, OnInit, OnDestroy {
    * A list of CSS selectors which will match elements which can receive focus.
    */
   static focusableSelectors: string[] = [
-    "a[href]", 
-    "area[href]", 
-    "input:not([disabled])", 
-    "select:not([disabled])", 
-    "textarea:not([disabled])", 
-    "button:not([disabled])", 
-    "iframe", 
-    "object", 
-    "embed", 
-    "*[tabindex]", 
+    "a[href]",
+    "area[href]",
+    "input:not([disabled])",
+    "select:not([disabled])",
+    "textarea:not([disabled])",
+    "button:not([disabled])",
+    "iframe",
+    "object",
+    "embed",
+    "*[tabindex]",
     "*[contenteditable]"
   ];
 
@@ -217,9 +220,9 @@ export class A11yTrapDirective implements AfterViewInit, OnInit, OnDestroy {
     // Get a reference to the windowGotFocus function with this bound correctly.
     const windowGotFocusBound = this.windowGotFocus.bind(this);
     // this.elementRef.nativeElement goes to a separate comment node created by Angular
-    this.element = this.element?.nodeType === NodeType.COMMENT_NODE ? 
-      this.element.previousElementSibling as HTMLElement: 
-      this.element; 
+    this.element = this.element?.nodeType === NodeType.COMMENT_NODE ?
+      this.element.previousElementSibling as HTMLElement:
+      this.element;
     if (!this.element) {
       // Theoretically, this should never happen, but...
       throw new Error('Could not find element on which this directive is bound');
@@ -245,10 +248,10 @@ export class A11yTrapDirective implements AfterViewInit, OnInit, OnDestroy {
       // to the DOM and adding the element to the dialog
       parent.insertBefore(doc, this.element);
       dialog.appendChild(this.element);
-      // But we can't have nice things, so we need to set everything else to 
+      // But we can't have nice things, so we need to set everything else to
       // aria-hidden="true" and tabindex="-1".
       this.hideAllElementsExceptAncestors(doc);
-      // And make sure that if the user gets crafty by setting focus elsewhere, the 
+      // And make sure that if the user gets crafty by setting focus elsewhere, the
       // focus gets yanked back here.
       window.addEventListener('focusin', windowGotFocusBound);
       // Also, set the focus to the first focusable element
