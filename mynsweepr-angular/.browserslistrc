@@ -4,8 +4,4 @@
 #
 # For IE 9-11 support, please remove 'not' from the last line of the file and adjust as needed
 
-> 0.5%
-last 2 versions
-Firefox ESR
-not dead
-not IE 9-11
+last 2 versions and not dead and not ios_saf < 15.4 and not firefox < 100 and not op_mini > 0 and not and_uc > 0 and not and_qq > 0 and not kaios > 0

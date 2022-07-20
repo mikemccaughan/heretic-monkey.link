@@ -24,7 +24,12 @@ export class MineboardComponent implements OnInit {
     if (this.mineboard && this.mineboard.difficulty && this.mineboard.difficulty.type) {
       classes[`type-${this.mineboard.difficulty.type}`] = true;
       if (this.mineboard.difficulty.type === '?' && this.mineboard.difficulty.width) {
-        Utils.redefineClass('type-\\?', `grid-template-columns: ${'min-content '.repeat(this.mineboard.difficulty.width)};`);
+        // Adds a rule with selector .type-? with property grid-template-columns set to repeat(<width>, min-content).
+        // Example: a 65-column board gets:
+        // .type-\? {
+        //   grid-template-columns: repeat(65, min-content);
+        // }
+        Utils.redefineClass('type-\\?', `grid-template-columns: repeat(${this.mineboard.difficulty.width}, min-content);`);
       }
     }
     return classes;

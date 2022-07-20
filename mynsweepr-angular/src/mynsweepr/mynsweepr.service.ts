@@ -3,6 +3,7 @@ import { BoardState } from './classes/board-state';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Direction } from './classes/direction';
 import { Minecell } from './classes';
+import { Coords } from './classes/coords';
 
 @Injectable({
   providedIn: 'root'
@@ -18,15 +19,20 @@ export class MynsweeprService {
   }
 
   setActiveCell(board: BoardState, x: number, y: number): void {
-    const coords = board.mineboard.activeCoords;
-    coords.x = x;
-    coords.y = y;
-    board.mineboard.activeCoords = coords;
+    board.mineboard.activeCoords.x = x;
+    board.mineboard.activeCoords.y = y;
+    board.mineboard.cellsByCoords[x][y].isActive = true;
     this.setBoard(board);
   }
 
+  getActiveCell(board: BoardState): Minecell {
+    const {x,y} = board.mineboard.activeCoords;
+    return board.mineboard.cellsByCoords[x][y];
+  }
+
   moveActiveCell(board: BoardState, direction: Direction): void {
-    const coords = board.mineboard.activeCoords;
+    const { x, y } = board.mineboard.activeCoords;
+    const coords = new Coords(x, y);
     if (!coords) { return; }
     const diff = board.difficulty;
     if (!diff) { return; }
@@ -54,9 +60,8 @@ export class MynsweeprService {
         }
         break;
     }
-    board.mineboard.activeCoords = coords;
-    console.log('activeCoords: ', JSON.stringify(coords));
-    this.setBoard(board);
+    const activeCell = board.mineboard.cellsByCoords[coords.x][coords.y];
+    this.activateCell(board, activeCell);
   }
 
   activateCell(board: BoardState, cell: Minecell): void {
@@ -87,7 +92,7 @@ export class MynsweeprService {
   }
 
   checkForWin(board: BoardState) {
-    if (board.mineboard.cells.every(cell => (cell.hasFlag && cell.hasMine && cell.isHidden) || (!cell.isHidden && !cell.hasMine))) {
+    if (board.mineboard.cells.every(cell => cell.isAFlaggedMine || cell.isDisplayedAndNotAMine)) {
       board.status = 'won';
       board.timer.stop(board.timerId);
       board.scoreboard.saveElapsed(board.difficulty);

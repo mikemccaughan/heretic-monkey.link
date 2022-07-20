@@ -29,11 +29,24 @@ export class Minecell {
     }
   }
 
+  isActiveChanged: EventEmitter<Minecell>;
+  private isActiveField: boolean;
+  public get isActive(): boolean {
+    return this.isActiveField;
+  }
+  public set isActive(value: boolean) {
+    if (this.isActiveField !== value) {
+      this.isActiveField = value;
+      if (this.isActiveChanged) {
+        this.isActiveChanged.emit(this);
+      }
+    }
+  }
+
   index?: number;
   value?: number;
   x?: number;
   y?: number;
-  isActive?: boolean;
   get nearby(): number {
     return this.value >= 0 ? this.value : null;
   }
@@ -51,6 +64,7 @@ export class Minecell {
     }
     this.isHiddenChanged = new EventEmitter<Minecell>();
     this.hasFlagChanged = new EventEmitter<Minecell>();
+    this.isActiveChanged = new EventEmitter<Minecell>();
   }
   get classes(): { [key: string]: boolean } {
     return {
@@ -62,5 +76,11 @@ export class Minecell {
       [`nearby-${this.nearby}`]: !!this.nearby,
       mine: this.hasMine && !this.hasFlag
     };
+  }
+  get isAFlaggedMine(): boolean {
+    return this.hasFlag && this.hasMine && this.isHidden;
+  }
+  get isDisplayedAndNotAMine(): boolean {
+    return !this.isHidden && !this.hasMine;
   }
 }

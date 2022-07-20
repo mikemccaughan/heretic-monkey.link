@@ -599,18 +599,18 @@ div.picker-footer {
     console.log('attributeChangedCallback', name, oldValue, newValue);
     switch (name) {
       case 'min-date':
-        case 'minDate':
-          this.minDate = newValue;
-          break;
-          case 'max-date':
-            case 'maxDate':
-              this.maxDate = newValue;
-              break;
-              case 'show-on':
-                case 'showOn':
-                  this.showOn = newValue;
-                  break;
-        }
+      case 'minDate':
+        this.minDate = newValue;
+        break;
+      case 'max-date':
+      case 'maxDate':
+        this.maxDate = newValue;
+        break;
+      case 'show-on':
+      case 'showOn':
+        this.showOn = newValue;
+        break;
+    }
   }
   /**
    * Gets an array of attributes that should cause attributeChangedCallback to be called during the 

@@ -1,8 +1,9 @@
-dialog 
+dialog
   opacity: 0
   z-index: -1
   position: absolute
-  top: 25vw
+  top: 50%
+  transform: translateY(-50%)
   display: flex
   flex-flow: column wrap
   min-width: 25vw
@@ -19,9 +20,9 @@ dialog
   &.load
     min-width: 0
     max-width: 50vw
-  header 
+  header
     position: relative
-    .close 
+    .close
       position: absolute
       top: 0
       right: 0

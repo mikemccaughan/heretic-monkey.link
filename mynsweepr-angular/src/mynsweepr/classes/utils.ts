@@ -21,7 +21,7 @@ export class Utils {
       const styleSheet = Array.from(document.styleSheets)
         .filter((ss: StyleSheet) => !!(ss as CSSStyleSheet).cssRules)
         .find((ss: CSSStyleSheet) => Array.from(ss.cssRules)
-          .filter(rule => rule.type === rule.STYLE_RULE)
+          .filter(rule => rule.constructor.name === 'CSSStyleRule')
           .find(rule => (rule as CSSStyleRule).selectorText === `.${className}`) != null);
       const ssNode = styleSheet.ownerNode;
       ssNode.parentNode.removeChild(ssNode);

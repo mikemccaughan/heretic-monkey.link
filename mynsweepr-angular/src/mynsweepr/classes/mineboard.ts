@@ -47,7 +47,6 @@ export class Mineboard {
     const maxX = this.difficulty.width || 9;
     const cellCount = maxY * maxX;
     const mineCount = Math.floor(cellCount / 6);
-    console.log('board', JSON.stringify(this.cellsField));
     const value = -(mineCount * 2);
     const isBetween = (val: number, min: number, max: number): boolean => val >= min && val <= max;
     for (let i = 0; i < mineCount; i++) {
@@ -70,7 +69,6 @@ export class Mineboard {
         }
       }
     }
-    console.log('board', JSON.stringify(this.cellsField));
   }
   private buildCells(): void {
     const maxY = this.difficulty.height || 9;

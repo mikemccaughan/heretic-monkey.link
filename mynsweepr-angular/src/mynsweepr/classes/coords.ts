@@ -32,9 +32,11 @@ export class Coords {
     }
   }
 
-  constructor() {
+  constructor(x?: number, y?: number) {
     this.xChanged = new EventEmitter<number>();
     this.yChanged = new EventEmitter<number>();
     this.coordsChanged = new EventEmitter<Coords>();
+    this.xField = x;
+    this.yField = y;
   }
 }

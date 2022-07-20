@@ -1,5 +1,7 @@
 <button [ngClass]="cell.classes"
-        role="button"
+        type="button"
+        [attr.data-col]="cell.x"
+        [attr.data-row]="cell.y"
         aria-label="a cell in the mine field"
         tabindex="{{cell.index}}"
         (keyup)="cellKeyup($event, cell)"

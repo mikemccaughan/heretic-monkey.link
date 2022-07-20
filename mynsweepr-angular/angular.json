@@ -141,5 +141,7 @@
       }
     }
   },
-  "defaultProject": "mynsweepr-angular"
+  "cli": {
+    "analytics": false
+  }
 }
