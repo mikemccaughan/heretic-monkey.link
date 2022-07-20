@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
+import { By } from '@angular/platform-browser/platform-browser';
 import { A11yTrapDirective } from './a11y-trap.directive';
 
 @Component({
@@ -18,7 +18,7 @@ class A11yTrapTestComponent {
   constructor() {}
 }
 
-fdescribe('AllyTrapDirective', () => {
+describe('AllyTrapDirective', () => {
   let fixture: ComponentFixture<A11yTrapTestComponent>;
   beforeEach(async () => {
     await TestBed.configureTestingModule({

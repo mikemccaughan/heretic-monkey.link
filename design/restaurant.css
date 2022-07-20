@@ -1,0 +1,23 @@
+body { font-family: sans-serif; }
+.sr-only { visibility: hidden; }
+header, footer { display:flex; justify-content: flex-start; align-items: center; flex-flow: row nowrap; background-color: black; color: white; }
+header { max-height: 95px; }
+header h1 { padding: 0; margin: 0; }
+header img { height: 95px; aspect-ratio: 150/95; }
+header nav { display: flex; align-items: baseline; font-size: x-large; text-transform: uppercase; }
+header nav a { color: red; margin: 0 0 0 2.5rem; text-decoration: none; }
+header nav a.active { text-decoration: underline; }
+header nav button { all: unset; color: white; background-color: #f77b7b; padding: 20px; margin: 0 2.5rem; }
+main .hero { margin: 2rem auto; width: 1200px; min-height: 503px; background-image: url("https://www.sushix2ct.com/wp-content/uploads/2021/08/10.jpg"); background-size: cover; }
+footer { background-color: #242424; }
+footer section { max-width: 25%; margin-right: 20px; }
+footer section h4 { margin: 0 0 0.5rem 0; }
+footer section > address::before { content: '📌 '; }
+footer section > .phones::before { content: '📞 '; }
+footer section > .fax::before { content: '📠 Fax: '; }
+footer section address { font-style: normal; }
+footer section a[href^="tel:"], footer section a[href^="fax:"] { text-decoration: none; color: white; }
+footer section a[href^="tel:"]+a[href^="tel:"]::before { content: '/ '; }
+footer section ul { text-indent: 0; margin: 0; padding: 0; }
+footer section li { list-style: none; }
+footer section li.active { color: #f77b7b; }
