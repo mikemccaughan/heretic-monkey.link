@@ -30,6 +30,7 @@ jobs:
           app_location: "/" # App source code path
           output_location: "/publish" # Built app content directory - optional
           ###### End of Repository/Build Configurations ######
+          build_timeout_in_minutes: 30
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
