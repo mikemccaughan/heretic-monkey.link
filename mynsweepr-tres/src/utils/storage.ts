@@ -16,15 +16,7 @@ export class TypedStorage<T> implements ITypedStorage<T> {
     return this._keys;
   }
   private loadKeys(): void {
-    if (this.s.length !== this._keys.size) {
-      for (let i = this.s.length - 1; i > -1; i--) {
-        if (!this._keys.has(this.s.key(i)!)) {
-          this._keys.add(this.s.key(i)!);
-        } else {
-          break;
-        }
-      }
-    }
+    Object.keys(this.s).filter(sk => !this._keys.has(sk)).forEach(sk => this._keys.add(sk));
   }
   hasKey(key: string): boolean {
     this.loadKeys();
@@ -33,10 +25,10 @@ export class TypedStorage<T> implements ITypedStorage<T> {
   newKey(): string {
     let lastKey =
       this._keys.size === 0
-        ? "board00000"
-        : Array.from(this.keys.values()).pop();
-    let lastInt = parseInt(lastKey!.substring(5));
-    return `board${`00000${lastInt + 1}`.slice(-5)}`;
+        ? "key0000000000000000"
+        : Array.from(this.keys.values()).pop()!;
+    let lastInt = parseInt(lastKey.substring(3));
+    return `key${`0000000000000000${lastInt + 1}`.slice(-16)}`;
   }
   save(key: string | null, item: T): string {
     if (key == null) {

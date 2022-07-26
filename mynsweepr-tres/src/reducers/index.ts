@@ -27,10 +27,10 @@ export { mineBoardReducer } from "./mineBoardReducer";
 export { scoreboardReducer } from "./scoreboardReducer";
 
 export function logCells(cells: any): void {
-  if (cells && cells.mineBoard && cells.mineBoard.cells) {
+  if (cells?.mineBoard?.cells) {
     return logCells(cells.mineBoard.cells);
   }
-  if (cells && cells.cells) {
+  if (cells?.cells) {
     return logCells(cells.cells);
   }
   if (Array.isArray(cells) && cells.length) {
@@ -69,12 +69,12 @@ export function buildBoardState(
   state: any,
   action: any
 ): { boardFromState: boolean; newState: any } {
-  let board = action.mineBoard || state.mineBoard || state;
+  let board = action.mineBoard ?? state.mineBoard ?? state;
   const boardFromState = !action.mineBoard && !state.mineBoard;
   const { difficulty, width, height } = getDifficultyWidthHeight({
-    difficulty: (action && action.difficulty) || (board && board.difficulty),
-    height: (action && action.height) || (board && board.height),
-    width: (action && action.width) || (board && board.width)
+    difficulty: action?.difficulty ?? board?.difficulty,
+    height: action?.height ?? board?.height,
+    width: action?.width ?? board?.width
   });
   let cells = [...board.cells];
   if (difficulty !== board.difficulty || cells.length === 0) {

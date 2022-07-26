@@ -44,17 +44,9 @@ export function changeRemaining(remaining?: number) {
   return (dispatch: (...args: any[]) => void, getState: () => any) => {
     const state = getState();
     const remainFromState =
-      state.mineBoard &&
-      state.mineBoard.cells &&
-      state.mineBoard.cells.length &&
+      (state.mineBoard?.cells?.length ?? 0) &&
       Board.getRemaining(state.mineBoard.cells);
-    let remain = remaining;
-    if (remain == null) {
-      remain = remainFromState;
-      if (remain == null) {
-        remain = state.scoreboard.remaining;
-      }
-    }
+    let remain = remaining ?? remainFromState ?? state.scoreboard.remaining;
     dispatch(remainingChanged(remain));
   };
 }
@@ -110,10 +102,8 @@ export function changeGameStatus(status?: string) {
   return (dispatch: (...args: any[]) => void, getState: () => any) => {
     const state = getState();
     const remainFromState =
-      state.mineBoard &&
-      state.mineBoard.cells &&
-      state.mineBoard.cells.length &&
-      Board.getRemaining(state.mineBoard.cells);
+    (state.mineBoard?.cells?.length ?? 0) &&
+    Board.getRemaining(state.mineBoard.cells);
     status = status || state.endGame.status;
     if (
       !status &&

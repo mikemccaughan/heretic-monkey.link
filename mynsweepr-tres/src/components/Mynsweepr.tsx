@@ -58,8 +58,8 @@ const Mynsweepr: React.FunctionComponent<MynsweeprProps> = ({
         handleLoadClicked={handleLoadClicked}
       />
       <Scoreboard
-        time={scoreboard && scoreboard.time}
-        remaining={scoreboard && scoreboard.remaining}
+        time={scoreboard?.time}
+        remaining={scoreboard?.remaining}
       />
       <MineBoard
         endGame={endGame}

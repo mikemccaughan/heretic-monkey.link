@@ -1,3 +1,5 @@
+import { Temporal, toTemporalInstant } from './temporal';
+
 export interface IMineCell {
   value?: number;
   index?: number;
@@ -28,17 +30,17 @@ export class Board implements IBoard {
     height?: string | number
   ) {
     let board: IBoard = { difficulty: "9", width: 9, height: 9, cells: [] };
-    if (boardOrWidth && boardOrWidth.hasOwnProperty("width")) {
+    if (boardOrWidth?.hasOwnProperty("width")) {
       board = boardOrWidth as IBoard;
     }
-    if (boardOrWidth && typeof height !== "undefined") {
+    if (boardOrWidth != null && typeof height !== "undefined") {
       board = {
         difficulty:
           +boardOrWidth === 9 && +height === 9
             ? "9"
             : +boardOrWidth === 16 && +height === 16
-            ? "16"
-            : +boardOrWidth === 30 && +height === 16 ? '30' : '?',
+              ? "16"
+              : +boardOrWidth === 30 && +height === 16 ? '30' : '?',
         width: +boardOrWidth,
         height: +height,
         cells: []
@@ -89,19 +91,23 @@ export class Board implements IBoard {
     };
   }
   private initPreboard(): void {
-    this.preboard = [];
+    this.preboard = Array.from(new Array(this.height), (v, i) => new Array(this.width).fill(0));
+
+    const pb: number[][] = [];
     for (let y = 0; y < this.height; y++) {
-      this.preboard[y] = [];
+      pb[y] = [];
       for (let x = 0; x < this.width; x++) {
-        this.preboard[y][x] = 0;
+        pb[y][x] = 0;
       }
     }
+
+
   }
   private populatePreboard(): void {
     let cellCount = this.width * this.height;
     let mineCount = Math.floor(cellCount / 6);
     let value = -(mineCount * 2);
-    let isBetween = function(value: number, min: number, max: number): boolean {
+    let isBetween = function (value: number, min: number, max: number): boolean {
       return value >= min && value <= max;
     };
     for (let i = 0; i < mineCount; i++) {
@@ -152,5 +158,84 @@ export class Board implements IBoard {
   public static getRemaining(cells: IMineCell[]): number {
     let mines = cells.filter(cell => (cell.value || 0) < 0 && !cell.flag);
     return mines.length;
+  }
+}
+export class Utils {
+  static areEqual(a: any, b: any, deep: boolean): boolean {
+    if (Object.is(a, b)) {
+      return true;
+    }
+    if (typeof a !== typeof b) {
+      return false;
+    }
+    switch (typeof a) {
+      case 'object':
+        if (a instanceof Date && b instanceof Date) {
+          return a.valueOf() === b.valueOf();
+        } else if (Temporal && (
+          a instanceof Temporal.PlainDateTime ||
+          a instanceof Temporal.ZonedDateTime ||
+          a instanceof Temporal.Instant ||
+          b instanceof Temporal.PlainDateTime ||
+          b instanceof Temporal.ZonedDateTime ||
+          b instanceof Temporal.Instant
+        )) {
+          if (a instanceof Date && (
+            b instanceof Temporal.PlainDateTime ||
+            b instanceof Temporal.ZonedDateTime ||
+            b instanceof Temporal.Instant
+          )) {
+            return a.valueOf() === b.valueOf();
+          } else if (b instanceof Date && (
+            a instanceof Temporal.PlainDateTime ||
+            a instanceof Temporal.ZonedDateTime ||
+            a instanceof Temporal.Instant
+          )) {
+            return a.valueOf() === b.valueOf();
+          } else if ((
+            a instanceof Temporal.PlainDateTime ||
+            a instanceof Temporal.ZonedDateTime ||
+            a instanceof Temporal.Instant
+          ) && (
+              b instanceof Temporal.PlainDateTime ||
+              b instanceof Temporal.ZonedDateTime ||
+              b instanceof Temporal.Instant
+            )) {
+            return a.valueOf() === b.valueOf();
+          }
+        } else if (Array.isArray(a) && Array.isArray(b)) {
+          if (a.length !== b.length) {
+            return false;
+          }
+          // Array positions may differ if deep == false
+          return deep ?
+            a.every((elA, i) => Utils.areEqual(elA, b[i], deep)) :
+            a.every((elA) => b.some((elB) => Utils.areEqual(elA, elB, deep)));
+        } else if (a instanceof RegExp && b instanceof RegExp) {
+          // There are edge cases where this would not work
+          return a.toString() === b.toString(); 
+        } else if (a !== null && b !== null) {
+          const entriesA = Object.entries(a);
+          const entriesB = Object.entries(b);
+          // if a primitive is wrapped in an object (e.g. Object(1)), Object.entries(obj) returns [].
+          if (entriesA.length === 0 && entriesB.length === 0) {
+            // The primitive value can be retrieved via valueOf()
+            const valueA = a.valueOf();
+            const valueB = b.valueOf();
+            return Utils.areEqual(valueA, valueB, deep);
+          }
+          return Utils.areEqual(entriesA, entriesB, deep);
+        } else {
+          return false;
+        }
+        break;
+      case 'bigint':
+        // bigint support in Object.is is unknown
+        return a === b;
+        case 'symbol':
+          // Symbols are like objects; they use reference equality, but they only have
+          // one property.
+          return a.description === b.description;
+    }
   }
 }

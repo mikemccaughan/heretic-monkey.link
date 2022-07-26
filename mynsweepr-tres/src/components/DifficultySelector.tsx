@@ -38,7 +38,7 @@ const DifficultySelector: React.FunctionComponent<DifficultySelectorProps> = ({
           type="radio"
           name="difficulty"
           value="9"
-          defaultChecked={mineBoard && mineBoard.difficulty === "9"}
+          defaultChecked={mineBoard?.difficulty === "9"}
           onChange={handleDifficultyChanged}
           onClick={handleDifficultyChanged}
         />
@@ -50,7 +50,7 @@ const DifficultySelector: React.FunctionComponent<DifficultySelectorProps> = ({
           type="radio"
           name="difficulty"
           value="16"
-          defaultChecked={mineBoard && mineBoard.difficulty === "16"}
+          defaultChecked={mineBoard?.difficulty === "16"}
           onChange={handleDifficultyChanged}
           onClick={handleDifficultyChanged}
         />
@@ -62,7 +62,7 @@ const DifficultySelector: React.FunctionComponent<DifficultySelectorProps> = ({
           type="radio"
           name="difficulty"
           value="30"
-          defaultChecked={mineBoard && mineBoard.difficulty === "30"}
+          defaultChecked={mineBoard?.difficulty === "30"}
           onChange={handleDifficultyChanged}
           onClick={handleDifficultyChanged}
         />
@@ -75,8 +75,8 @@ const DifficultySelector: React.FunctionComponent<DifficultySelectorProps> = ({
           name="difficulty"
           value="?"
           defaultChecked={
-            (mineBoard && mineBoard.difficulty === "?") ||
-            (mineBoard && mineBoard.difficulty === null)
+            (mineBoard?.difficulty === "?") ||
+            (mineBoard?.difficulty === null)
           }
           onChange={handleDifficultyChanged}
           onClick={handleDifficultyChanged}
@@ -88,8 +88,8 @@ const DifficultySelector: React.FunctionComponent<DifficultySelectorProps> = ({
             type="number"
             name="custom-width"
             className="custom-unit"
-            value={mineBoard && mineBoard.width}
-            disabled={mineBoard && mineBoard.difficulty !== "?"}
+            value={mineBoard?.width}
+            disabled={mineBoard?.difficulty !== "?"}
             onChange={handleWidthChanged}
             maxLength={3}
           />
@@ -98,8 +98,8 @@ const DifficultySelector: React.FunctionComponent<DifficultySelectorProps> = ({
             type="number"
             name="custom-height"
             className="custom-unit"
-            value={mineBoard && mineBoard.height}
-            disabled={mineBoard && mineBoard.difficulty !== "?"}
+            value={mineBoard?.height}
+            disabled={mineBoard?.difficulty !== "?"}
             onChange={handleHeightChanged}
             maxLength={3}
           />
@@ -112,7 +112,7 @@ const DifficultySelector: React.FunctionComponent<DifficultySelectorProps> = ({
         id="save"
         type="button"
         onClick={e => {
-          handleSaveClicked && handleSaveClicked(mineBoard!, e);
+          handleSaveClicked?.(mineBoard!, e);
         }}
       >
         Save Board
@@ -121,19 +121,18 @@ const DifficultySelector: React.FunctionComponent<DifficultySelectorProps> = ({
         id="load"
         type="button"
         onClick={e => {
-          handleLoadClicked && handleLoadClicked(mineBoard!, e);
+          handleLoadClicked?.(mineBoard!, e);
         }}
       >
         Load Board
       </button>
-      <dialog style={{ display: boards && boards.length ? "flex" : "none" }}>
+      <dialog style={{ display: (boards?.length ?? 0) ? "flex" : "none" }}>
         <ul>
-          {boards &&
-            boards.map((b: { key: string }) => (
+          {boards?.map((b: { key: string }) => (
               <li key={b.key}>
                 <button
                   type="button"
-                  onClick={e => handleBoardLoad && handleBoardLoad(b, e)}
+                  onClick={e => handleBoardLoad?.(b, e)}
                 >
                   {b.key}
                 </button>

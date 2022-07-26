@@ -28,11 +28,11 @@ const MineBoard: React.FunctionComponent<MineBoardProps> = ({
 }) => {
   return (
     <div
-      data-width={mineBoard && mineBoard.width}
+      data-width={mineBoard?.width}
       className={
-        "board" + (endGame && endGame.status ? ` ${endGame.status}` : "")
+        "board" + (endGame?.status ? ` ${endGame.status}` : "")
       }
-      style={{ width: `${+((mineBoard && mineBoard.width) || 9) * 42}px` }}
+      style={{ width: `${+(mineBoard?.width ?? 9) * 42}px` }}
     >
       <div className="dialog won">
         <div className="dialog-content">
@@ -60,9 +60,7 @@ const MineBoard: React.FunctionComponent<MineBoardProps> = ({
           </button>
         </div>
       </div>
-      {!mineBoard ||
-        !mineBoard.cells ||
-        mineBoard.cells.map((cell: IMineCell) => (
+      {mineBoard?.cells?.map((cell: IMineCell) => (
           <MineCell
             key={cell.key}
             index={cell.index}

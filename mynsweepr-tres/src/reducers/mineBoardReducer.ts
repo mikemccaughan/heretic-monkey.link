@@ -197,7 +197,7 @@ function handleCellClick(
   { difficulty, height, width }: BoardDifficulty
 ) {
   let newCells = [
-    ...(action.cells || (state.mineBoard && state.mineBoard.cells) || [])
+    ...(action.cells ?? state.mineBoard?.cells ?? [])
   ];
   let cell = newCells.find(cel => cel.index === action.cell.index);
   if (!cell) {
@@ -262,7 +262,7 @@ function handleCellRightClick(
   { difficulty, height, width }: BoardDifficulty
 ) {
   let newCells = [
-    ...(action.cells || (state && state.mineBoard && state.mineBoard.cells))
+    ...(action.cells ?? state?.mineBoard?.cells)
   ].map(cel =>
     cel.index === action.cell.index && cel.hidden
       ? { ...cel, flag: !cel.flag }
@@ -306,7 +306,7 @@ function handleCellDoubleClick(
   { difficulty, height, width }: BoardDifficulty
 ) {
   let newCells = [
-    ...(action.cells || (state && state.mineBoard && state.mineBoard.cells))
+    ...(action.cells ?? state?.mineBoard?.cells)
   ];
   let cell = newCells.find(cel => cel.index === action.cell.index);
   let newState: any = {
