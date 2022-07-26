@@ -12,7 +12,7 @@ import React, {
 } from 'react';
 import Difficulty from './Difficulty';
 import Board from './Board';
-import {Scoreboard} from './Scoreboard';
+import { Scoreboard } from './Scoreboard';
 import {
   Cell,
   fnArgs,
@@ -20,9 +20,11 @@ import {
   flagCell,
   generateBoard,
   revealCell,
+  showCell,
   showAllCells,
   clearAroundArgs,
   revealCellArgs,
+  showCellArgs,
 } from './fn-mineboard';
 
 const MynSweepr: React.FC = () => {
@@ -50,7 +52,7 @@ const MynSweepr: React.FC = () => {
   };
 
   function usePrevious(value: string | number) {
-    const ref = useRef<string|number>();
+    const ref = useRef<string | number>();
     useEffect(() => {
       ref.current = value;
     })
@@ -60,8 +62,8 @@ const MynSweepr: React.FC = () => {
   useLayoutEffect(() => {
     setDifficulty(() => {
       if (difficulty !== prevDifficulty) {
-        setWidth(w => difficulty === '?' ? w : +difficulty);
-        setHeight(h => difficulty === '?' ? h : difficulty === '30' ? 16 : +difficulty);
+        setWidth((w: number) => difficulty === '?' ? w : +difficulty);
+        setHeight((h: number) => difficulty === '?' ? h : difficulty === '30' ? 16 : +difficulty);
       }
       return difficulty;
     });
@@ -88,7 +90,7 @@ const MynSweepr: React.FC = () => {
   }, [height, prevHeight]);
 
   useLayoutEffect(() => {
-    let board = generateBoard({width, height, density: 1 / 6});
+    let board = generateBoard({ width, height, density: 1 / 6 });
     setCells(() => board.cells);
     setMineCount(() => board.mineCount);
   }, [width, height]);
@@ -96,7 +98,7 @@ const MynSweepr: React.FC = () => {
   const handleDifficultyChange = (
     e: MouseEvent<HTMLInputElement, globalThis.MouseEvent>
   ) => {
-    const culty = e && (e.target as HTMLInputElement).value;
+    const culty: string = e && (e.target as HTMLInputElement).value;
     setGameIsActive(false);
     setDifficulty(culty);
   };
@@ -117,6 +119,60 @@ const MynSweepr: React.FC = () => {
     setHeight(ght);
   };
 
+  const makeStandardOnBlank = (extraToLog: string) => (args: fnArgs) => {
+    console.log(`${extraToLog} onBlank: args: ${JSON.stringify(args)}`);
+    args = clearAround(args as clearAroundArgs);
+    setCells(args.cells);
+    return args;
+  };
+
+  const makeStandardOnLose = (extraToLog: string) => (args: fnArgs) => {
+    setGameIsActive(false);
+    args.cells = showAllCells(args.cells);
+    // TODO: show dialog
+    console.log(`${extraToLog} onLose: args: ${JSON.stringify(args)}`);
+    setCells(args.cells);
+    return args;
+  };
+
+  const makeStandardOnWin = (extraToLog: string) => (args: fnArgs) => {
+    setGameIsActive(false);
+    args.cells = showAllCells(args.cells);
+    // TODO: show dialog
+    console.log(`${extraToLog} onWin: args: ${JSON.stringify(args)}`);
+    setCells(args.cells);
+    return args;
+  };
+
+  const makeStandardOnNearby = (extraToLog: string) => (args: fnArgs) => {
+    console.log(`${extraToLog} onNearby: args: ${JSON.stringify(args)}`);
+    args = clearAround(args as clearAroundArgs);
+    setCells(args.cells);
+    return args;
+  };
+
+  const makeStandardOnReveal = (extraToLog: string) => (args: fnArgs) => {
+    console.log(`${extraToLog} onReveal: args: ${JSON.stringify(args)}`);
+    const cellToUpdate = args.cells[args.index];
+    const newCells = [
+      ...args.cells.filter((c, i) => i < args.index),
+      {
+        ...cellToUpdate,
+        hadOverlay: args.hadOverlay ?? false
+      },
+      ...args.cells.filter((c, i) => i > args.index)
+    ];
+    args = {
+      ...args,
+      cells: newCells
+    };
+    if (!cellToUpdate.hadOverlay) {
+      args = showCell(args as showCellArgs);
+    }
+    setCells(args.cells);
+    return args;
+  };
+
   const handleCellClick: EventHandler<SyntheticEvent> = (e: SyntheticEvent) => {
     console.log('click', e);
     setGameIsActive(true);
@@ -127,36 +183,11 @@ const MynSweepr: React.FC = () => {
       hadOverlay:
         (e.target as HTMLElement)?.classList?.contains('hidden') ?? false,
       wasClicked: true,
-      onBlank: (args: fnArgs) => {
-        console.log(`handleCellClick: onBlank: args: ${JSON.stringify(args)}`);
-        args = clearAround(args as clearAroundArgs);
-        setCells(args.cells);
-        setMineCount(args.mineCount);
-        console.log('onBlank: ', args);
-        return args;
-      },
-      onLose: (args: fnArgs) => {
-        setGameIsActive(false);
-        setCells(showAllCells(args.cells));
-        setMineCount(0);
-        // TODO: show dialog
-        console.log('onLose: ', args);
-        return args;
-      },
-      onNearby: (args: fnArgs) => {
-        console.log(`handleCellClick: onNearby: args: ${JSON.stringify(args)}`);
-        return args;
-      },
-      onReveal: (args: fnArgs) => {
-        console.log(`handleCellClick: onReveal: args: ${JSON.stringify(args)}`);
-        return args;
-      },
-      onWin: (args: fnArgs) => {
-        // TODO: show dialog
-        setGameIsActive(false);
-        console.log('onWin: ', args);
-        return args;
-      },
+      onBlank: makeStandardOnBlank('handleCellClick:'),
+      onLose: makeStandardOnLose('handleCellClick:'),
+      onNearby: makeStandardOnNearby('handleCellClick:'),
+      onReveal: makeStandardOnReveal('handleCellClick:'),
+      onWin: makeStandardOnWin('handleCellClick:'),
     };
     const result = revealCell(args as revealCellArgs);
     setCells(result.cells);
@@ -175,35 +206,11 @@ const MynSweepr: React.FC = () => {
       hadOverlay:
         (e.target as HTMLElement)?.classList?.contains('hidden') ?? false,
       wasClicked: true,
-      onBlank: (args: fnArgs) => {
-        args = clearAround(args as clearAroundArgs);
-        setCells(args.cells);
-        setMineCount(args.mineCount);
-        console.log('onBlank: ', args);
-        return args;
-      },
-      onLose: (args: fnArgs) => {
-        setGameIsActive(false);
-        setCells(showAllCells(args.cells));
-        setMineCount(0);
-        // TODO: show dialog
-        console.log('onLose: ', args);
-        return args;
-      },
-      onNearby: (args: fnArgs) => {
-        console.log('onNearby: ', args);
-        return args;
-      },
-      onReveal: (args: fnArgs) => {
-        console.log('onReveal: ', args);
-        return args;
-      },
-      onWin: (args: fnArgs) => {
-        // TODO: show dialog
-        setGameIsActive(false);
-        console.log('onWin: ', args);
-        return args;
-      },
+      onBlank: makeStandardOnBlank('handleCellDoubleClick:'),
+      onLose: makeStandardOnLose('handleCellDoubleClick:'),
+      onNearby: makeStandardOnNearby('handleCellDoubleClick:'),
+      onReveal: makeStandardOnReveal('handleCellDoubleClick:'),
+      onWin: makeStandardOnWin('handleCellDoubleClick:'),
     };
     const result = clearAround(args as clearAroundArgs);
     setCells(result.cells);
@@ -223,35 +230,11 @@ const MynSweepr: React.FC = () => {
       hadOverlay:
         (e.target as HTMLElement)?.classList?.contains('hidden') ?? false,
       wasClicked: true,
-      onBlank: (args: fnArgs) => {
-        args = clearAround(args as clearAroundArgs);
-        setCells(args.cells);
-        setMineCount(args.mineCount);
-        console.log('onBlank: ', args);
-        return args;
-      },
-      onLose: (args: fnArgs) => {
-        setGameIsActive(false);
-        setCells(showAllCells(args.cells));
-        setMineCount(0);
-        // TODO: show dialog
-        console.log('onLose: ', args);
-        return args;
-      },
-      onNearby: (args: fnArgs) => {
-        console.log('onNearby: ', args);
-        return args;
-      },
-      onReveal: (args: fnArgs) => {
-        console.log('onReveal: ', args);
-        return args;
-      },
-      onWin: (args: fnArgs) => {
-        // TODO: show dialog
-        setGameIsActive(false);
-        console.log('onWin: ', args);
-        return args;
-      },
+      onBlank: makeStandardOnBlank('handleCellRightClick:'),
+      onLose: makeStandardOnLose('handleCellRightClick:'),
+      onNearby: makeStandardOnNearby('handleCellRightClick:'),
+      onReveal: makeStandardOnReveal('handleCellRightClick:'),
+      onWin: makeStandardOnWin('handleCellRightClick:'),
     };
     const result = flagCell(args as clearAroundArgs);
     setCells(result.cells);

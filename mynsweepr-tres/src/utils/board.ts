@@ -1,4 +1,4 @@
-import { Temporal, toTemporalInstant } from './temporal';
+import { Temporal } from './temporal';
 
 export interface IMineCell {
   value?: number;

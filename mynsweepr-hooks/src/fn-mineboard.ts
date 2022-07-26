@@ -153,31 +153,18 @@ interface updateCellArgs {
 
 function updateCellAtIndex(args: updateCellArgs): Cell[] {
     console.log(`updateCellAtIndex: args: ${JSON.stringify(args, null, 2)}`);
-    if (args.index === 0) {
-        return [
-            {
-                ...args.cells[0],
-                [args.propertyName]: args.propertyValue
-            },
-            ...args.cells.slice(1)
-        ];
-    } else if (args.index === args.cells.length - 1) {
-        return [
-            ...args.cells.slice(0, -1),
-            {
-                ...args.cells[args.index],
-                [args.propertyName]: args.propertyValue
-            }
-        ];
+    const cellToChange = args.cells.find(c => c.index === args.index);
+    if (typeof cellToChange === 'undefined') {
+        console.warn(`Unable to find a cell at index ${args.index}. Giving up...`);
+        return args.cells;
     }
-
-    return [
-        ...args.cells.slice(0, args.index - 1),
-        {
-            ...args.cells[args.index],
-            [args.propertyName]: args.propertyValue
-        },
-        ...args.cells.slice(args.index + 1)
+    const cellsBefore = args.cells.filter(c => c.index < args.index);
+    const cellsAfter = args.cells.filter(c => c.index > args.index);
+    const changedCell = { ...cellToChange, [args.propertyName]: args.propertyValue };
+    return [ 
+        ...cellsBefore,
+        changedCell,
+        ...cellsAfter
     ];
 }
 
@@ -245,27 +232,15 @@ export interface flagCellArgs extends fnArgs {
 export function flagCell(args: flagCellArgs): fnArgs {
     console.log(`flagCell: args: ${JSON.stringify(args, null, 2)}`);
     const cell = args.cells[args.index];
-    if (cell.flag) {
-        return {
-            ...args,
-            cells: updateCellAtIndex({
-                cells: args.cells, 
-                index: args.index, 
-                propertyName: 'flag', 
-                propertyValue: false
-            }),
-            mineCount: args.mineCount + 1
-        };
-    }
     return {
         ...args,
         cells: updateCellAtIndex({
             cells: args.cells, 
             index: args.index, 
             propertyName: 'flag', 
-            propertyValue: true
+            propertyValue: !cell.flag
         }),
-        mineCount: args.mineCount - 1
+        mineCount: args.mineCount - (cell.flag ? -1 : 1)
     };
 }
 

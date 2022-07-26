@@ -23,5 +23,6 @@
     "jquery": "^3.5.1",
     "node-html-parser": "^5.1.0",
     "portscanner": "^2.2.0"
-  }
+  },
+  "packageManager": "yarn@3.2.2"
 }

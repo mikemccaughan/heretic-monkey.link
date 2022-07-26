@@ -37,7 +37,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = (props: ScoreboardProps) =>
         let interval: number = -1;
         if (isActive) {
             interval = window.setInterval(() => {
-                setSeconds(seconds => seconds + 1);
+                setSeconds((seconds: number) => seconds + 1);
             }, 1000);
         } else if (!isActive && seconds !== 0) {
             window.clearInterval(interval);
@@ -46,7 +46,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = (props: ScoreboardProps) =>
     }, [isActive, seconds]);
 
     const formatter = new Intl.DateTimeFormat('en-US', {
-        hour12: false,
+        hourCycle: 'h23',
         hour: '2-digit',
         minute: '2-digit',
         second: '2-digit'

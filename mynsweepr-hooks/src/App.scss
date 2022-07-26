@@ -1,13 +1,22 @@
 :root {
   --columns: 9;
   --rows: 9;
+  --block-size: 32px;
 }
 
 body {
-  margin: 0;
+  margin: 0 auto;
   display: flex;
   flex-flow: column nowrap;
   min-height: 100vh;
+  max-width: max-content;
+  overflow-x: auto;
+}
+
+#root {
+  display: flex;
+  flex-flow: column nowrap;
+  margin: 0 auto;
 }
 
 header {
@@ -21,7 +30,15 @@ main {
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+}
+
+aside {
+  padding: 1rem;
+}
+
+aside > span {
+  margin-right: 1rem;
 }
 
 footer {
@@ -47,11 +64,11 @@ header label span {
 
 .board {
   margin: 0 auto;
-  height: 100%;
-  width: fit-content;
+  height: calc(var(--rows) * var(--block-size));
+  width: calc(var(--columns) * var(--block-size));
   display: grid;
-  grid-template-columns: repeat(var(--columns), 1fr);
-  grid-template-rows: repeat(var(--rows), 1fr);
+  grid-template-columns: repeat(var(--columns), var(--block-size));
+  grid-template-rows: repeat(var(--rows), var(--block-size));
 }
 
 .cell:hover {
@@ -59,9 +76,9 @@ header label span {
 }
 .cell {
   cursor: pointer;
-  width: 32px;
-  height: 32px;
-  border: 1px solid black;
+  width: var(--block-size);
+  height: var(--block-size);
+  border: 1px outset #ececec;
   border-radius: 0;
   margin: 0;
   padding: 0;
@@ -69,25 +86,37 @@ header label span {
 }
 .cell.hidden {
   background-color: lightblue;
+  border-color: lightblue;
   color: lightblue;
 }
 .cell.hidden:active {
   background-color: orange;
+  border-color: orange;
   color: orange;
 }
 .cell.flag {
   background-color: lightgoldenrodyellow;
+  border-color: lightgoldenrodyellow;
 }
 .cell.flag::before {
   content: '🚩';
 }
 .cell.mine:not(.hidden):not(.flag) {
   background-color: red;
+  border-color: red;
+  font-size: 0;
 }
 .cell.mine:not(.hidden):not(.flag)::before {
   content: '💣';
+  font-size: 1rem;
 }
 .cell.nearby:not(.hidden):not(.flag) {
   background-color: white;
   color: black;
+}
+.cell[data-val="0"]:not(.hidden):not(.flag) {
+  background-color: white;
+  border-color: #e0e0e0aa;
+  border-style: solid;
+  color: white;
 }
