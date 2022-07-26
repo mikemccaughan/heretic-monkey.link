@@ -237,5 +237,6 @@ export class Utils {
           // one property.
           return a.description === b.description;
     }
+    return false;
   }
 }
