@@ -32,7 +32,8 @@ export default class MineBoard {
             while (true) {
                 x = Math.floor(Math.random() * this.width);
                 y = Math.floor(Math.random() * this.height);
-                if (0 <= boardCells[y][x]) {
+                // @ts-ignore
+                if ('undefined' !== typeof boardCells[y][x] && 0 <= boardCells[y][x]) {
                     break;
                 }
             }
@@ -50,17 +51,21 @@ export default class MineBoard {
         for (let y = 0; y < this.height; y++) {
             for (let x = 0; x < this.width; x++) {
                 let i = index;
-                this.cells[index++] = {
-                    value: boardCells[y][x],
-                    hasMine: boardCells[y][x] < 0,  
-                    nearby: boardCells[y][x] >= 0 ? boardCells[y][x] : 0,
-                    x: x,
-                    y: y,
-                    index: i,
-                    hidden: true,
-                    flag: false,
-                    hadOverlay: false
-                };
+                if (boardCells[y][x] !== undefined) {
+                    this.cells[index++] = {
+                        value: boardCells[y][x],
+                        // @ts-ignore
+                        hasMine: boardCells[y][x] < 0,  
+                        // @ts-ignore
+                        nearby: boardCells[y][x] >= 0 ? boardCells[y][x] : 0,
+                        x: x,
+                        y: y,
+                        index: i,
+                        hidden: true,
+                        flag: false,
+                        hadOverlay: false
+                    };
+                }
             }
         }
         this.modals = {

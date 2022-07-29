@@ -1,13 +1,41 @@
 /** @type {number[]} */
 let randomValues = [];
+let randomValuesBetween = new Map();
 function getRandomValue() {
     if (randomValues != null && randomValues.length > 0) {
         return randomValues.pop();
     }
-    let values = new Uint8Array();
+    let values = new Uint8Array(32);
+    // eslint-disable-next-line no-undef
     window.crypto.getRandomValues(values);
     randomValues = [...values];
     return getRandomValue();
+}
+/**
+ * Generates a random value between the specified values. If only one value is given,
+ * it is considered the maximum, with the minimum set to 0. If no values are given,
+ * min is set to 0 and max is set to 1.
+ * @param {number?} min The minimum value to return (defaults to 0 if not supplied)
+ * @param {number?} max The maximum value to return (defaults to 1 if not supplied)
+ * @returns A random value between min and max
+ */
+function getRandomValueBetween(min = 0, max = 1) {
+    if (max === 1 && min !== 0) {
+        max = min;
+        min = 0;
+    }
+    /** @type {number} */
+    const random = getRandomValue();
+    // random will be a number between 0 and 255, so fill an array with 256 numbers
+    // For a given min/max combo, the array of possible values will always be the same
+    // so cache it in a Map for easy retrieval.
+    /** @type {string} */
+    const key = JSON.stringify({ min, max });
+    /** @type {number[]} */
+    const possibleValues = randomValuesBetween.has(key) ? 
+        randomValuesBetween.get(key) : 
+        randomValuesBetween.set(key, new Array(256).fill(0).map((v, i) => (((max - min) / 255) * i) + min)).get(key);
+    return possibleValues[random];
 }
 
 /**
@@ -81,9 +109,10 @@ export function generateBoard(width, height, density) {
     let value = -(mineCount * 2);
     for (let i = 0; i < mineCount; i++) {
         let x, y;
+        // eslint-disable-next-line no-constant-condition
         while (true) {
-            x = Math.floor(Math.random() * width);
-            y = Math.floor(Math.random() * height);
+            x = getRandomValueBetween(width); // Math.floor(Math.random() * width);
+            y = getRandomValueBetween(height); // Math.floor(Math.random() * height);
             if (boardCells[y][x] >= 0) {
                 break;
             }
