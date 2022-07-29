@@ -158,7 +158,7 @@ export default class MineBoard {
             cel.querySelector(".overlay").innerHTML = "🚩";
             this.mineCount--;
         }
-        document.querySelector(".count").innerHTML = this.mineCount;
+        document.querySelector(".count").innerHTML = this.mineCount.toString();
     }
     clearBoard() {
         this.element.innerHTML = "";

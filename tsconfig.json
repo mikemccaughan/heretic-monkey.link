@@ -1,0 +1,16 @@
+{
+    "compileOnSave": true,
+    "compilerOptions": {
+        "allowJs": true,
+        "checkJs": true,
+        "lib": [
+            "DOM",
+            "ES2022"
+        ],
+        "target": "ES2022",
+        "outDir": "tscOut"
+    },
+    "angularCompilerOptions": {
+        "strictTemplates": true
+    }
+}

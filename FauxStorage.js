@@ -62,7 +62,20 @@ class FauxStorage {
   }
 }
 (function() {
-  // Note: Requires new names because sandbox attribute on iframe denies access to localStorage/sessionStorage name, regardless of implementation.
-  window.localStore = new FauxStorage();
-  window.sessionStore = new FauxStorage();
+  // Note: Requires new names because sandbox attribute on iframe denies access to 
+  // localStorage/sessionStorage name, regardless of implementation.
+  const localStore = new FauxStorage();
+  const sessionStore = new FauxStorage();
+  Object.defineProperty(window, "localStore", {
+    get: () => localStore,
+    enumerable: true,
+    configurable: true,
+    writable: false
+  });
+  Object.defineProperty(window, "sessionStore", {
+    get: () => sessionStore,
+    enumerable: true,
+    configurable: true,
+    writable: false
+  });  
 })();
