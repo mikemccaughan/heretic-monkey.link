@@ -12,9 +12,9 @@
 
         this.inputElement.addEventListener('input', this.inputChanged.bind(this));
         this.decimalButton.addEventListener('click', this.decimalClicked.bind(this));
-        Array.from(this.numberButtons).forEach(el => el.addEventListener('click', this.numberClicked.bind(this)));
-        Array.from(this.operatorButtons).forEach(el => el.addEventListener('click', this.operatorClicked.bind(this)));
-        Array.from(this.memOperatorButtons).forEach(el => el.addEventListener('click', this.memOperatorClicked.bind(this)));
+        this.numberButtons.forEach(el => el.addEventListener('click', this.numberClicked.bind(this)));
+        this.operatorButtons.forEach(el => el.addEventListener('click', this.operatorClicked.bind(this)));
+        this.memOperatorButtons.forEach(el => el.addEventListener('click', this.memOperatorClicked.bind(this)));
 
         this.operatorMap = {
             "%": this.percent.bind(this),
@@ -57,11 +57,11 @@
             },
             get(target, prop, receiver) {
                 console.log('get trap');
-                return Reflect.get(...arguments);
+                return Reflect.get(target, prop, receiver);
             },
             set(obj, prop, value) {
                 console.log('set trap');
-                return Reflect.set(...arguments);
+                return Reflect.set(obj, prop, value);
             },
             deleteProperty(target, prop) {
                 console.log('deleteProperty trap');

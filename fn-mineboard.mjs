@@ -5,7 +5,12 @@ function getRandomValue() {
     if (randomValues != null && randomValues.length > 0) {
         return randomValues.pop();
     }
-    let values = new Uint8Array(32);
+    // Every call to window.crypto.getRandomValues will fill the values array with
+    // random bytes. So do that once, then subsequent calls can just pop the numbers
+    // off that array. When it empties, get more random numbers. This is a balancing
+    // act between the processing time needed to generate the random bytes, and how
+    // often it needs new random bytes.
+    let values = new Uint8Array(256);
     // eslint-disable-next-line no-undef
     window.crypto.getRandomValues(values);
     randomValues = [...values];
@@ -34,7 +39,7 @@ function getRandomValueBetween(min = 0, max = 1) {
     /** @type {number[]} */
     const possibleValues = randomValuesBetween.has(key) ? 
         randomValuesBetween.get(key) : 
-        randomValuesBetween.set(key, new Array(256).fill(0).map((v, i) => (((max - min) / 255) * i) + min)).get(key);
+        randomValuesBetween.set(key, new Array(256).fill(0).map((_, i) => (((max - min) / 255) * i) + min)).get(key);
     return possibleValues[random];
 }
 

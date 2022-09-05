@@ -1,4 +1,10 @@
 export default class Modal {
+    /**
+     * Creates an instance of the Modal class.
+     * @param {string} id The id of the dialog element
+     * @param {string} html The HTML of the dialog
+     * @param {HTMLElement} board The HTMLElement that contains the board.
+     */
     constructor(id, html, board) {
         this.elementId = id;
         this.html = html;
