@@ -7,12 +7,11 @@ import {
 import {RepositoryMixin} from '@loopback/repository';
 import {RestApplication} from '@loopback/rest';
 import {ServiceMixin} from '@loopback/service-proxy';
-import path from 'path';
+import * as path from 'path';
 import {MySequence} from './sequence';
+import { WallRepository } from './repositories/wall.repository';
 
-export {ApplicationConfig};
-
-export class HmWallsApiApplication extends BootMixin(
+export class HmWallsApi extends BootMixin(
   ServiceMixin(RepositoryMixin(RestApplication)),
 ) {
   constructor(options: ApplicationConfig = {}) {
@@ -25,7 +24,7 @@ export class HmWallsApiApplication extends BootMixin(
     this.static('/', path.join(__dirname, '../public'));
 
     // Customize @loopback/rest-explorer configuration here
-    this.configure(RestExplorerBindings.COMPONENT).to({
+    this.bind(RestExplorerBindings.CONFIG).to({
       path: '/explorer',
     });
     this.component(RestExplorerComponent);
@@ -40,5 +39,6 @@ export class HmWallsApiApplication extends BootMixin(
         nested: true,
       },
     };
+    this.bind('repositories.WallRepository').toClass(WallRepository);
   }
 }
