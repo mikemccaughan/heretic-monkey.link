@@ -265,3 +265,13 @@ __pycache__/
 # VSCode
 .vscode/
 hm-datetimepicker/zone1970.json
+
+# Yarn
+.yarn/install-state.gz
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
