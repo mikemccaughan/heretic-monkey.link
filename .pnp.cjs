@@ -35,6 +35,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["@js-temporal/polyfill", "npm:0.4.2"],\
             ["@types/eslint", "npm:8.4.6"],\
+            ["@types/minimist", "npm:1.2.2"],\
             ["@types/prettier", "npm:2.7.0"],\
             ["@typescript-eslint/eslint-plugin", "virtual:e67eaffd82bf18b75ed68d713a3fbee8391c24ba36c3566b48b24a2fadc88af1343dfcfeb2461f24d34fcf6edd2862dec87b9ad6f1036b4dcec1a4a59f30c1ea#npm:5.36.1"],\
             ["@typescript-eslint/parser", "virtual:e67eaffd82bf18b75ed68d713a3fbee8391c24ba36c3566b48b24a2fadc88af1343dfcfeb2461f24d34fcf6edd2862dec87b9ad6f1036b4dcec1a4a59f30c1ea#npm:5.36.1"],\
@@ -45,6 +46,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-plugin-cypress", "virtual:e67eaffd82bf18b75ed68d713a3fbee8391c24ba36c3566b48b24a2fadc88af1343dfcfeb2461f24d34fcf6edd2862dec87b9ad6f1036b4dcec1a4a59f30c1ea#npm:2.12.1"],\
             ["express", "npm:4.18.1"],\
             ["jquery", "npm:3.6.1"],\
+            ["minimist", "npm:1.2.6"],\
             ["node-html-parser", "npm:5.4.2"],\
             ["node-stream-zip", "npm:1.15.0"],\
             ["portscanner", "npm:2.2.0"],\
@@ -2505,6 +2507,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["heretic-monkey.link", "workspace:."],\
             ["@js-temporal/polyfill", "npm:0.4.2"],\
             ["@types/eslint", "npm:8.4.6"],\
+            ["@types/minimist", "npm:1.2.2"],\
             ["@types/prettier", "npm:2.7.0"],\
             ["@typescript-eslint/eslint-plugin", "virtual:e67eaffd82bf18b75ed68d713a3fbee8391c24ba36c3566b48b24a2fadc88af1343dfcfeb2461f24d34fcf6edd2862dec87b9ad6f1036b4dcec1a4a59f30c1ea#npm:5.36.1"],\
             ["@typescript-eslint/parser", "virtual:e67eaffd82bf18b75ed68d713a3fbee8391c24ba36c3566b48b24a2fadc88af1343dfcfeb2461f24d34fcf6edd2862dec87b9ad6f1036b4dcec1a4a59f30c1ea#npm:5.36.1"],\
@@ -2515,6 +2518,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-plugin-cypress", "virtual:e67eaffd82bf18b75ed68d713a3fbee8391c24ba36c3566b48b24a2fadc88af1343dfcfeb2461f24d34fcf6edd2862dec87b9ad6f1036b4dcec1a4a59f30c1ea#npm:2.12.1"],\
             ["express", "npm:4.18.1"],\
             ["jquery", "npm:3.6.1"],\
+            ["minimist", "npm:1.2.6"],\
             ["node-html-parser", "npm:5.4.2"],\
             ["node-stream-zip", "npm:1.15.0"],\
             ["portscanner", "npm:2.2.0"],\

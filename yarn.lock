@@ -1961,6 +1961,7 @@ __metadata:
   dependencies:
     "@js-temporal/polyfill": latest
     "@types/eslint": ^8.4.6
+    "@types/minimist": ^1
     "@types/prettier": ^2.7.0
     "@typescript-eslint/eslint-plugin": ^5.36.1
     "@typescript-eslint/parser": ^5.36.1
@@ -1971,6 +1972,7 @@ __metadata:
     eslint-plugin-cypress: ^2.12.1
     express: ^4.18.1
     jquery: ^3.6.1
+    minimist: 1.2.6
     node-html-parser: ^5.4.2
     node-stream-zip: ^1.15.0
     portscanner: ^2.2.0
@@ -2467,7 +2469,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimist@npm:^1.2.6":
+"minimist@npm:1.2.6, minimist@npm:^1.2.6":
   version: 1.2.6
   resolution: "minimist@npm:1.2.6"
   checksum: d15428cd1e11eb14e1233bcfb88ae07ed7a147de251441d61158619dfb32c4d7e9061d09cab4825fdee18ecd6fce323228c8c47b5ba7cd20af378ca4048fb3fb
