@@ -29,7 +29,6 @@ jobs:
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
           app_location: "/" # App source code path
           output_location: "/publish" # Built app content directory - optional
-          build_timeout_in_minutes: 30
           ###### End of Repository/Build Configurations ######
 
   close_pull_request_job:
