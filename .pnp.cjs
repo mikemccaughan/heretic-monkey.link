@@ -393,6 +393,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["@types/minimist", [\
+        ["npm:1.2.2", {\
+          "packageLocation": "./.yarn/cache/@types-minimist-npm-1.2.2-a445de65da-b8da83c66e.zip/node_modules/@types/minimist/",\
+          "packageDependencies": [\
+            ["@types/minimist", "npm:1.2.2"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["@types/node", [\
         ["npm:14.18.22", {\
           "packageLocation": "./.yarn/cache/@types-node-npm-14.18.22-1421b0e35d-5cec8276b8.zip/node_modules/@types/node/",\
