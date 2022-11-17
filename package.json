@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node server.js",
-    "build": "yarn set version stable && yarn plugin import @yarnpkg/plugin-workspace-tools && yarn plugin import @yarnpkg/plugin-typescript && rm -rf publish && mkdir -p publish/hm-walls/dist publish/hm-walls-api/dist publish/material-test npm install && npm install -g @angular/cli@latest && cp *.*js publish/ && cp *.map publish/ && cp *.html publish/ && cp *.css publish/ && cp -r hm-grid publish/hm-grid && cd hm-walls && npm install && npm run build -- -c production --output-path ../publish/hm-walls/dist && cd ../hm-walls-api && npm install && npm run build && cd ../material-test && npm install && npm run build && cp -r dist ../publish/material-test && cp index.html ../publish/material-test/"
+    "build": "yarn set version stable && yarn plugin import @yarnpkg/plugin-workspace-tools && yarn plugin import @yarnpkg/plugin-typescript && rm -rf publish && mkdir -p publish/hm-walls/dist publish/hm-walls-api/dist publish/material-test npm install && npm install -g @angular/cli@latest && cp *.*js publish/ && cp *.html publish/ && cp *.css publish/ && cp -r hm-grid publish/hm-grid && cd hm-walls && npm install && npm run build -- -c production --output-path ../publish/hm-walls/dist && cd ../hm-walls-api && npm install && npm run build && cd ../material-test && npm install && npm run build && cp -r dist ../publish/material-test && cp index.html ../publish/material-test/"
   },
   "repository": {
     "type": "git",
