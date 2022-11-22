@@ -30,9 +30,11 @@ export default class MineBoard {
          */
         this.cells = new Array(this.cellCount);
         this.lastClick = 0;
+        // eslint-disable-next-line no-undef
         this.timer = new Timer(document.querySelector(".timer"));
         this.timer.clear();
         this.randomValues = new Uint8Array(this.cellCount);
+        // eslint-disable-next-line no-undef
         window.crypto.getRandomValues(this.randomValues);
     }
     /**
@@ -57,10 +59,10 @@ export default class MineBoard {
            negative (a mine). */
         for (let i = 0; i < this.mineCount; i++) {
             let x, y;
+            // eslint-disable-next-line no-constant-condition
             while (true) {
                 x = Math.floor(Math.random() * this.width);
                 y = Math.floor(Math.random() * this.height);
-                // @ts-ignore
                 if ('undefined' !== typeof boardCells[y][x] && 0 <= boardCells[y][x]) {
                     break;
                 }
@@ -90,13 +92,11 @@ export default class MineBoard {
                          * Indicates whether the cell has a mine.
                          * @type {boolean}
                          */
-                        // @ts-ignore
                         hasMine: boardCells[y][x] < 0,  
                         /**
                          * The number of adjacent mines.
                          * @type {number}
                          */
-                        // @ts-ignore
                         nearby: boardCells[y][x] >= 0 ? boardCells[y][x] : 0,
                         /**
                          * The x coordinate of the cell.
@@ -144,6 +144,7 @@ export default class MineBoard {
      */
     clearNearby(cellIndex, wasClicked) {
         let cell = this.cells[cellIndex];
+        // eslint-disable-next-line no-undef
         console.log(`nearby {hadOverlay: ${cell.hadOverlay}, wasClicked: ${wasClicked}}`);
     }
     /**
@@ -189,6 +190,7 @@ export default class MineBoard {
             if (onLose) { onLose(); }
         } else if (cell.nearby === 0) {
             cel.className = "cell hidden blank";
+            // eslint-disable-next-line no-undef
             setTimeout(() => {
                 cel.classList.remove("hidden");
                 cel.innerHTML = "&nbsp;";
@@ -200,6 +202,7 @@ export default class MineBoard {
             if (onWin) { onWin(); }
         } else {
             cel.className = `cell hidden nearby nearby-${cell.nearby}`;
+            // eslint-disable-next-line no-undef
             setTimeout(() => {
                 cel.classList.remove("hidden");
                 cel.textContent = cell.nearby.toString();
@@ -228,6 +231,7 @@ export default class MineBoard {
             onNearby: this.clearNearby.bind(this),
             onWin: this.win.bind(this)
         });
+        // eslint-disable-next-line no-undef
         console.log(`cell ${cellIndex} revealed`);
     }
     /**
@@ -263,6 +267,7 @@ export default class MineBoard {
             cel.querySelector(".overlay").innerHTML = "🚩";
             this.mineCount--;
         }
+        // eslint-disable-next-line no-undef
         document.querySelector(".count").innerHTML = this.mineCount.toString();
     }
     /**

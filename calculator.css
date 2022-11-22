@@ -1,252 +1,256 @@
 ﻿body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-input, button {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+input,
+button {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 a {
-    color: black;
-    text-decoration: none;
+  color: black;
+  text-decoration: none;
 }
 
 main {
-    background-color: rgb(230,230,230);
-    margin: 0 auto;
-    max-width: 20rem;
-    padding: 6px;
+  background-color: rgb(230, 230, 230);
+  margin: 0 auto;
+  max-width: 20rem;
+  padding: 6px;
 }
 
 nav {
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: baseline;
-    align-content: space-around;
-    max-height: 3rem;
-    padding: 0 0.5rem;
-    position: relative;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: baseline;
+  align-content: space-around;
+  max-height: 3rem;
+  padding: 0 0.5rem;
+  position: relative;
 }
 
-    nav h1 {
-        flex: 1 2 auto;
-        font-size: 1.5rem;
-        font-weight: normal;
-        line-height: 2;
-        margin: 0;
-    }
+nav h1 {
+  flex: 1 2 auto;
+  font-size: 1.5rem;
+  font-weight: normal;
+  line-height: 2;
+  margin: 0;
+}
 
-    nav a {
-        display: block;
-        width: 100%;
-        outline: none;
-    }
+nav a {
+  display: block;
+  width: 100%;
+  outline: none;
+}
 
-        nav a:active, nav a:focus {
-            outline: none;
-        }
+nav a:active,
+nav a:focus {
+  outline: none;
+}
 
-        nav a.hamburger {
-            display: inline-block;
-            width: auto;
-        }
+nav a.hamburger {
+  display: inline-block;
+  width: auto;
+}
 
-    nav ul {
-        width: 100%;
-        margin: 0;
-        padding: 0;
-        text-indent: calc(1.5rem + 6px);
-    }
+nav ul {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  text-indent: calc(1.5rem + 6px);
+}
 
-        nav ul ul {
-            text-indent: 3.5rem;
-        }
+nav ul ul {
+  text-indent: 3.5rem;
+}
 
-            nav ul ul li {
-                font-size: 1rem;
-            }
+nav ul ul li {
+  font-size: 1rem;
+}
 
-                nav ul ul li a {
-                    padding: 0.75rem 0;
-                }
+nav ul ul li a {
+  padding: 0.75rem 0;
+}
 
-        nav ul li {
-            list-style-type: none;
-        }
+nav ul li {
+  list-style-type: none;
+}
 
-            nav ul li.selected > a, nav ul li.selected:hover > a {
-                background-color: rgb(159,175,224);
-            }
+nav ul li.selected > a,
+nav ul li.selected:hover > a {
+  background-color: rgb(159, 175, 224);
+}
 
-            nav ul li:hover > a {
-                background-color: rgb(221,221,221);
-            }
+nav ul li:hover > a {
+  background-color: rgb(221, 221, 221);
+}
 
-            nav ul li.selected > a.hamburger, nav ul li.selected:hover > a.hamburger {
-                background-color: rgb(230,230,230);
-            }
+nav ul li.selected > a.hamburger,
+nav ul li.selected:hover > a.hamburger {
+  background-color: rgb(230, 230, 230);
+}
 
-    nav > .hamburger {
-        background-color: rgb(230,230,230);
-        flex: 0 1 auto;
-        font-size: 1.5rem;
-        margin-right: 0.3rem;
-    }
+nav > .hamburger {
+  background-color: rgb(230, 230, 230);
+  flex: 0 1 auto;
+  font-size: 1.5rem;
+  margin-right: 0.3rem;
+}
 
-        nav > .hamburger ~ ul {
-            opacity: 0;
-            left: -100vw;
-            transition: all linear 500ms;
-        }
+nav > .hamburger ~ ul {
+  opacity: 0;
+  left: -100vw;
+  transition: all linear 500ms;
+}
 
-        nav > .hamburger:target ~ ul {
-            opacity: 1;
-            left: -6px;
-        }
+nav > .hamburger:target ~ ul {
+  opacity: 1;
+  left: -6px;
+}
 
-    nav > ul {
-        background-color: rgb(230,230,230);
-        font-size: 1.5rem;
-        flex: auto;
-        position: absolute;
-        top: 0.5rem;
-        padding-bottom: 2.5rem;
-        max-width: 18rem;
-        max-height: 28.4rem;
-        overflow-x: hidden;
-        overflow-y: auto;
-        z-index: 2;
-    }
+nav > ul {
+  background-color: rgb(230, 230, 230);
+  font-size: 1.5rem;
+  flex: auto;
+  position: absolute;
+  top: 0.5rem;
+  padding-bottom: 2.5rem;
+  max-width: 18rem;
+  max-height: 28.4rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+  z-index: 2;
+}
 
-        nav > ul > li {
-            text-indent: 3rem;
-        }
+nav > ul > li {
+  text-indent: 3rem;
+}
 
-            nav > ul > li.selected {
-                text-indent: 0.5rem;
-            }
+nav > ul > li.selected {
+  text-indent: 0.5rem;
+}
 
-            nav > ul > li.sticky-bottom {
-                background-color: rgb(230,230,230);
-                position: fixed;
-                width: 18rem;
-                height: 2.5rem;
-                border-top: 1px solid #eee;
-                text-indent: 3rem;
-                top: 29.1rem;
-            }
+nav > ul > li.sticky-bottom {
+  background-color: rgb(230, 230, 230);
+  position: fixed;
+  width: 18rem;
+  height: 2.5rem;
+  border-top: 1px solid #eee;
+  text-indent: 3rem;
+  top: 29.1rem;
+}
 
 form {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: 1.5rem 6rem 1.5rem 1fr;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1.5rem 6rem 1.5rem 1fr;
 }
 
 .history {
-    font-size: smaller;
+  font-size: smaller;
 }
 
 input {
-    background-color: transparent;
-    border: 0 none transparent;
-    font-size: 3rem;
-    text-align: right;
-    width: 100%;
+  background-color: transparent;
+  border: 0 none transparent;
+  font-size: 3rem;
+  text-align: right;
+  width: 100%;
 }
 
-    input:invalid {
-        border: 1px solid red;
-    }
+input:invalid {
+  border: 1px solid red;
+}
 
-    input[type="text"] {
-        padding-right: 18px; /* guess on how big spinner is */
-    }
+input[type="text"] {
+  padding-right: 18px; /* guess on how big spinner is */
+}
 
 .memory {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
 }
 
-    .memory button {
-        font-weight: bold;
-    }
+.memory button {
+  font-weight: bold;
+}
 
 .main-calc {
-    display: grid;
-    grid-template-columns: repeat(4, calc(25% - 3px));
-    grid-gap: 4px;
+  display: grid;
+  grid-template-columns: repeat(4, calc(25% - 3px));
+  grid-gap: 4px;
 }
 
 button {
-    background: transparent;
-    border: 0 none transparent;
-    padding: 0;
-    margin: 0;
+  background: transparent;
+  border: 0 none transparent;
+  padding: 0;
+  margin: 0;
 }
 
 .main-calc button {
-    font-size: 1.25rem;
-    padding: 0.5rem 1rem;
-    background-color: rgb(240,240,240);
+  font-size: 1.25rem;
+  padding: 0.5rem 1rem;
+  background-color: rgb(240, 240, 240);
 }
 
-    .main-calc button.number {
-        background-color: rgb(250,250,250);
-        font-weight: bold;
-    }
+.main-calc button.number {
+  background-color: rgb(250, 250, 250);
+  font-weight: bold;
+}
 
-    .main-calc button.mem-op {
-        font-size: 1rem;
-    }
+.main-calc button.mem-op {
+  font-size: 1rem;
+}
 
-    .main-calc button.op {
-        font-size: 1.5rem;
-    }
+.main-calc button.op {
+  font-size: 1.5rem;
+}
 
 #multiply {
-    grid-column-start: 4;
-    grid-row-start: 3;
+  grid-column-start: 4;
+  grid-row-start: 3;
 }
 
 #subtract {
-    grid-column-start: 4;
-    grid-row-start: 4;
+  grid-column-start: 4;
+  grid-row-start: 4;
 }
 
 #add {
-    grid-column-start: 4;
-    grid-row-start: 5;
+  grid-column-start: 4;
+  grid-row-start: 5;
 }
 
 #equals {
-    grid-column-start: 4;
-    grid-row-start: 6;
+  grid-column-start: 4;
+  grid-row-start: 6;
 }
 
 #positive-negative {
-    grid-column-start: 1;
-    grid-row-start: 6;
+  grid-column-start: 1;
+  grid-row-start: 6;
 }
 
 #n0 {
-    grid-column-start: 2;
-    grid-row-start: 6;
+  grid-column-start: 2;
+  grid-row-start: 6;
 }
 
 .row-1 {
-    grid-row-start: 3;
+  grid-row-start: 3;
 }
 
 .row-2 {
-    grid-row-start: 4;
+  grid-row-start: 4;
 }
 
 .row-3 {
-    grid-row-start: 5;
+  grid-row-start: 5;
 }

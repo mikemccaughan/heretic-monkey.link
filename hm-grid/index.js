@@ -26,6 +26,15 @@ export const sample = [
 ];
 
 export class HmGrid {
+    /**
+     * 
+     * @param {object} options (optional) An object with the options
+     * for the component
+     * @param {string} options.selector The selector to be used for identifying
+     * the component. Defaults to ".hm-grid-container".
+     * @param {object[]|undefined} data An array of objects representing the data to be
+     * displayed in the grid.
+     */
     constructor(options, data) {
         if (options && !data && Array.isArray(options)) {
             this.options = undefined;
@@ -36,15 +45,22 @@ export class HmGrid {
         }
 
         const selector = (this.options && this.options.selector) || ".hm-grid-container";
+        // eslint-disable-next-line no-undef
         this.element = document.querySelector(selector);
         this.loadData();
     }
+    /**
+     * Gets information about the data in a given column
+     * @param {HTMLElement} col The element representing the column
+     * @param {object} sampleObject An object that provides a sample of the data
+     * @returns {object} Information about the path to the data
+     */
     getPathInfo(col, sampleObject) {
         const path = col.getAttribute('data-column');
         const paths = path.split('.');
         let node = sampleObject;
         const hasPath = paths.reduce((agg, cur) => {
-            const hasProp = node.hasOwnProperty(cur);
+            const hasProp = cur in node;
             hasProp && (node = node[cur]);
             return agg && hasProp; 
         }, true);
@@ -64,7 +80,7 @@ export class HmGrid {
             if (cur.startsWith('hm-type')) {
                 agg['type'] = cur.replace('hm-type-', '');
             }
-            if (agg.hasOwnProperty('type') && cur.startsWith(`hm-${agg.type}`)) {
+            if ('type' in agg && cur.startsWith(`hm-${agg.type}`)) {
                 agg['extras'] = [...(agg['extras'] || []), cur.replace(`hm-${agg.type}-`, '')];
             }
             return agg;

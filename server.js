@@ -1,12 +1,11 @@
-// @ts-nocheck
-const pth = require('node:path');
-const StreamZip = require('node-stream-zip');
+// eslint-disable-next-line @typescript-eslint/no-var-requires, no-undef
 const express = require('express');
 const app = express();
 const port = 4321;
 app.use(express.static('./', {
     extensions: ['js','mjs'],
     setHeaders: function setHeaders(res, path) {
+        // eslint-disable-next-line no-undef
         console.log(path);
         if (path.includes('.zip')) {
             const zipPath = path.substring(path.indexOf('.zip') + 4);
@@ -31,5 +30,6 @@ app.use(express.static('./', {
 
 }));
 app.listen(port, () => {
+    // eslint-disable-next-line no-undef
     console.log(`http://localhost:${port}/`);
 });

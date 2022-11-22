@@ -12,5 +12,8 @@
     },
     "angularCompilerOptions": {
         "strictTemplates": true
-    }
+    },
+    "exclude": [
+        "publish"
+    ]
 }
