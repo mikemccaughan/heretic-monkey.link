@@ -2,18 +2,23 @@
   "name": "heretic-monkey.link",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "server.cjs",
   "engines": {
     "node": ">=18.0.0"
   },
   "workspaces": [
-    "hm-walls/",
-    "hm-walls-api/",
-    "material-test/"
+    "hm-walls",
+    "hm-walls-api",
+    "material-test"
   ],
   "scripts": {
-    "start": "yarn node server.js",
-    "build": "yarn set version stable && yarn plugin import @yarnpkg/plugin-workspace-tools && yarn plugin import @yarnpkg/plugin-typescript && rm -rf publish && mkdir -p publish/hm-walls/dist publish/hm-walls-api/dist publish/material-test && yarn install && cp *.*js publish/ && cp *.html publish/ && cp *.css publish/ && cp -r hm-grid publish/hm-grid && cd hm-walls && npm install && yarn run build -- -c production --output-path ../publish/hm-walls/dist && cd ../hm-walls-api && npm install && yarn run build && cd ../material-test && npm install && yarn run build && cp -r dist ../publish/material-test && cp index.html ../publish/material-test/"
+    "start": "yarn node server.cjs",
+    "build:yarn": "yarn set version stable && yarn plugin import @yarnpkg/plugin-workspace-tools && yarn plugin import @yarnpkg/plugin-typescript",
+    "build:directories": "rm -rf publish && mkdir -p publish/hm-walls/dist publish/hm-walls-api/dist publish/material-test",
+    "build:nobuild": "yarn install && cp *.*js publish/ && cp *.html publish/ && cp *.css publish/ && cp -r hm-grid publish/hm-grid && cp -r design publish/design",
+    "build:workspaces": "yarn workspaces focus --all && yarn workspaces foreach -v --exclude heretic-monkey.link run build",
+    "build:predeploy": "cp -r hm-walls-api/dist publish/hm-walls-api/dist && cp -r material-test/dist publish/material-test",
+    "build": "yarn run build:yarn && yarn run build:directories && yarn run build:nobuild && yarn run build:workspaces && yarn run build:predeploy"
   },
   "repository": {
     "type": "git",
@@ -27,11 +32,11 @@
   "homepage": "https://github.com/mikemccaughan/heretic-monkey.link#readme",
   "packageManager": "yarn@3.3.0",
   "dependencies": {
-    "@types/node": "^18.11.9",
     "express": "^4.18.2",
-    "node-stream-zip": "^1.15.0"
+    "loader-utils": "^3.2.1"
   },
   "devDependencies": {
-    "@types/express": "^4"
+    "@types/express": "^4",
+    "@types/node": "^18.11.9"
   }
 }

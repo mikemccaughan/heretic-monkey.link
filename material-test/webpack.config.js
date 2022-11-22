@@ -1,5 +1,4 @@
-const autoprefixer = require('autoprefixer');
-
+// eslint-disable-next-line no-undef
 module.exports = [
   {
     mode: 'production',
@@ -32,9 +31,10 @@ module.exports = [
               loader: 'sass-loader',
               options: {
                 sassOptions: {
-                  includePaths: ['./node_modules'],
+                  includePaths: ['./node_modules','../node_modules'],
                 },
                 // Prefer Dart Sass
+                // eslint-disable-next-line no-undef
                 implementation: require('sass'),
 
                 // See https://github.com/webpack-contrib/sass-loader/issues/804
@@ -48,6 +48,7 @@ module.exports = [
           use: {
             loader: 'babel-loader',
             options: {
+              // eslint-disable-next-line no-undef
               presets: [require.resolve('@babel/preset-env')],
             },
           },
@@ -56,6 +57,7 @@ module.exports = [
     },
     devServer: {
       static: {
+        // eslint-disable-next-line no-undef
         directory: __dirname,
       },
       compress: true,
