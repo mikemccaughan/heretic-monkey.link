@@ -17,6 +17,7 @@ class Calculatifier {
     this.numberButtons = form.querySelectorAll("button.number");
     this.operatorButtons = form.querySelectorAll("button.op");
     this.memOperatorButtons = form.querySelectorAll("button.mem-op");
+    this.mathButtons = form.querySelectorAll("button.math");
 
     this.inputElement.addEventListener("input", this.inputChanged.bind(this));
     this.decimalButton.addEventListener(
@@ -32,6 +33,9 @@ class Calculatifier {
     this.memOperatorButtons.forEach((el) =>
       el.addEventListener("click", this.memOperatorClicked.bind(this))
     );
+    this.mathButtons.forEach((el) =>
+      el.addEventListener("click", this.operatorClicked.bind(this))
+    );
 
     this.operatorMap = {
       "%": this.percent.bind(this),
@@ -41,6 +45,9 @@ class Calculatifier {
       "+": this.add.bind(this),
       "=": this.equals.bind(this),
       "±": this.negate.bind(this),
+      "√": this.root.bind(this),
+      "𝑥²": this.square.bind(this),
+      "⅟𝑥": this.invert.bind(this),
     };
 
     const memoryHandler = {
@@ -210,17 +217,52 @@ class Calculatifier {
     return -valu;
   }
   /**
+   * Gets the nth root of prev, where n is valu, and returns the result.
+   * @param {number} prev The radicand value
+   * @param {number} valu The index value
+   * @returns {number} The "valu-th" root of prev
+   */
+  root(prev, valu) {
+    return valu % 2 === 1 && prev < 0 ? -(Math.abs(prev) ** (1/valu)) : prev ** (1/valu);
+  }
+  /**
+   * Squares the valu and returns the result.
+   * @param {number} prev The previous value
+   * @param {number} valu The value to square
+   * @returns {number} The value of valu multiplied by itself
+   */
+  square(prev, valu) {
+    return valu * valu;
+  }
+  /**
+   * Divides 1 by valu and returns the result (if valu is zero, it will return Infinity).
+   * @param {number} prev The previous value
+   * @param {number} valu The value to invert
+   * @returns {number} The value of dividing one by valu
+   */
+  invert(prev, valu) {
+    return 1 / valu;
+  }
+  /**
    * Runs through the stack built up in memory, applying the operations
    * defined therein on the values appropriately.
    */
   runStack() {
+    const mathOps = Array.from(this.mathButtons).map((el) => el.textContent);
     let nextOp = undefined;
     let prevCur = [0, 0];
     let gotEquals = false;
-    this.inputElement.value = this.memory.reduce((acc, cur) => {
+    this.inputElement.value = this.memory.reduce((acc, cur, idx, arr) => {
+      const hasNextMathOp = idx < arr.length - 1 && typeof arr[idx + 1] === "string" && mathOps.includes(arr[idx + 1]);
+      const mathOp = this.operatorMap[arr[idx + 1]];
       if (typeof cur === "string") {
         nextOp = this.operatorMap[cur];
         gotEquals = cur === "=";
+      } else if (nextOp && hasNextMathOp) {
+        prevCur = [acc, cur];
+        cur = mathOp.apply(null, prevCur);
+        prevCur = [acc, cur];
+        acc = nextOp.apply(null, prevCur);
       } else if (nextOp) {
         prevCur = [acc, cur];
         acc = nextOp.apply(null, prevCur);
@@ -277,7 +319,31 @@ class Calculatifier {
 (function (w) {
   let init = () => {
     const calc = new Calculatifier(w.document.querySelector("form"));
+    const menuToggle = w.document.querySelectorAll("a.toggle");
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    menuToggle.forEach(
+      /**
+       * Function that is called for each of the elements matched by the ".toggle" selector
+       * @param {HTMLAnchorElement} el One of the elements
+       * @returns {void} Nothing.
+       */
+      (el) =>
+        el.addEventListener(
+          "click",
+          /**
+           * Handles click events for the anchors that toggle the hamburger menu
+           */
+          function () {
+            if (this.hash === "#toggle-menu") {
+              this.nextElementSibling.removeAttribute("inert");
+            } else {
+              this.closest("ul").setAttribute("inert", "");
+            }
+          }
+        )
+    );
   };
   w.onload = init;
-// eslint-disable-next-line no-undef
+  // eslint-disable-next-line no-undef
 })(window);
