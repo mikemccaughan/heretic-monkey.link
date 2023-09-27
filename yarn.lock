@@ -4292,6 +4292,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@yarnpkg/sdks@npm:^3.0.0-rc.51":
+  version: 3.0.0-rc.51
+  resolution: "@yarnpkg/sdks@npm:3.0.0-rc.51"
+  dependencies:
+    "@yarnpkg/core": ^4.0.0-rc.51
+    "@yarnpkg/fslib": ^3.0.0-rc.51
+    "@yarnpkg/parsers": ^3.0.0-rc.51
+    chalk: ^3.0.0
+    clipanion: ^4.0.0-rc.2
+    comment-json: ^2.2.0
+    lodash: ^4.17.15
+    tslib: ^2.4.0
+  bin:
+    sdks: ./lib/cli.js
+  checksum: b3895f0430643ae3f6834712d7d87487befcff186e225dba9c0ee789e6359f5d2ff890ecacd7a53f93afc91cc342946e4118cbe4bc1fb61530534d07ad51c745
+  languageName: node
+  linkType: hard
+
 "@yarnpkg/shell@npm:^4.0.0-rc.51":
   version: 4.0.0-rc.51
   resolution: "@yarnpkg/shell@npm:4.0.0-rc.51"
@@ -5716,6 +5734,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"comment-json@npm:^2.2.0":
+  version: 2.4.2
+  resolution: "comment-json@npm:2.4.2"
+  dependencies:
+    core-util-is: ^1.0.2
+    esprima: ^4.0.1
+    has-own-prop: ^2.0.0
+    repeat-string: ^1.6.1
+  checksum: 1e52aa6ddc7aaab4b66b2fbca8758f1035c9ea42bacf7ccd3c446a46b635fff83366cd8a490043675a345402a13675a9e22581671ebbd202e6987ecb6d4d5280
+  languageName: node
+  linkType: hard
+
 "common-path-prefix@npm:^3.0.0":
   version: 3.0.0
   resolution: "common-path-prefix@npm:3.0.0"
@@ -5918,7 +5948,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-util-is@npm:~1.0.0":
+"core-util-is@npm:^1.0.2, core-util-is@npm:~1.0.0":
   version: 1.0.3
   resolution: "core-util-is@npm:1.0.3"
   checksum: 9de8597363a8e9b9952491ebe18167e3b36e7707569eed0ebf14f8bba773611376466ae34575bca8cfe3c767890c859c74056084738f09d4e4a6f902b2ad7d99
@@ -7973,6 +8003,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"has-own-prop@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "has-own-prop@npm:2.0.0"
+  checksum: ca6336e85ead2295c9603880cbc199e2d3ff7eaea0e9035d68fbc79892e9cf681abc62c0909520f112c671dad9961be2173b21dff951358cc98425c560e789e0
+  languageName: node
+  linkType: hard
+
 "has-proto@npm:^1.0.1":
   version: 1.0.1
   resolution: "has-proto@npm:1.0.1"
@@ -8106,6 +8143,7 @@ __metadata:
     "@types/express": ^4
     "@types/node": ^18.11.9
     "@yarnpkg/pnpify": ^4.0.0-rc.51
+    "@yarnpkg/sdks": ^3.0.0-rc.51
     cacache: ^18.0.0
     express: ^4.18.2
     loader-utils: ^3.2.1
@@ -10144,7 +10182,7 @@ __metadata:
     sass: ^1.54.8
     sass-loader: ^13.0.2
     typescript: 5.1
-    webpack: ^5.74.0
+    webpack: ^5.76.0
     webpack-cli: ^4.10.0
     webpack-dev-server: ^4.10.1
     ws: ^8.8.1
@@ -12605,6 +12643,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"repeat-string@npm:^1.6.1":
+  version: 1.6.1
+  resolution: "repeat-string@npm:1.6.1"
+  checksum: 1b809fc6db97decdc68f5b12c4d1a671c8e3f65ec4a40c238bc5200e44e85bcc52a54f78268ab9c29fcf5fe4f1343e805420056d1f30fa9a9ee4c2d93e3cc6c0
+  languageName: node
+  linkType: hard
+
 "request@npm:^2.53.0, request@npm:^2.83.0, request@npm:^2.86.0, request@npm:^2.87.0":
   version: 2.88.2
   resolution: "request@npm:2.88.2"
@@ -15016,7 +15061,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack@npm:5.88.2, webpack@npm:^5.74.0":
+"webpack@npm:5.88.2, webpack@npm:^5.76.0":
   version: 5.88.2
   resolution: "webpack@npm:5.88.2"
   dependencies:
@@ -15052,8 +15097,6 @@ __metadata:
   checksum: 79476a782da31a21f6dd38fbbd06b68da93baf6a62f0d08ca99222367f3b8668f5a1f2086b7bb78e23172e31fa6df6fa7ab09b25e827866c4fc4dc2b30443ce2
   languageName: node
   linkType: hard
-
-
 
 "websocket-driver@npm:>=0.5.1, websocket-driver@npm:^0.7.4":
   version: 0.7.4
