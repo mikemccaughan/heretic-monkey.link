@@ -61,18 +61,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "hm-walls:build"
+            "buildTarget": "hm-walls:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "hm-walls:build:production"
+              "buildTarget": "hm-walls:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "hm-walls:build"
+            "buildTarget": "hm-walls:build"
           }
         },
         "test": {

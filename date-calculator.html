@@ -76,7 +76,15 @@
       </aside>
     </footer>
     <script type="module">
-      import {Temporal, Intl, toTemporalInstant} from '/.yarn/cache/@js-temporal-polyfill-npm-0.4.2-dc935ad0b4-315e0cb880.zip/node_modules/@js-temporal/polyfill/dist/index.esm.js';
+      import {Temporal, Intl, toTemporalInstant} from '/node_modules/@js-temporal/polyfill/dist/index.esm.js';
+      if (!Temporal) {
+        import('/.yarn/cache/@js-temporal-polyfill-npm-0.4.4-0aaeb2bb32-034c00fdc1.zip/node_modules/@js-temporal/polyfill/dist/index.esm.js').then(module => {
+          const {Temporal, Intl, toTemporalInstant} = module;
+          window.Temporal = Temporal;
+          window.Intl = Intl;
+          window.toTemporalInstant = toTemporalInstant;
+        });
+      }
         document.addEventListener('readystatechange', e => {
           if (e.target.readyState === 'complete') {
             setDefaultDate();
@@ -84,8 +92,8 @@
         });
         function setDefaultDate() {
           const temporal = document.querySelector('#dateonly').checked
-            ? Temporal.now.date()
-            : Temporal.now.dateTime();
+            ? Temporal.Now.plainDateISO()
+            : Temporal.Now.plainDateTimeISO();
           document.querySelector('#start').value = temporal
             .toString()
             .substring(0, 16);
@@ -117,32 +125,32 @@
         );
         const symbolToFunction = {
           m: {
-            '+': (dt, c) => dt.plus({ minutes: c }),
-            '-': (dt, c) => dt.minus({ minutes: c })
+            '+': (dt, c) => dt.add({ minutes: c }),
+            '-': (dt, c) => dt.subtract({ minutes: c })
           },
           h: {
-            '+': (dt, c) => dt.plus({ hours: c }),
-            '-': (dt, c) => dt.minus({ hours: c })
+            '+': (dt, c) => dt.add({ hours: c }),
+            '-': (dt, c) => dt.subtract({ hours: c })
           },
           d: {
-            '+': (dt, c) => dt.plus({ days: c }),
-            '-': (dt, c) => dt.minus({ days: c })
+            '+': (dt, c) => dt.add({ days: c }),
+            '-': (dt, c) => dt.subtract({ days: c })
           },
           w: {
-            '+': (dt, c) => dt.plus({ days: c * 7 }),
-            '-': (dt, c) => dt.minus({ days: c * 7 })
+            '+': (dt, c) => dt.add({ days: c * 7 }),
+            '-': (dt, c) => dt.subtract({ days: c * 7 })
           },
           M: {
-            '+': (dt, c) => dt.plus({ months: c }),
-            '-': (dt, c) => dt.minus({ months: c })
+            '+': (dt, c) => dt.add({ months: c }),
+            '-': (dt, c) => dt.subtract({ months: c })
           },
           Q: {
-            '+': (dt, c) => dt.plus({ months: c * 3 }),
-            '-': (dt, c) => dt.minus({ months: c * 3 })
+            '+': (dt, c) => dt.add({ months: c * 3 }),
+            '-': (dt, c) => dt.subtract({ months: c * 3 })
           },
           y: {
-            '+': (dt, c) => dt.plus({ years: c }),
-            '-': (dt, c) => dt.minus({ years: c })
+            '+': (dt, c) => dt.add({ years: c }),
+            '-': (dt, c) => dt.subtract({ years: c })
           }
         };
         document.querySelector('#go').addEventListener(
@@ -158,11 +166,11 @@
             const isDateOnly = document.querySelector('#dateonly').checked;
             let originalTemporal;
             if (isDateOnly) {
-              originalTemporal = Temporal.Date.from(
+              originalTemporal = Temporal.PlainDate.from(
                 document.querySelector('#start').value
               );
             } else {
-              originalTemporal = Temporal.DateTime.from(
+              originalTemporal = Temporal.PlainDateTime.from(
                 document.querySelector('#start').value
               );
             }

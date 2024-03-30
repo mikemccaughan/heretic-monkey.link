@@ -31,8 +31,9 @@
     "url": "https://github.com/mikemccaughan/heretic-monkey.link/issues"
   },
   "homepage": "https://github.com/mikemccaughan/heretic-monkey.link#readme",
-  "packageManager": "yarn@3.6.3",
+  "packageManager": "yarn@4.1.1",
   "dependencies": {
+    "@js-temporal/polyfill": "^0.4.4",
     "@yarnpkg/pnpify": "^4.0.0-rc.51",
     "@yarnpkg/sdks": "^3.0.0-rc.51",
     "cacache": "^18.0.0",
