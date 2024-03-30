@@ -13,8 +13,8 @@ export default class Util {
      * events from overwhelming an event handler function.
      */
     return function (e) {
-      clearTimeout(timer);
-      timer = setTimeout(
+      window.clearTimeout(timer);
+      timer = window.setTimeout(
         (function (v) {
           return function () {
             fn(v);
@@ -74,7 +74,7 @@ export default class Util {
     if (parent.matches(selector)) {
       return parent;
     }
-    if (parent === document.documentElement) {
+    if (parent === window.document.documentElement) {
       return null;
     }
 

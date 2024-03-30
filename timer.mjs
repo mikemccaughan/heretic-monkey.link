@@ -120,11 +120,20 @@ export default class Timer {
         };
         if (this.#format.includes('HH') || this.#format.includes('hh')) {
             options.hour = '2-digit';
+            if (this.#format.includes('h')) {
+                options.hour12 = true;
+                options.hourCycle = 'h12';
+            }
         } else if (this.#format.includes('H') || this.#format.includes('h')) {
             options.hour = 'numeric';
+            if (this.#format.includes('h')) {
+                options.hour12 = true;
+                options.hourCycle = 'h12';
+            }
         } else {
             delete options.hour;
-            delete options.hourCycle;
+            delete options.hour12;
+            delete options.hourCycle;4
         }
         if (this.#format.includes('MM') || this.#format.includes('mm')) {
             options.minute = '2-digit';
@@ -143,7 +152,7 @@ export default class Timer {
         if (this.#format.includes('F') || this.#format.includes('f')) {
             const fractionCount = [...this.#format].filter(c => c === 'f' || c === 'F').length;
             /** @type {0|1|2|3} */
-            const digitCount = fractionCount == 0 ? 0 : 
+            const digitCount = fractionCount <= 0 ? 0 : 
                 fractionCount === 1 ? 1 : 
                 fractionCount === 2 ? 2 : 
                 fractionCount >= 3 ? 3 : 

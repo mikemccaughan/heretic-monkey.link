@@ -1,5 +1,5 @@
-import Timer from "./timer.js";
-import Modal from "./modal.js";
+import Timer from "./timer.mjs";
+import Modal from "./modal.mjs";
 export default class MineBoard {
     /**
      * Creates an instance of the MineBoard class
@@ -269,6 +269,9 @@ export default class MineBoard {
         }
         // eslint-disable-next-line no-undef
         document.querySelector(".count").innerHTML = this.mineCount.toString();
+        if (this.mineCount === 0) {
+            this.win();
+        }
     }
     /**
      * Clears the board completely.
