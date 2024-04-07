@@ -113,23 +113,22 @@ class FauxStorage {
     this.store.clear();
   }
 }
-(function() {
+(function(w) {
   // Note: Requires new names because sandbox attribute on iframe denies access to 
   // localStorage/sessionStorage name, regardless of implementation.
   const localStore = new FauxStorage();
   const sessionStore = new FauxStorage();
-  // eslint-disable-next-line no-undef
-  Object.defineProperty(window, "localStore", {
+  Object.defineProperty(w, "localStore", {
     get: () => localStore,
     enumerable: true,
     configurable: true,
     writable: false
   });
-  // eslint-disable-next-line no-undef
-  Object.defineProperty(window, "sessionStore", {
+  Object.defineProperty(w, "sessionStore", {
     get: () => sessionStore,
     enumerable: true,
     configurable: true,
     writable: false
   });  
-})();
+// eslint-disable-next-line no-undef
+})(window ?? globalThis);

@@ -12,6 +12,7 @@
       body {
         font-family: 'Source Sans Pro', sans-serif;
       }
+      output { display: block; white-space: pre; font-family: monospace; }
     </style>
   </head>
   <body>
@@ -153,5 +154,26 @@
         </ul>
       </li>
     </ul>
+    <label>
+    <input id="checky" type="checkbox" />
+    Checkbox for observing behavior.
+  </label>
+    <output id="checky-output">
+
+    </output>
+    <script>
+      const checky = document.querySelector('#checky');
+      checky.indeterminate = true;
+      const output = document.querySelector('#checky-output');
+      checky.addEventListener('change', function (e) {
+        output.append(`${new Date().toISOString()}: checky:\n`);
+        output.append(`${new Date().toISOString()}: {\n`);
+        output.append(`${new Date().toISOString()}:   defaultChecked: ${checky.defaultChecked},\n`);
+        output.append(`${new Date().toISOString()}:   checked: ${checky.checked},\n`);
+        output.append(`${new Date().toISOString()}:   indeterminate: ${checky.indeterminate}\n`);
+        output.append(`${new Date().toISOString()}: }\n\n`);
+      }, false);
+      checky.dispatchEvent(new Event('change'));
+    </script>
   </body>
 </html>

@@ -1,0 +1,356 @@
+<html>
+  <head>
+    <style>
+      .named-group[hidden] {
+        display: none;
+      }
+      .named-group {
+        display: flex;
+        flex-flow: row wrap;
+        max-width: 90vw;
+      }
+      .named-group li {
+        display: block;
+        flex: 0 0 1rem;
+        font-family: monospace;
+        max-width: 1rem;
+        min-width: 1rem;
+      }
+      #contain-toggle {
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>
+      Characters which may start an element's name in XML (971504 characters)
+    </h2>
+    <ul id="start"></ul>
+    <h2 id="contain-toggle" data-toggle="contain">
+      Characters which may be second or later in an element's name in XML (addl
+      127 characters)
+    </h2>
+    <ul id="contain" class="named-group"></ul>
+  </body>
+  <script>
+    document.querySelector("#contain-toggle").addEventListener(
+      "click",
+      function (e) {
+        const what = this.dataset.toggle;
+        document.querySelector(`#${what}`).hidden = !document.querySelector(
+          `#${what}`
+        ).hidden;
+      },
+      true
+    );
+
+    const NameStartCharRe =
+      /[:A-Z_a-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\u10000-\uEFFFF]/;
+    const NameChar = /[-.0-9\u00B7\u0300-\u036F\u203F-\u2040]/;
+    const Name = new RegExp(
+      `${NameStartCharRe.toString().slice(1, -1)}{1}${NameChar.toString().slice(
+        1,
+        -1
+      )}*`
+    );
+    const Names = new RegExp(`${Name}( ${Name})*`);
+    const Nmtoken = new RegExp(NameChar.toString().slice(1, -1) + "*");
+    const Nmtokens = new RegExp(`${Nmtoken}( ${Nmtoken})*`);
+    const nameStartList = document.querySelector("#start");
+    const nameList = document.querySelector("#contain");
+    let charLi = document.createElement("li");
+    let charTn = document.createTextNode(":");
+    const addCharToList = (char, list) => {
+      charLi = charLi.cloneNode(false);
+      const codePoint = char.codePointAt(0);
+      charLi.dataset.codePoint = codePoint.toString(16);
+      charLi.dataset.codePointDec = codePoint.toString(10);
+      
+      charTn = charTn.cloneNode(false);
+      charTn.data = char;
+      charLi.appendChild(charTn);
+      list.appendChild(charLi);
+    };
+    /**
+     * Gets the character associated with the specific code point, asynchronously.
+     * @param {number} c The code point
+     * @returns {Promise<string>} The string generated for c
+     */
+    async function getCharFromCodePoint(c) {
+      return new Promise((resolve) => {
+        resolve(String.fromCodePoint(c));
+      });
+    }
+    /**
+     * Generates a stream of characters that can be used as the first character of an XML Name.
+     */
+    async function* nameStartGenerator() {
+      for (let char of [
+        ...":ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz",
+      ]) {
+        yield await Promise.resolve(char);
+      }
+      for (let c = 192 /*c0*/; c < 215 /*d7*/; c++) {
+        yield await getCharFromCodePoint(c);
+      }
+      for (let c = 216 /*d8*/; c < 247 /*f7*/; c++) {
+        yield await getCharFromCodePoint(c);
+      }
+      for (let c = 248 /*f8*/; c < 768 /*300*/; c++) {
+        yield await getCharFromCodePoint(c);
+      }
+      for (
+        let c = 880 /*parseInt("370", 16)*/;
+        c < 894 /*parseInt("37e", 16)*/;
+        c++
+      ) {
+        yield await getCharFromCodePoint(c);
+      }
+      for (
+        let c = 895 /*parseInt("37f", 16)*/;
+        c < 8192 /*parseInt("2000", 16)*/;
+        c++
+      ) {
+        yield await getCharFromCodePoint(c);
+      }
+      for (
+        let c = 8204 /*parseInt("200c", 16)*/;
+        c < 8206 /*parseInt("200e", 16)*/;
+        c++
+      ) {
+        yield await getCharFromCodePoint(c);
+      }
+      for (
+        let c = 8304 /*parseInt("2070", 16)*/;
+        c < 8590 /*parseInt("218e", 16)*/;
+        c++
+      ) {
+        yield await getCharFromCodePoint(c);
+      }
+      for (
+        let c = 11264 /*parseInt("2c00", 16)*/;
+        c < 12272 /*parseInt("2ff0", 16)*/;
+        c++
+      ) {
+        yield await getCharFromCodePoint(c);
+      }
+      for (
+        let c = 12289 /*parseInt("3001", 16)*/;
+        c < 55296 /*parseInt("d800", 16)*/;
+        c++
+      ) {
+        yield await getCharFromCodePoint(c);
+      }
+      for (
+        let c = 63744 /*parseInt("f900", 16)*/;
+        c < 64976 /*parseInt("fdd0", 16)*/;
+        c++
+      ) {
+        yield await getCharFromCodePoint(c);
+      }
+      for (
+        let c = 65008 /*parseInt("fdf0", 16)*/;
+        c < 65534 /*parseInt("fffe", 16)*/;
+        c++
+      ) {
+        yield await getCharFromCodePoint(c);
+      }
+      for (
+        let c = 65536 /*parseInt("10000", 16)*/;
+        c < 983040 /*parseInt("f0000", 16)*/;
+        c++
+      ) {
+        yield await getCharFromCodePoint(c);
+      }
+    }
+
+    /**
+     * Generates a stream of characters that can be used as any character other than the first, of an XML Name.
+     */
+    async function* nameGenerator() {
+      const name = [..."-.0123456789\u00B7"];
+      for (let char of name) {
+        yield await Promise.resolve(char);
+      }
+      for (
+        let c = 768 /*parseInt("300", 16)*/;
+        c < 880 /*parseInt("370", 16)*/;
+        c++
+      ) {
+        yield await getCharFromCodePoint(c);
+      }
+      for (
+        let c = 8255 /*parseInt("203F", 16)*/;
+        c < 8257 /*parseInt("2041", 16)*/;
+        c++
+      ) {
+        yield await getCharFromCodePoint(c);
+      }
+    }
+    function makeList(id, header, count, parentList) {
+      const list = document.createElement("ul");
+      list.classList.add("named-group");
+      list.id = id;
+      list.hidden = true;
+      const listHeader = document.createElement("li");
+      const listHeaderToggle = document.createElement("button");
+      listHeaderToggle.dataset.toggle = id;
+      listHeaderToggle.textContent = `${header} (${count})`;
+      listHeaderToggle.setAttribute("type", "button");
+      listHeaderToggle.addEventListener(
+        "click",
+        function (e) {
+          const what = this.dataset.toggle;
+          document.querySelector(`#${what}`).hidden = !document.querySelector(
+            `#${what}`
+          ).hidden;
+        },
+        true
+      );
+      listHeader.appendChild(listHeaderToggle);
+      listHeader.appendChild(list);
+      parentList.appendChild(listHeader);
+      return list;
+    }
+    async function main() {
+      let minNameStart = [
+        ...":ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz",
+      ]
+        .map((c) => c.codePointAt(0))
+        .reduce((agg, cur) => Math.min(agg, cur), Number.POSITIVE_INFINITY);
+      let normalList;
+      let c0d7List;
+      let d8f7List;
+      let f8300List;
+      let _37037eList;
+      for await (const char of nameStartGenerator()) {
+        if (char.codePointAt(0) < 192) {
+          if (char.codePointAt(0) === ":".codePointAt(0)) {
+            normalList = makeList("normal", "ASCII", 54, nameStartList);
+          }
+          if (char.codePointAt(0) >= minNameStart) {
+            addCharToList(char, normalList);
+          }
+        } else if (char.codePointAt(0) < 216) {
+          if (char.codePointAt(0) === 192) {
+            c0d7List = makeList("c0d7", "C0 - D7", 23, nameStartList);
+          }
+          if (char.codePointAt(0) >= 192) {
+            addCharToList(char, c0d7List);
+          }
+        } else if (char.codePointAt(0) < 247) {
+          if (char.codePointAt(0) === 216) {
+            d8f7List = makeList("d8f7", "D8 - F7", 31, nameStartList);
+          }
+          if (char.codePointAt(0) >= 216) {
+            addCharToList(char, d8f7List);
+          }
+        } else if (char.codePointAt(0) < 768) {
+          if (char.codePointAt(0) === 248) {
+            f8300List = makeList("f8300", "F8 - 300", 520, nameStartList);
+          }
+          if (char.codePointAt(0) >= 248) {
+            addCharToList(char, f8300List);
+          }
+        } else if (char.codePointAt(0) < 894) {
+          if (char.codePointAt(0) === 880) {
+            _37037eList = makeList("_37037e", "370 - 37E", 14, nameStartList);
+          }
+          if (char.codePointAt(0) >= 880) {
+            addCharToList(char, _37037eList);
+          }
+        } else if (char.codePointAt(0) < 8192) {
+          if (char.codePointAt(0) === 895) {
+            _37f2000List = makeList(
+              "_37f2000",
+              "37F - 2000",
+              7296,
+              nameStartList
+            );
+          }
+          if (char.codePointAt(0) >= 895) {
+            addCharToList(char, _37f2000List);
+          }
+        } else if (char.codePointAt(0) < 8206) {
+          if (char.codePointAt(0) === 8204) {
+            _8204200eList = makeList(
+              "_8204200e",
+              "200C - 200E",
+              2,
+              nameStartList
+            );
+          }
+          if (char.codePointAt(0) >= 8204) {
+            addCharToList(char, _8204200eList);
+          }
+        } else if (char.codePointAt(0) < 8590) {
+          if (char.codePointAt(0) === 8304) {
+            _2070218eList = makeList(
+              "_2070218e",
+              "2070 - 218E",
+              286,
+              nameStartList
+            );
+          }
+          if (char.codePointAt(0) >= 8304) {
+            addCharToList(char, _2070218eList);
+          }
+        } else if (char.codePointAt(0) < 12272) {
+          if (char.codePointAt(0) === 11264) {
+            _2c002ff0List = makeList(
+              "_2c002ff0",
+              "2C00 - 2FF0",
+              1008,
+              nameStartList
+            );
+          }
+          if (char.codePointAt(0) >= 11264) {
+            addCharToList(char, _2c002ff0List);
+          }
+        } /*else if (char.codePointAt(0) < 55296) {
+          if (char.codePointAt(0) === 12289) {
+            _3001d800List = makeList("_3001d800", "3001 - D800", 43007, nameStartList);
+          }
+          if (char.codePointAt(0) >= 12289) {
+            addCharToList(char, _3001d800List);
+          }
+        }*/ else if (char.codePointAt(0) < 64976) {
+          if (char.codePointAt(0) === 63744) {
+            _f900fdd0List = makeList(
+              "_f900fdd0",
+              "F900 - FDD0",
+              1232,
+              nameStartList
+            );
+          }
+          if (char.codePointAt(0) >= 63744) {
+            addCharToList(char, _f900fdd0List);
+          }
+        } else if (char.codePointAt(0) < 65534) {
+          if (char.codePointAt(0) === 65008) {
+            _fdf0fffeList = makeList(
+              "_fdf0fffe",
+              "FDF0 - FFFE",
+              526,
+              nameStartList
+            );
+          }
+          if (char.codePointAt(0) >= 65008) {
+            addCharToList(char, _fdf0fffeList);
+          }
+        } /*else if (char.codePointAt(0) < 983040) {
+          if (char.codePointAt(0) === 65536) {
+            _10000f0000List = makeList("_10000f0000", "10000 - F0000", 917504, nameStartList);
+          }
+          if (char.codePointAt(0) >= 65536) {
+            addCharToList(char, _10000f0000List);
+          }
+        }*/
+      }
+      for await (const char of nameGenerator()) {
+        addCharToList(char, nameList);
+      }
+    }
+    main().catch((e) => console.error(e));
+  </script>
+</html>
