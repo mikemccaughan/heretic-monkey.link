@@ -14,7 +14,7 @@
   ],
   "scripts": {
     "start": "yarn node server.cjs",
-    "build:yarn": "yarn set version stable && yarn plugin import @yarnpkg/plugin-typescript",
+    "build:yarn": "yarn set version stable",
     "build:directories": "rm -rf publish && mkdir -p publish/hm-walls/dist publish/hm-walls-api/dist publish/material-test",
     "build:nobuild": "yarn install && cp *.*js publish/ && cp *.html publish/ && cp *.css publish/ && cp -r hm-grid publish/hm-grid && cp -r design publish/design",
     "build:workspaces": "yarn workspaces focus --all && yarn workspaces foreach -v --exclude heretic-monkey.link run build",
