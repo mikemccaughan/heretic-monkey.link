@@ -50,30 +50,30 @@
     "!*/__tests__"
   ],
   "dependencies": {
-    "@loopback/boot": "^7.0.0",
-    "@loopback/core": "^6.0.0",
-    "@loopback/openapi-v3": "^10.0.0",
-    "@loopback/repository": "^7.0.0",
-    "@loopback/repository-json-schema": "^8.0.0",
-    "@loopback/rest": "^14.0.0",
-    "@loopback/rest-explorer": "^7.0.0",
-    "@loopback/service-proxy": "^7.0.0",
+    "@loopback/boot": "^7.0.4",
+    "@loopback/core": "^6.1.1",
+    "@loopback/openapi-v3": "^10.0.4",
+    "@loopback/repository": "^7.0.4",
+    "@loopback/repository-json-schema": "^8.0.4",
+    "@loopback/rest": "^14.0.4",
+    "@loopback/rest-explorer": "^7.0.4",
+    "@loopback/service-proxy": "^7.0.4",
     "azure-storage": "^2.10.7",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
     "helmet": "^7.1.0",
-    "loopback": "^3.25.1",
-    "loopback-boot": "^3.3.0",
+    "loopback": "^3.28.0",
+    "loopback-boot": "^3.3.1",
     "loopback-connector-rest": "^5.0.1",
-    "tslib": "^2.0.0"
+    "tslib": "^2.6.3"
   },
   "devDependencies": {
-    "@loopback/build": "^11.0.0",
-    "@loopback/eslint-config": "^15.0.0",
-    "@loopback/testlab": "^7.0.0",
-    "@types/node": "^20.11.30",
-    "eslint": "^8.22.0",
+    "@loopback/build": "^11.0.4",
+    "@loopback/eslint-config": "^15.0.3",
+    "@loopback/testlab": "^7.0.4",
+    "@types/node": "^22.1.0",
+    "eslint": "^9.8.0",
     "source-map-support": "^0.5.21",
-    "typescript": "^5.4.3"
+    "typescript": "^5.5.4"
   }
 }

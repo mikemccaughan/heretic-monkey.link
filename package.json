@@ -1,11 +1,11 @@
 {
   "name": "heretic-monkey.link",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
   "main": "server.cjs",
   "type": "module",
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=22.0.0"
   },
   "workspaces": [
     "hm-walls",
@@ -17,7 +17,7 @@
     "build:yarn": "yarn set version stable",
     "build:directories": "rm -rf publish && mkdir -p publish/hm-walls/dist publish/hm-walls-api/dist publish/material-test",
     "build:nobuild": "yarn install && cp *.*js publish/ && cp *.html publish/ && cp *.css publish/ && cp -r hm-grid publish/hm-grid && cp -r design publish/design",
-    "build:workspaces": "yarn workspaces focus --all && yarn workspaces foreach -v --exclude heretic-monkey.link run build",
+    "build:workspaces": "yarn workspaces focus --all && yarn workspaces foreach -v --all --exclude heretic-monkey.link run build",
     "build:predeploy": "cp -r hm-walls-api/dist publish/hm-walls-api/dist && cp -r material-test/dist publish/material-test",
     "build": "yarn run build:yarn && yarn run build:directories && yarn run build:nobuild && yarn run build:workspaces && yarn run build:predeploy"
   },
@@ -31,19 +31,18 @@
     "url": "https://github.com/mikemccaughan/heretic-monkey.link/issues"
   },
   "homepage": "https://github.com/mikemccaughan/heretic-monkey.link#readme",
-  "packageManager": "yarn@4.1.1",
+  "packageManager": "yarn@4.4.0",
   "dependencies": {
-    "@js-temporal/polyfill": "^0.4.4",
-    "@yarnpkg/pnpify": "^4.0.0-rc.51",
-    "@yarnpkg/sdks": "^3.0.0-rc.51",
-    "cacache": "^18.0.0",
-    "express": "^4.18.2",
-    "loader-utils": "^3.2.1",
-    "typescript": "5.1",
-    "yarn": "^1.22.22"
+    "@js-temporal/polyfill": "latest",
+    "@yarnpkg/pnpify": "^4.1.1",
+    "@yarnpkg/sdks": "^3.2.0",
+    "cacache": "^18.0.4",
+    "express": "^4.19.2",
+    "loader-utils": "^3.3.1",
+    "typescript": "^5.5.4"
   },
   "devDependencies": {
-    "@types/express": "^4",
-    "@types/node": "^18.11.9"
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.1.0"
   }
 }
