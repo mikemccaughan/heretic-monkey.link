@@ -62,9 +62,12 @@
     "compression": "^1.7.4",
     "cors": "^2.8.5",
     "helmet": "^7.1.0",
+    "jsonpath-plus": "^10.3.0",
     "loopback": "^3.28.0",
     "loopback-boot": "^3.3.1",
     "loopback-connector-rest": "^5.0.1",
+    "nanoid": "^5.1.2",
+    "nyc": "^17.1.0",
     "tslib": "^2.6.3"
   },
   "devDependencies": {
@@ -72,8 +75,9 @@
     "@loopback/eslint-config": "^15.0.3",
     "@loopback/testlab": "^7.0.4",
     "@types/node": "^22.1.0",
-    "eslint": "^9.8.0",
+    "@typescript-eslint/typescript-estree": "^8.25.0",
+    "eslint": "^8.57.0",
     "source-map-support": "^0.5.21",
-    "typescript": "^5.5.4"
+    "typescript": "5.4.5"
   }
 }

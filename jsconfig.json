@@ -1,3 +1,6 @@
 {
-    "exclude": ["publish","node_modules",".yarn"]
+    "exclude": ["publish","node_modules",".yarn"],
+    "angularCompilerOptions": {
+        "strictTemplates": true
+    }
 }

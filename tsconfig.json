@@ -8,7 +8,9 @@
             "ES2022"
         ],
         "target": "ES2022",
-        "outDir": "tscOut"
+        "outDir": "tscOut",
+        "strict": true,
+        "forceConsistentCasingInFileNames": true
     },
     "angularCompilerOptions": {
         "strictTemplates": true

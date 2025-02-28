@@ -1,0 +1,15 @@
+p3e292 → ✘ 
+@loopback/eslint-config@npm:15.0.3 [2b48a] doesn't provide 
+typescript to 
+@typescript-eslint/eslint-plugin@npm:7.18.0 [aa1c0] 
+and 4 other dependencies
+p4da75 → ✘ 
+@loopback/openapi-v3@npm:10.0.4 [f3eb3] doesn't provide 
+@loopback/repository to 
+@loopback/repository-json-schema@npm:8.0.4 [1a608]
+pb6a7c → ✘ 
+@typescript-eslint/utils@npm:7.18.0 [9e974] doesn't provide 
+typescript to 
+@typescript-eslint/typescript-estree@npm:7.18.0 [c4089] 
+and 1 other dependency
+

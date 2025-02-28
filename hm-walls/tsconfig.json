@@ -18,7 +18,9 @@
       "es2022",
       "dom"
     ],
-    "useDefineForClassFields": false
+    "useDefineForClassFields": false,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true
   },
   "angularCompilerOptions": {
     "strictTemplates": true

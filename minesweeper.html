@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sweeper of Mines</title>
     <link href="minesweeper.css" rel="stylesheet" />
     <script type="module" src="util.mjs"></script>
@@ -38,12 +38,15 @@
             boardRoot.removeEventListener("contextmenu", contextmenuHandler);
             boardRoot.addEventListener("contextmenu", contextmenuHandler);
             let mousedownHandler = getHandler(boardRoot, "mousedown", function (e) {
+                e.preventDefault();
+                e.stopPropagation();
                 console.log('mousedownHandler called with event', e);
                 let boardEl = Util.getAncestor(e.target, ".board");
                 let board = boardEl.getData("board");
-                if (e.target.classList.contains("cell")) {
-                    let cellIndex = parseInt(e.target.getAttribute("data-cell"), 10);
-                    board.cells[cellIndex].element = e.target;
+                const target = e.target;
+                if (target.classList.contains("cell")) {
+                    let cellIndex = parseInt(target.getAttribute("data-cell"), 10);
+                    board.cells[cellIndex].element = target;
                     if (e.button === 0) {
                         console.log(`cell ${cellIndex} clicked`);
                         board.revealCell.call(board, cellIndex, Boolean(e.hadOverlay), true);
@@ -52,15 +55,15 @@
                         console.log(`cell ${cellIndex} flagged`);
                         board.toggleFlag.call(board, cellIndex, Boolean(e.hadOverlay));
                     }
-                } else if (e.target.classList.contains("overlay")) {
-                    let cel = e.target.parentElement;
+                    return false;
+                } else if (target.classList.contains("overlay")) {
+                    let cel = target.parentElement;
                     let evt = new MouseEvent(e.type, e);
                     evt.hadOverlay = true;
                     evt.preventDefault();
+                    // The next line should set e.target to the parentElement of the current target (i.e., the button)
                     cel.dispatchEvent(evt);
                 }
-                e.preventDefault();
-                e.stopPropagation();
             });
             boardRoot.removeEventListener("mousedown", mousedownHandler);
             boardRoot.addEventListener("mousedown", mousedownHandler);
@@ -134,7 +137,7 @@
                     break;
             }
         }
-        window.onload = function () {
+        window.addEventListener('load', function (ev) {
             let difficultyFieldset = document.querySelector(".fieldset");
             difficultyFieldset.addEventListener("click", difficultyChanged);
             let radioClickedEvent = new MouseEvent("click", {
@@ -143,7 +146,7 @@
                 scoped: false
             });
             document.querySelector('[name="difficulty"][value="9"]').dispatchEvent(radioClickedEvent);
-        };
+        });
     </script>
 </head>
 
