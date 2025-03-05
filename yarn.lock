@@ -11162,7 +11162,6 @@ __metadata:
     jsonpath-plus: "npm:^10.3.0"
     loader-utils: "npm:^3.3.1"
     micromatch: "npm:^4.0.8"
-    nanoid: "npm:^5.1.2"
     path-to-regexp: "npm:^8.2.0"
     rollup: "npm:^4.34.8"
     send: "npm:^1.1.0"
@@ -13915,16 +13914,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nanoid@npm:^3.3.7":
-  version: 3.3.7
-  resolution: "nanoid@npm:3.3.7"
-  bin:
-    nanoid: bin/nanoid.cjs
-  checksum: 10/ac1eb60f615b272bccb0e2b9cd933720dad30bf9708424f691b8113826bb91aca7e9d14ef5d9415a6ba15c266b37817256f58d8ce980c82b0ba3185352565679
-  languageName: node
-  linkType: hard
-
-"nanoid@npm:^3.3.8":
+"nanoid@npm:^3.3.7, nanoid@npm:^3.3.8":
   version: 3.3.8
   resolution: "nanoid@npm:3.3.8"
   bin:
