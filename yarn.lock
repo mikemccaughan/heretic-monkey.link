@@ -8821,7 +8821,7 @@ __metadata:
     esbuild: "npm:^0.25.0"
     eslint: "npm:^9.21.0"
     express: "npm:5"
-    http-proxy-middleware: "npm:^3.0.3"
+    http-proxy-middleware: "npm:^3.0.5"
     jsonpath-plus: "npm:^10.3.0"
     loader-utils: "npm:^3.3.1"
     micromatch: "npm:^4.0.8"

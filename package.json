@@ -45,7 +45,7 @@
     "ejs": "^3.1.10",
     "esbuild": "^0.25.0",
     "express": "5",
-    "http-proxy-middleware": "^3.0.3",
+    "http-proxy-middleware": "^3.0.5",
     "jsonpath-plus": "^10.3.0",
     "loader-utils": "^3.3.1",
     "micromatch": "^4.0.8",
