@@ -1,6 +1,14 @@
 import Modal from "./modal.mjs";
 
 export default class ModalService {
+    /**
+     * The ModalService is a singleton class that manages the creation and opening of modals.
+     * It is meant to be used as a singleton object, so it should not be instantiated directly.
+     * Use the static create() method to get an instance of the service.
+     */
+    /** @type {{
+     *   [key: string]: Modal
+     * }} */
     #modals;
     static #instanceCount = 0;
     constructor() {
@@ -68,6 +76,8 @@ export default class ModalService {
             id = modalOrId.id;
         } else if (typeof modalOrId === 'string') {
             id = modalOrId;
+        } else {
+            throw new Error('modalOrId must be a Modal or a string');
         }
         if (this.#modals[id]?.open) {
             this.#modals[id].close();

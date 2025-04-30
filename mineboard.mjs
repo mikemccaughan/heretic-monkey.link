@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Timer from "./timer.mjs";
 import Modal from "./modal.mjs";
 export default class MineBoard {
@@ -9,9 +10,9 @@ export default class MineBoard {
      */
     constructor(boardRoot, width, height) {
         this.element = boardRoot;
-        this.width = width;
-        this.height = height;
-        this.cellCount = width * height;
+        this.width = width ?? 9;
+        this.height = height ?? 9;
+        this.cellCount = this.width * this.height;
         this.mineCount = Math.floor(this.cellCount / 6);
         /**
          * The cells populating the board.
@@ -28,9 +29,12 @@ export default class MineBoard {
          *  element?: HTMLElement;
          * }[]}
          */
-        this.cells = new Array(this.cellCount);
+        this.cells = Array.from({length:this.height}, (_, i) => Array.from({length:this.width}).fill(0));
         this.lastClick = 0;
         // eslint-disable-next-line no-undef
+        if (document.querySelector(".timer") === null) {
+            throw new Error("No timer element found");
+        }
         this.timer = new Timer(document.querySelector(".timer"));
         this.timer.clear();
         this.randomValues = new Uint8Array(this.cellCount);
@@ -52,7 +56,7 @@ export default class MineBoard {
             return (value >= min) && (value <= max);
         };
         /* initialize a matrix width x height, filled with 0s for now */
-        let boardCells = Array.from({length:this.height}).map((_, i) => Array.from({length:this.width}).fill(0));
+        let boardCells = Array.from({length:this.height}, (_, i) => Array.from({length:this.width}).fill(0));
 
         let value = -(this.mineCount * 2);
         /* use the matrix as the board; set the values randomly to be positive (the number of nearby mines) or

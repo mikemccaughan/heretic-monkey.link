@@ -18,7 +18,7 @@ class FauxStorage {
        * Allows for property-based access to keys in storage. E.g., localStore.example
        * is the same as localStore.getItem("example");
        * @param {FauxStorage} target The FauxStorage instance the proxy is for
-       * @param {string} prop The name of the key to retrieve
+       * @param {keyof FauxStorage} prop The name of the key to retrieve
        * @returns {string} The value associated with prop, or null
        */
       get(target, prop) {
@@ -26,7 +26,7 @@ class FauxStorage {
           return target.getItem(prop);
         }
 
-        return target[prop];
+        return '' + target[prop];
       },
       /**
        * Allows for property-based setting of values in storage. E.g., 
@@ -50,7 +50,7 @@ class FauxStorage {
        * otherwise, if it is constructed from a key in storage, returns its value, and
        * indicates it is writable, enumerable, and configurable.
        * @param {FauxStorage} target The FauxStorage instance the proxy is for
-       * @param {string} prop The name of the key to get a descriptor for
+       * @param {keyof FauxStorage} prop The name of the key to get a descriptor for
        * @returns The property descriptor for the property
        */
       getOwnPropertyDescriptor(target, prop) {

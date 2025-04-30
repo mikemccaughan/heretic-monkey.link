@@ -15,10 +15,10 @@ export async function* nameStartGenerator() {
   for (let char of [...':ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz']) {
     yield await Promise.resolve(char);
   }
-  for (let c = "A".codePointAt(0); c < "Z".codePointAt(0) + 1; c++) {
+  for (let c = "A".codePointAt(0) ?? 0; c < ("Z".codePointAt(0) ?? -1) + 1; c++) {
     yield await getCharFromCodePoint(c);
   }
-  for (let c = "a".codePointAt(0); c < "z".codePointAt(0) + 1; c++) {
+  for (let c = "a".codePointAt(0) ?? 0; c < ("z".codePointAt(0) ?? -1) + 1; c++) {
     yield await getCharFromCodePoint(c);
   }
   for (let c = parseInt("c0", 16); c < parseInt("d7", 16); c++) {

@@ -7,7 +7,8 @@ let randomValuesBetween = new Map();
  */
 function getRandomValue() {
   if (randomValues != null && randomValues.length > 0) {
-    return randomValues.pop();
+    return randomValues?.pop() ?? 0; // This will never be undefined / 0, since we 
+    // just checked if length > 0, but the linter is whining...
   }
   // Every call to window.crypto.getRandomValues will fill the values array with
   // random bytes. So do that once, then subsequent calls can just pop the numbers
@@ -29,6 +30,8 @@ function getRandomValue() {
  * @returns A random value between min and max
  */
 function getRandomValueBetween(min = 0, max = 1) {
+  min = min ?? 0;
+  max = max ?? 1;
   if (max === 1 && min !== 0) {
     max = min;
     min = 0;
@@ -131,12 +134,18 @@ export function generateBoard(width, height, density) {
    * @returns true if value is between min and max (inclusively); otherwise, false
    */
   const isBetween = (value, min, max) => value >= min && value <= max;
+  /** @type {number[]} */
+  const boardRow = Array.from({ length: width }).fill(0);
   /** @type {number[][]} */
-  let boardCells = new Array(height).fill(new Array(width).fill(0));
+  let boardCells = Array.from({ length: height }, () => [...boardRow]);
+  // Fill the board with 0s, then place the mines randomly
   /** @type {number} */
   let value = -(mineCount * 2);
   for (let i = 0; i < mineCount; i++) {
-    let x, y;
+  /** @type {number} */
+  let x;
+  /** @type {number} */
+  let y;
     // eslint-disable-next-line no-constant-condition
     while (true) {
       x = getRandomValueBetween(width); // Math.floor(Math.random() * width);

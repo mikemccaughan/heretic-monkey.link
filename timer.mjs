@@ -100,9 +100,9 @@ export default class Timer {
         this.#lastElapsed = 0;
         this.#elapsed = 0;
         this.#isRunning = false;
-        this.#onTick = null;
+        this.#onTick = () => {};
         this.#format = "MM:SS";
-        this.#formatter = null;
+        this.#formatter = this.#getFormatter();
     }
     /**
      * Gets the Intl.DateTimeFormat used to format the elapsed time.

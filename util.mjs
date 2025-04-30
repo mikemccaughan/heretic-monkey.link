@@ -6,7 +6,7 @@ export default class Util {
    * @returns {Function} The debounced function
    */
   static debounce(fn, ms) {
-    var timer;
+    var timer = 0;
     /**
      * The debouncing function
      * @param {Event|any} e Typically this function is used as a way of preventing
@@ -31,6 +31,10 @@ export default class Util {
     if (!this.datamap) {
       this.datamap = new WeakMap();
     }
+    if (console.assert) {
+      console.assert(this.datamap instanceof WeakMap, "datamap is not a WeakMap");
+      console.assert(typeof this.datamap !== "undefined", "datamap is undefined");
+    }
   }
   /**
    * Gets the data associated with the element and name, or null if there
@@ -41,7 +45,7 @@ export default class Util {
    */
   static getData(element, name) {
     this.ensureMap();
-    let data = this.datamap.get(element);
+    let data = this.datamap?.get(element);
     return data && data[name];
   }
   /**
@@ -54,7 +58,7 @@ export default class Util {
    */
   static setData(element, name, value) {
     this.ensureMap();
-    this.datamap.set(element, { [name]: value });
+    this.datamap?.set(element, { [name]: value });
   }
   /**
    * Gets the closest ancestor to the element that matches the selector.
