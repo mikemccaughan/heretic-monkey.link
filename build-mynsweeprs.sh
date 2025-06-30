@@ -1,13 +1,15 @@
 #!/bin/bash
 
+rootDir=$(dirname "$PWD")
+
 # dirctories to build and deploy
 directoriesYarn=(
-    "/c/Users/ms/Source/Repos/mynsweepr-hooks"
-    "/c/Users/ms/Source/Repos/mynsweepr-react"
-    "/c/Users/ms/Source/Repos/mynsweepr-react19"
+    "$rootDir/mynsweepr-hooks"
+    "$rootDir/mynsweepr-react"
+    "$rootDir/mynsweepr-react19"
 )
 directoriesNpm=(
-    "/c/Users/ms/Source/Repos/mynsweepr-angular"
+    "$rootDir/mynsweepr-angular"
 )
 # command to run
 commandYarn="yarn run build:deploy"
