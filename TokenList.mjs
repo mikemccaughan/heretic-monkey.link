@@ -34,7 +34,7 @@ class TokenList {
     return [...this.list].join(' ');
   }
   /**
-   * Gets the token at the index.
+   * Gets the token at the index or null.
    * @param {number} index Gets the token at the index given
    * @returns {string|null} The token at the index or null
    */

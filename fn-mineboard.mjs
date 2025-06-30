@@ -142,10 +142,10 @@ export function generateBoard(width, height, density) {
   /** @type {number} */
   let value = -(mineCount * 2);
   for (let i = 0; i < mineCount; i++) {
-  /** @type {number} */
-  let x;
-  /** @type {number} */
-  let y;
+    /** @type {number} */
+    let x;
+    /** @type {number} */
+    let y;
     // eslint-disable-next-line no-constant-condition
     while (true) {
       x = getRandomValueBetween(width); // Math.floor(Math.random() * width);

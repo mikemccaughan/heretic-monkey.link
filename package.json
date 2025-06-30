@@ -14,7 +14,7 @@
   ],
   "scripts": {
     "start": "yarn node server.cjs",
-    "build:yarn": "yarn set version stable",
+    "build:yarn": "yarn set version 4.8.1",
     "build:directories": "rm -rf publish && mkdir -p publish/material-test && mkdir -p publish/mynsweepr-angular && mkdir -p publish/mynsweepr-hooks && mkdir -p publish/mynsweepr-react && mkdir -p publish/mynsweepr-react19",
     "build:nobuild": "yarn install && cp *.*js publish/ && cp *.html publish/ && cp *.css publish/ && cp -r hm-grid publish/hm-grid && cp -r design publish/design",
     "build:workspaces": "yarn workspaces focus --all && yarn workspaces foreach -v --all --exclude heretic-monkey.link run build && ./build-mynsweeprs.sh",
