@@ -15,10 +15,10 @@
   "scripts": {
     "start": "yarn node server.cjs",
     "build:yarn": "yarn set version 4.8.1",
-    "build:directories": "rm -rf publish && mkdir -p publish/mynsweepr-angular && mkdir -p publish/mynsweepr-hooks && mkdir -p publish/mynsweepr-react && mkdir -p publish/mynsweepr-react19",
+    "build:directories": "rm -rf publish && mkdir -p publish && mkdir -p publish/mynsweepr-angular && mkdir -p publish/mynsweepr-hooks && mkdir -p publish/mynsweepr-react && mkdir -p publish/mynsweepr-react19",
     "build:nobuild": "yarn install && cp *.*js publish/ && cp *.html publish/ && cp *.css publish/ && cp -r hm-grid publish/hm-grid && cp -r design publish/design",
-    "build:workspaces": "yarn workspaces focus --all && yarn workspaces foreach -v --all --exclude heretic-monkey.link run build && ./build-mynsweeprs.sh",
-    "build:predeploy": "",
+    "build:workspaces": "yarn workspaces focus --all && yarn workspaces foreach -v --all --exclude heretic-monkey.link run build",
+    "build:predeploy": "bash ./build-mynsweeprs.sh",
     "build": "yarn run build:yarn && yarn run build:directories && yarn run build:nobuild && yarn run build:workspaces && yarn run build:predeploy"
   },
   "repository": {

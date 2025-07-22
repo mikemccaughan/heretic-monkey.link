@@ -1,0 +1,49 @@
+html {
+  min-height: 100%;
+}
+
+body {
+  display: flex;
+  flex-flow: column nowrap;
+  min-height: 100%;
+}
+
+main {
+  flex: 1 1 auto;
+}
+
+footer {
+  flex: 0 0 1vh;
+}
+
+#polyfill-info {
+  font-size: smaller;
+}
+
+#result-icon {
+  cursor: pointer;
+}
+
+.set {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: baseline;
+  gap: 0.5em;
+
+  label {
+    flex: 0 0 5%;
+  }
+
+  :not(label) {
+    flex: 1 0 auto;
+  }
+
+  input[type="date"] {
+    flex: 0 0 120px;
+
+  }
+
+  input[type="datetime-local"] {
+    flex: 0 0 220px;
+  }
+}

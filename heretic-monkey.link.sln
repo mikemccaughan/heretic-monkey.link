@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29009.5
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36310.24 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "heretic-monkey.link", ".", "{592313AD-F196-4A7A-ABB4-0A7838F58E48}"
 	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_63872"
 		Debug.AspNetCompiler.PhysicalPath = "..\heretic-monkey.link\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_63872\"
@@ -24,6 +24,27 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "heretic-monkey.link", ".", 
 		SlnRelativePath = "..\heretic-monkey.link\"
 	EndProjectSection
 EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "hm-datetimepicker", "..\hm-datetimepicker\", "{7584FA63-BD43-47D8-F03A-4F6E0437F3D5}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_61743"
+		Debug.AspNetCompiler.PhysicalPath = "..\hm-datetimepicker\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_61743\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_61743"
+		Release.AspNetCompiler.PhysicalPath = "..\hm-datetimepicker\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_61743\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "61743"
+		SlnRelativePath = "..\hm-datetimepicker\"
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +52,8 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{592313AD-F196-4A7A-ABB4-0A7838F58E48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{592313AD-F196-4A7A-ABB4-0A7838F58E48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7584FA63-BD43-47D8-F03A-4F6E0437F3D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7584FA63-BD43-47D8-F03A-4F6E0437F3D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
