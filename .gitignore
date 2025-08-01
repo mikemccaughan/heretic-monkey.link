@@ -261,6 +261,8 @@ paket-files/
 __pycache__/
 *.pyc
 **/dist/
+# Allow build output of temporal polyfill to be included
+!js-temporal/polyfill/dist/
 **/.cache/
 
 # VSCode

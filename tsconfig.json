@@ -5,9 +5,11 @@
         "checkJs": true,
         "lib": [
             "DOM",
-            "ES2022"
+            "ESNext"
         ],
-        "target": "ES2022",
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "node",
         "outDir": "tscOut",
         "strict": true,
         "forceConsistentCasingInFileNames": true

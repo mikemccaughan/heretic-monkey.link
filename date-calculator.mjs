@@ -1,4 +1,5 @@
-import { Temporal } from "/node_modules/@js-temporal/polyfill/dist/index.esm.js";
+// @ts-nocheck
+import { Temporal, Intl, toTemporalInstant } from './temporal';
 
 export default class DateCalculator {
     hasNativeTemporal() {
@@ -15,26 +16,27 @@ export default class DateCalculator {
     /** @type {HTMLInputElement | null} */
     dateOnlyEl = document.querySelector("#dateonly");
     async importPolyfill() {
-        import("/node_modules/@js-temporal/polyfill/dist/index.esm.js").then(
+        import("/js-temporal/polyfill/dist/index.esm.js").then(
+            /** @param {typeof import("@js-temporal/polyfill")} module */
             (module) => {
                 const gt = globalThis ?? window;
                 const { Temporal, Intl, toTemporalInstant } = module;
-                if (typeof gt.Temporal === "undefined") {
+                if (!("Temporal" in gt)) {
                     Object.defineProperty(gt, "Temporal", {
                         value: Temporal,
                         writable: false,
                         configurable: false,
                     });
                 }
-                if (typeof gt.Intl === "undefined") {
+                if (!("Intl" in gt)) {
                     Object.defineProperty(gt, "Intl", {
                         value: Intl,
                         writable: false,
                         configurable: false,
                     });
                 }
-                if (typeof Date.prototype.toTemporalInstant === "undefined" &&
-                    typeof gt.toTemporalInstant === "undefined") {
+                if (!("toTemporalInstant" in Date.prototype) &&
+                    !("toTemporalInstant" in gt)) {
                     Object.defineProperty(gt, "toTemporalInstant", {
                         value: toTemporalInstant,
                         writable: false,

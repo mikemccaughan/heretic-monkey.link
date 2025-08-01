@@ -2,6 +2,7 @@ export class Checkbox extends HTMLElement {
     #internals;
     #instanceId = -1;
     #value = "on";
+    /** @type {boolean | null} */
     #checked = false;
     #indeterminate = false;
     #defaultChecked = false;
@@ -32,7 +33,7 @@ export class Checkbox extends HTMLElement {
         if (this.#checked !== !!value && this.dispatchEvent(this.#change) && this.dispatchEvent(this.#indeterminateChange)) {
             this.#checked = !!value;
             this.#indeterminate = false;
-            this.#internals.ariaChecked = value.toString();
+            this.#internals.ariaChecked = typeof value === "boolean" ? value.toString() : null;
         }
     }
     get indeterminate() {
