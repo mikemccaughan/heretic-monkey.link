@@ -68,5 +68,12 @@
       </aside>
     </footer>
     <script type="module" src="date-calculator.mjs"></script>
+    <script type="module">
+      import DateCalculator from './date-calculator.mjs';
+      window.onload = () => {
+        const calc = new DateCalculator();
+        calc.setDefaultDate();
+      };
+    </script>
   </body>
 </html>

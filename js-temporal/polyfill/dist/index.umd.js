@@ -22,13 +22,6 @@
   function _classCallCheck(a, n) {
     if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function");
   }
-  function _construct(t, e, r) {
-    if (_isNativeReflectConstruct()) return Reflect.construct.apply(null, arguments);
-    var o = [null];
-    o.push.apply(o, e);
-    var p = new (t.bind.apply(t, o))();
-    return r && _setPrototypeOf(p, r.prototype), p;
-  }
   function _defineProperties(e, r) {
     for (var t = 0; t < r.length; t++) {
       var o = r[t];
@@ -133,13 +126,6 @@
     }), Object.defineProperty(t, "prototype", {
       writable: !1
     }), e && _setPrototypeOf(t, e);
-  }
-  function _isNativeFunction(t) {
-    try {
-      return -1 !== Function.toString.call(t).indexOf("[native code]");
-    } catch (n) {
-      return "function" == typeof t;
-    }
   }
   function _isNativeReflectConstruct() {
     try {
@@ -256,1416 +242,6 @@
       return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0;
     }
   }
-  function _wrapNativeSuper(t) {
-    var r = "function" == typeof Map ? new Map() : void 0;
-    return _wrapNativeSuper = function (t) {
-      if (null === t || !_isNativeFunction(t)) return t;
-      if ("function" != typeof t) throw new TypeError("Super expression must either be null or a function");
-      if (void 0 !== r) {
-        if (r.has(t)) return r.get(t);
-        r.set(t, Wrapper);
-      }
-      function Wrapper() {
-        return _construct(t, arguments, _getPrototypeOf(this).constructor);
-      }
-      return Wrapper.prototype = Object.create(t.prototype, {
-        constructor: {
-          value: Wrapper,
-          enumerable: !1,
-          writable: !0,
-          configurable: !0
-        }
-      }), _setPrototypeOf(Wrapper, t);
-    }, _wrapNativeSuper(t);
-  }
-
-  var JSBI = /*#__PURE__*/function (_Array) {
-    _inherits(JSBI, _Array);
-    var _super = _createSuper(JSBI);
-    function JSBI(i, _) {
-      var _this;
-      _classCallCheck(this, JSBI);
-      if (_this = _super.call(this, i), _this.sign = _, Object.setPrototypeOf(_assertThisInitialized(_this), JSBI.prototype), i > JSBI.__kMaxLength) throw new RangeError("Maximum BigInt size exceeded");
-      return _possibleConstructorReturn(_this);
-    }
-    _createClass(JSBI, [{
-      key: "toDebugString",
-      value: function toDebugString() {
-        var i = ["BigInt["];
-        var _iterator = _createForOfIteratorHelper(this),
-          _step;
-        try {
-          for (_iterator.s(); !(_step = _iterator.n()).done;) {
-            var _ = _step.value;
-            i.push((_ ? (_ >>> 0).toString(16) : _) + ", ");
-          }
-        } catch (err) {
-          _iterator.e(err);
-        } finally {
-          _iterator.f();
-        }
-        return i.push("]"), i.join("");
-      }
-    }, {
-      key: "toString",
-      value: function toString() {
-        var i = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 10;
-        if (2 > i || 36 < i) throw new RangeError("toString() radix argument must be between 2 and 36");
-        return 0 === this.length ? "0" : 0 == (i & i - 1) ? JSBI.__toStringBasePowerOfTwo(this, i) : JSBI.__toStringGeneric(this, i, !1);
-      }
-    }, {
-      key: "valueOf",
-      value: function valueOf() {
-        throw new Error("Convert JSBI instances to native numbers using `toNumber`.");
-      }
-    }, {
-      key: "__copy",
-      value: function __copy() {
-        var _ = new JSBI(this.length, this.sign);
-        for (var t = 0; t < this.length; t++) _[t] = this[t];
-        return _;
-      }
-    }, {
-      key: "__trim",
-      value: function __trim() {
-        var i = this.length,
-          _ = this[i - 1];
-        for (; 0 === _;) i--, _ = this[i - 1], this.pop();
-        return 0 === i && (this.sign = !1), this;
-      }
-    }, {
-      key: "__initializeDigits",
-      value: function __initializeDigits() {
-        for (var _ = 0; _ < this.length; _++) this[_] = 0;
-      }
-    }, {
-      key: "__clzmsd",
-      value: function __clzmsd() {
-        return JSBI.__clz30(this.__digit(this.length - 1));
-      }
-    }, {
-      key: "__inplaceMultiplyAdd",
-      value: function __inplaceMultiplyAdd(i, _, t) {
-        t > this.length && (t = this.length);
-        var e = 32767 & i,
-          n = i >>> 15;
-        var g = 0,
-          s = _;
-        for (var o = 0; o < t; o++) {
-          var _i = this.__digit(o),
-            _2 = 32767 & _i,
-            _t = _i >>> 15,
-            l = JSBI.__imul(_2, e),
-            r = JSBI.__imul(_2, n),
-            a = JSBI.__imul(_t, e),
-            u = JSBI.__imul(_t, n);
-          var d = s + l + g;
-          g = d >>> 30, d &= 1073741823, d += ((32767 & r) << 15) + ((32767 & a) << 15), g += d >>> 30, s = u + (r >>> 15) + (a >>> 15), this.__setDigit(o, 1073741823 & d);
-        }
-        if (0 != g || 0 !== s) throw new Error("implementation bug");
-      }
-    }, {
-      key: "__inplaceAdd",
-      value: function __inplaceAdd(_, t, e) {
-        var n = 0;
-        for (var g = 0; g < e; g++) {
-          var i = this.__halfDigit(t + g) + _.__halfDigit(g) + n;
-          n = i >>> 15, this.__setHalfDigit(t + g, 32767 & i);
-        }
-        return n;
-      }
-    }, {
-      key: "__inplaceSub",
-      value: function __inplaceSub(_, t, e) {
-        var n = 0;
-        if (1 & t) {
-          t >>= 1;
-          var g = this.__digit(t),
-            s = 32767 & g,
-            o = 0;
-          for (; o < e - 1 >>> 1; o++) {
-            var _i2 = _.__digit(o),
-              _e = (g >>> 15) - (32767 & _i2) - n;
-            n = 1 & _e >>> 15, this.__setDigit(t + o, (32767 & _e) << 15 | 32767 & s), g = this.__digit(t + o + 1), s = (32767 & g) - (_i2 >>> 15) - n, n = 1 & s >>> 15;
-          }
-          var i = _.__digit(o),
-            l = (g >>> 15) - (32767 & i) - n;
-          n = 1 & l >>> 15, this.__setDigit(t + o, (32767 & l) << 15 | 32767 & s);
-          if (t + o + 1 >= this.length) throw new RangeError("out of bounds");
-          0 == (1 & e) && (g = this.__digit(t + o + 1), s = (32767 & g) - (i >>> 15) - n, n = 1 & s >>> 15, this.__setDigit(t + _.length, 1073709056 & g | 32767 & s));
-        } else {
-          t >>= 1;
-          var _g = 0;
-          for (; _g < _.length - 1; _g++) {
-            var _i3 = this.__digit(t + _g),
-              _e2 = _.__digit(_g),
-              _s = (32767 & _i3) - (32767 & _e2) - n;
-            n = 1 & _s >>> 15;
-            var _o = (_i3 >>> 15) - (_e2 >>> 15) - n;
-            n = 1 & _o >>> 15, this.__setDigit(t + _g, (32767 & _o) << 15 | 32767 & _s);
-          }
-          var _i4 = this.__digit(t + _g),
-            _s2 = _.__digit(_g),
-            _o2 = (32767 & _i4) - (32767 & _s2) - n;
-          n = 1 & _o2 >>> 15;
-          var _l = 0;
-          0 == (1 & e) && (_l = (_i4 >>> 15) - (_s2 >>> 15) - n, n = 1 & _l >>> 15), this.__setDigit(t + _g, (32767 & _l) << 15 | 32767 & _o2);
-        }
-        return n;
-      }
-    }, {
-      key: "__inplaceRightShift",
-      value: function __inplaceRightShift(_) {
-        if (0 === _) return;
-        var t = this.__digit(0) >>> _;
-        var e = this.length - 1;
-        for (var n = 0; n < e; n++) {
-          var i = this.__digit(n + 1);
-          this.__setDigit(n, 1073741823 & i << 30 - _ | t), t = i >>> _;
-        }
-        this.__setDigit(e, t);
-      }
-    }, {
-      key: "__digit",
-      value: function __digit(_) {
-        return this[_];
-      }
-    }, {
-      key: "__unsignedDigit",
-      value: function __unsignedDigit(_) {
-        return this[_] >>> 0;
-      }
-    }, {
-      key: "__setDigit",
-      value: function __setDigit(_, i) {
-        this[_] = 0 | i;
-      }
-    }, {
-      key: "__setDigitGrow",
-      value: function __setDigitGrow(_, i) {
-        this[_] = 0 | i;
-      }
-    }, {
-      key: "__halfDigitLength",
-      value: function __halfDigitLength() {
-        var i = this.length;
-        return 32767 >= this.__unsignedDigit(i - 1) ? 2 * i - 1 : 2 * i;
-      }
-    }, {
-      key: "__halfDigit",
-      value: function __halfDigit(_) {
-        return 32767 & this[_ >>> 1] >>> 15 * (1 & _);
-      }
-    }, {
-      key: "__setHalfDigit",
-      value: function __setHalfDigit(_, i) {
-        var t = _ >>> 1,
-          e = this.__digit(t),
-          n = 1 & _ ? 32767 & e | i << 15 : 1073709056 & e | 32767 & i;
-        this.__setDigit(t, n);
-      }
-    }], [{
-      key: "BigInt",
-      value: function BigInt(i) {
-        var _ = Math.floor,
-          t = Number.isFinite;
-        if ("number" == typeof i) {
-          if (0 === i) return JSBI.__zero();
-          if (JSBI.__isOneDigitInt(i)) return 0 > i ? JSBI.__oneDigit(-i, !0) : JSBI.__oneDigit(i, !1);
-          if (!t(i) || _(i) !== i) throw new RangeError("The number " + i + " cannot be converted to BigInt because it is not an integer");
-          return JSBI.__fromDouble(i);
-        }
-        if ("string" == typeof i) {
-          var _3 = JSBI.__fromString(i);
-          if (null === _3) throw new SyntaxError("Cannot convert " + i + " to a BigInt");
-          return _3;
-        }
-        if ("boolean" == typeof i) return !0 === i ? JSBI.__oneDigit(1, !1) : JSBI.__zero();
-        if ("object" == _typeof(i)) {
-          if (i.constructor === JSBI) return i;
-          var _4 = JSBI.__toPrimitive(i);
-          return JSBI.BigInt(_4);
-        }
-        throw new TypeError("Cannot convert " + i + " to a BigInt");
-      }
-    }, {
-      key: "toNumber",
-      value: function toNumber(i) {
-        var _ = i.length;
-        if (0 === _) return 0;
-        if (1 === _) {
-          var _5 = i.__unsignedDigit(0);
-          return i.sign ? -_5 : _5;
-        }
-        var t = i.__digit(_ - 1),
-          e = JSBI.__clz30(t),
-          n = 30 * _ - e;
-        if (1024 < n) return i.sign ? -Infinity : 1 / 0;
-        var g = n - 1,
-          s = t,
-          o = _ - 1;
-        var l = e + 3;
-        var r = 32 === l ? 0 : s << l;
-        r >>>= 12;
-        var a = l - 12;
-        var u = 12 <= l ? 0 : s << 20 + l,
-          d = 20 + l;
-        for (0 < a && 0 < o && (o--, s = i.__digit(o), r |= s >>> 30 - a, u = s << a + 2, d = a + 2); 0 < d && 0 < o;) o--, s = i.__digit(o), u |= 30 <= d ? s << d - 30 : s >>> 30 - d, d -= 30;
-        var h = JSBI.__decideRounding(i, d, o, s);
-        if ((1 === h || 0 === h && 1 == (1 & u)) && (u = u + 1 >>> 0, 0 === u && (r++, 0 != r >>> 20 && (r = 0, g++, 1023 < g)))) return i.sign ? -Infinity : 1 / 0;
-        var m = i.sign ? -2147483648 : 0;
-        return g = g + 1023 << 20, JSBI.__kBitConversionInts[1] = m | g | r, JSBI.__kBitConversionInts[0] = u, JSBI.__kBitConversionDouble[0];
-      }
-    }, {
-      key: "unaryMinus",
-      value: function unaryMinus(i) {
-        if (0 === i.length) return i;
-        var _ = i.__copy();
-        return _.sign = !i.sign, _;
-      }
-    }, {
-      key: "bitwiseNot",
-      value: function bitwiseNot(i) {
-        return i.sign ? JSBI.__absoluteSubOne(i).__trim() : JSBI.__absoluteAddOne(i, !0);
-      }
-    }, {
-      key: "exponentiate",
-      value: function exponentiate(i, _) {
-        if (_.sign) throw new RangeError("Exponent must be positive");
-        if (0 === _.length) return JSBI.__oneDigit(1, !1);
-        if (0 === i.length) return i;
-        if (1 === i.length && 1 === i.__digit(0)) return i.sign && 0 == (1 & _.__digit(0)) ? JSBI.unaryMinus(i) : i;
-        if (1 < _.length) throw new RangeError("BigInt too big");
-        var t = _.__unsignedDigit(0);
-        if (1 === t) return i;
-        if (t >= JSBI.__kMaxLengthBits) throw new RangeError("BigInt too big");
-        if (1 === i.length && 2 === i.__digit(0)) {
-          var _6 = 1 + (0 | t / 30),
-            _e3 = i.sign && 0 != (1 & t),
-            _n = new JSBI(_6, _e3);
-          _n.__initializeDigits();
-          var g = 1 << t % 30;
-          return _n.__setDigit(_6 - 1, g), _n;
-        }
-        var e = null,
-          n = i;
-        for (0 != (1 & t) && (e = i), t >>= 1; 0 !== t; t >>= 1) n = JSBI.multiply(n, n), 0 != (1 & t) && (null === e ? e = n : e = JSBI.multiply(e, n));
-        return e;
-      }
-    }, {
-      key: "multiply",
-      value: function multiply(_, t) {
-        if (0 === _.length) return _;
-        if (0 === t.length) return t;
-        var i = _.length + t.length;
-        30 <= _.__clzmsd() + t.__clzmsd() && i--;
-        var e = new JSBI(i, _.sign !== t.sign);
-        e.__initializeDigits();
-        for (var n = 0; n < _.length; n++) JSBI.__multiplyAccumulate(t, _.__digit(n), e, n);
-        return e.__trim();
-      }
-    }, {
-      key: "divide",
-      value: function divide(i, _) {
-        if (0 === _.length) throw new RangeError("Division by zero");
-        if (0 > JSBI.__absoluteCompare(i, _)) return JSBI.__zero();
-        var t = i.sign !== _.sign,
-          e = _.__unsignedDigit(0);
-        var n;
-        if (1 === _.length && 32767 >= e) {
-          if (1 === e) return t === i.sign ? i : JSBI.unaryMinus(i);
-          n = JSBI.__absoluteDivSmall(i, e, null);
-        } else n = JSBI.__absoluteDivLarge(i, _, !0, !1);
-        return n.sign = t, n.__trim();
-      }
-    }, {
-      key: "remainder",
-      value: function remainder(i, _) {
-        if (0 === _.length) throw new RangeError("Division by zero");
-        if (0 > JSBI.__absoluteCompare(i, _)) return i;
-        var t = _.__unsignedDigit(0);
-        if (1 === _.length && 32767 >= t) {
-          if (1 === t) return JSBI.__zero();
-          var _7 = JSBI.__absoluteModSmall(i, t);
-          return 0 === _7 ? JSBI.__zero() : JSBI.__oneDigit(_7, i.sign);
-        }
-        var e = JSBI.__absoluteDivLarge(i, _, !1, !0);
-        return e.sign = i.sign, e.__trim();
-      }
-    }, {
-      key: "add",
-      value: function add(i, _) {
-        var t = i.sign;
-        return t === _.sign ? JSBI.__absoluteAdd(i, _, t) : 0 <= JSBI.__absoluteCompare(i, _) ? JSBI.__absoluteSub(i, _, t) : JSBI.__absoluteSub(_, i, !t);
-      }
-    }, {
-      key: "subtract",
-      value: function subtract(i, _) {
-        var t = i.sign;
-        return t === _.sign ? 0 <= JSBI.__absoluteCompare(i, _) ? JSBI.__absoluteSub(i, _, t) : JSBI.__absoluteSub(_, i, !t) : JSBI.__absoluteAdd(i, _, t);
-      }
-    }, {
-      key: "leftShift",
-      value: function leftShift(i, _) {
-        return 0 === _.length || 0 === i.length ? i : _.sign ? JSBI.__rightShiftByAbsolute(i, _) : JSBI.__leftShiftByAbsolute(i, _);
-      }
-    }, {
-      key: "signedRightShift",
-      value: function signedRightShift(i, _) {
-        return 0 === _.length || 0 === i.length ? i : _.sign ? JSBI.__leftShiftByAbsolute(i, _) : JSBI.__rightShiftByAbsolute(i, _);
-      }
-    }, {
-      key: "unsignedRightShift",
-      value: function unsignedRightShift() {
-        throw new TypeError("BigInts have no unsigned right shift; use >> instead");
-      }
-    }, {
-      key: "lessThan",
-      value: function lessThan(i, _) {
-        return 0 > JSBI.__compareToBigInt(i, _);
-      }
-    }, {
-      key: "lessThanOrEqual",
-      value: function lessThanOrEqual(i, _) {
-        return 0 >= JSBI.__compareToBigInt(i, _);
-      }
-    }, {
-      key: "greaterThan",
-      value: function greaterThan(i, _) {
-        return 0 < JSBI.__compareToBigInt(i, _);
-      }
-    }, {
-      key: "greaterThanOrEqual",
-      value: function greaterThanOrEqual(i, _) {
-        return 0 <= JSBI.__compareToBigInt(i, _);
-      }
-    }, {
-      key: "equal",
-      value: function equal(_, t) {
-        if (_.sign !== t.sign) return !1;
-        if (_.length !== t.length) return !1;
-        for (var e = 0; e < _.length; e++) if (_.__digit(e) !== t.__digit(e)) return !1;
-        return !0;
-      }
-    }, {
-      key: "notEqual",
-      value: function notEqual(i, _) {
-        return !JSBI.equal(i, _);
-      }
-    }, {
-      key: "bitwiseAnd",
-      value: function bitwiseAnd(i, _) {
-        var _ref;
-        var t = Math.max;
-        if (!i.sign && !_.sign) return JSBI.__absoluteAnd(i, _).__trim();
-        if (i.sign && _.sign) {
-          var e = t(i.length, _.length) + 1;
-          var n = JSBI.__absoluteSubOne(i, e);
-          var g = JSBI.__absoluteSubOne(_);
-          return n = JSBI.__absoluteOr(n, g, n), JSBI.__absoluteAddOne(n, !0, n).__trim();
-        }
-        return i.sign && (_ref = [_, i], i = _ref[0], _ = _ref[1], _ref), JSBI.__absoluteAndNot(i, JSBI.__absoluteSubOne(_)).__trim();
-      }
-    }, {
-      key: "bitwiseXor",
-      value: function bitwiseXor(i, _) {
-        var _ref2;
-        var t = Math.max;
-        if (!i.sign && !_.sign) return JSBI.__absoluteXor(i, _).__trim();
-        if (i.sign && _.sign) {
-          var _e4 = t(i.length, _.length),
-            _n2 = JSBI.__absoluteSubOne(i, _e4),
-            g = JSBI.__absoluteSubOne(_);
-          return JSBI.__absoluteXor(_n2, g, _n2).__trim();
-        }
-        var e = t(i.length, _.length) + 1;
-        i.sign && (_ref2 = [_, i], i = _ref2[0], _ = _ref2[1], _ref2);
-        var n = JSBI.__absoluteSubOne(_, e);
-        return n = JSBI.__absoluteXor(n, i, n), JSBI.__absoluteAddOne(n, !0, n).__trim();
-      }
-    }, {
-      key: "bitwiseOr",
-      value: function bitwiseOr(i, _) {
-        var _ref3;
-        var t = Math.max;
-        var e = t(i.length, _.length);
-        if (!i.sign && !_.sign) return JSBI.__absoluteOr(i, _).__trim();
-        if (i.sign && _.sign) {
-          var _t2 = JSBI.__absoluteSubOne(i, e);
-          var _n3 = JSBI.__absoluteSubOne(_);
-          return _t2 = JSBI.__absoluteAnd(_t2, _n3, _t2), JSBI.__absoluteAddOne(_t2, !0, _t2).__trim();
-        }
-        i.sign && (_ref3 = [_, i], i = _ref3[0], _ = _ref3[1], _ref3);
-        var n = JSBI.__absoluteSubOne(_, e);
-        return n = JSBI.__absoluteAndNot(n, i, n), JSBI.__absoluteAddOne(n, !0, n).__trim();
-      }
-    }, {
-      key: "asIntN",
-      value: function asIntN(_, t) {
-        var i = Math.floor;
-        if (0 === t.length) return t;
-        if (_ = i(_), 0 > _) throw new RangeError("Invalid value: not (convertible to) a safe integer");
-        if (0 === _) return JSBI.__zero();
-        if (_ >= JSBI.__kMaxLengthBits) return t;
-        var e = 0 | (_ + 29) / 30;
-        if (t.length < e) return t;
-        var g = t.__unsignedDigit(e - 1),
-          s = 1 << (_ - 1) % 30;
-        if (t.length === e && g < s) return t;
-        if (!((g & s) === s)) return JSBI.__truncateToNBits(_, t);
-        if (!t.sign) return JSBI.__truncateAndSubFromPowerOfTwo(_, t, !0);
-        if (0 == (g & s - 1)) {
-          for (var n = e - 2; 0 <= n; n--) if (0 !== t.__digit(n)) return JSBI.__truncateAndSubFromPowerOfTwo(_, t, !1);
-          return t.length === e && g === s ? t : JSBI.__truncateToNBits(_, t);
-        }
-        return JSBI.__truncateAndSubFromPowerOfTwo(_, t, !1);
-      }
-    }, {
-      key: "asUintN",
-      value: function asUintN(i, _) {
-        var t = Math.floor;
-        if (0 === _.length) return _;
-        if (i = t(i), 0 > i) throw new RangeError("Invalid value: not (convertible to) a safe integer");
-        if (0 === i) return JSBI.__zero();
-        if (_.sign) {
-          if (i > JSBI.__kMaxLengthBits) throw new RangeError("BigInt too big");
-          return JSBI.__truncateAndSubFromPowerOfTwo(i, _, !1);
-        }
-        if (i >= JSBI.__kMaxLengthBits) return _;
-        var e = 0 | (i + 29) / 30;
-        if (_.length < e) return _;
-        var g = i % 30;
-        if (_.length == e) {
-          if (0 === g) return _;
-          var _i5 = _.__digit(e - 1);
-          if (0 == _i5 >>> g) return _;
-        }
-        return JSBI.__truncateToNBits(i, _);
-      }
-    }, {
-      key: "ADD",
-      value: function ADD(i, _) {
-        if (i = JSBI.__toPrimitive(i), _ = JSBI.__toPrimitive(_), "string" == typeof i) return "string" != typeof _ && (_ = _.toString()), i + _;
-        if ("string" == typeof _) return i.toString() + _;
-        if (i = JSBI.__toNumeric(i), _ = JSBI.__toNumeric(_), JSBI.__isBigInt(i) && JSBI.__isBigInt(_)) return JSBI.add(i, _);
-        if ("number" == typeof i && "number" == typeof _) return i + _;
-        throw new TypeError("Cannot mix BigInt and other types, use explicit conversions");
-      }
-    }, {
-      key: "LT",
-      value: function LT(i, _) {
-        return JSBI.__compare(i, _, 0);
-      }
-    }, {
-      key: "LE",
-      value: function LE(i, _) {
-        return JSBI.__compare(i, _, 1);
-      }
-    }, {
-      key: "GT",
-      value: function GT(i, _) {
-        return JSBI.__compare(i, _, 2);
-      }
-    }, {
-      key: "GE",
-      value: function GE(i, _) {
-        return JSBI.__compare(i, _, 3);
-      }
-    }, {
-      key: "EQ",
-      value: function EQ(i, _) {
-        for (;;) {
-          if (JSBI.__isBigInt(i)) return JSBI.__isBigInt(_) ? JSBI.equal(i, _) : JSBI.EQ(_, i);
-          if ("number" == typeof i) {
-            if (JSBI.__isBigInt(_)) return JSBI.__equalToNumber(_, i);
-            if ("object" != _typeof(_)) return i == _;
-            _ = JSBI.__toPrimitive(_);
-          } else if ("string" == typeof i) {
-            if (JSBI.__isBigInt(_)) return i = JSBI.__fromString(i), null !== i && JSBI.equal(i, _);
-            if ("object" != _typeof(_)) return i == _;
-            _ = JSBI.__toPrimitive(_);
-          } else if ("boolean" == typeof i) {
-            if (JSBI.__isBigInt(_)) return JSBI.__equalToNumber(_, +i);
-            if ("object" != _typeof(_)) return i == _;
-            _ = JSBI.__toPrimitive(_);
-          } else if ("symbol" == _typeof(i)) {
-            if (JSBI.__isBigInt(_)) return !1;
-            if ("object" != _typeof(_)) return i == _;
-            _ = JSBI.__toPrimitive(_);
-          } else if ("object" == _typeof(i)) {
-            if ("object" == _typeof(_) && _.constructor !== JSBI) return i == _;
-            i = JSBI.__toPrimitive(i);
-          } else return i == _;
-        }
-      }
-    }, {
-      key: "NE",
-      value: function NE(i, _) {
-        return !JSBI.EQ(i, _);
-      }
-    }, {
-      key: "DataViewGetBigInt64",
-      value: function DataViewGetBigInt64(i, _) {
-        var t = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : !1;
-        return JSBI.asIntN(64, JSBI.DataViewGetBigUint64(i, _, t));
-      }
-    }, {
-      key: "DataViewGetBigUint64",
-      value: function DataViewGetBigUint64(i, _) {
-        var t = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : !1;
-        var _ref4 = t ? [4, 0] : [0, 4],
-          _ref5 = _slicedToArray(_ref4, 2),
-          e = _ref5[0],
-          n = _ref5[1],
-          g = i.getUint32(_ + e, t),
-          s = i.getUint32(_ + n, t),
-          o = new JSBI(3, !1);
-        return o.__setDigit(0, 1073741823 & s), o.__setDigit(1, (268435455 & g) << 2 | s >>> 30), o.__setDigit(2, g >>> 28), o.__trim();
-      }
-    }, {
-      key: "DataViewSetBigInt64",
-      value: function DataViewSetBigInt64(i, _, t) {
-        var e = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : !1;
-        JSBI.DataViewSetBigUint64(i, _, t, e);
-      }
-    }, {
-      key: "DataViewSetBigUint64",
-      value: function DataViewSetBigUint64(i, _, t) {
-        var e = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : !1;
-        t = JSBI.asUintN(64, t);
-        var n = 0,
-          g = 0;
-        if (0 < t.length && (g = t.__digit(0), 1 < t.length)) {
-          var _i6 = t.__digit(1);
-          g |= _i6 << 30, n = _i6 >>> 2, 2 < t.length && (n |= t.__digit(2) << 28);
-        }
-        var _ref6 = e ? [4, 0] : [0, 4],
-          _ref7 = _slicedToArray(_ref6, 2),
-          s = _ref7[0],
-          o = _ref7[1];
-        i.setUint32(_ + s, n, e), i.setUint32(_ + o, g, e);
-      }
-    }, {
-      key: "__zero",
-      value: function __zero() {
-        return new JSBI(0, !1);
-      }
-    }, {
-      key: "__oneDigit",
-      value: function __oneDigit(i, _) {
-        var t = new JSBI(1, _);
-        return t.__setDigit(0, i), t;
-      }
-    }, {
-      key: "__decideRounding",
-      value: function __decideRounding(i, _, t, e) {
-        if (0 < _) return -1;
-        var n;
-        if (0 > _) n = -_ - 1;else {
-          if (0 === t) return -1;
-          t--, e = i.__digit(t), n = 29;
-        }
-        var g = 1 << n;
-        if (0 == (e & g)) return -1;
-        if (g -= 1, 0 != (e & g)) return 1;
-        for (; 0 < t;) if (t--, 0 !== i.__digit(t)) return 1;
-        return 0;
-      }
-    }, {
-      key: "__fromDouble",
-      value: function __fromDouble(i) {
-        JSBI.__kBitConversionDouble[0] = i;
-        var _ = 2047 & JSBI.__kBitConversionInts[1] >>> 20,
-          t = _ - 1023,
-          e = (0 | t / 30) + 1,
-          n = new JSBI(e, 0 > i);
-        var g = 1048575 & JSBI.__kBitConversionInts[1] | 1048576,
-          s = JSBI.__kBitConversionInts[0];
-        var o = 20,
-          l = t % 30;
-        var r,
-          a = 0;
-        if (l < 20) {
-          var _i7 = o - l;
-          a = _i7 + 32, r = g >>> _i7, g = g << 32 - _i7 | s >>> _i7, s <<= 32 - _i7;
-        } else if (l === 20) a = 32, r = g, g = s, s = 0;else {
-          var _i8 = l - o;
-          a = 32 - _i8, r = g << _i8 | s >>> 32 - _i8, g = s << _i8, s = 0;
-        }
-        n.__setDigit(e - 1, r);
-        for (var _8 = e - 2; 0 <= _8; _8--) 0 < a ? (a -= 30, r = g >>> 2, g = g << 30 | s >>> 2, s <<= 30) : r = 0, n.__setDigit(_8, r);
-        return n.__trim();
-      }
-    }, {
-      key: "__isWhitespace",
-      value: function __isWhitespace(i) {
-        return !!(13 >= i && 9 <= i) || (159 >= i ? 32 == i : 131071 >= i ? 160 == i || 5760 == i : 196607 >= i ? (i &= 131071, 10 >= i || 40 == i || 41 == i || 47 == i || 95 == i || 4096 == i) : 65279 == i);
-      }
-    }, {
-      key: "__fromString",
-      value: function __fromString(i) {
-        var _ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-        var t = 0;
-        var e = i.length;
-        var n = 0;
-        if (n === e) return JSBI.__zero();
-        var g = i.charCodeAt(n);
-        for (; JSBI.__isWhitespace(g);) {
-          if (++n === e) return JSBI.__zero();
-          g = i.charCodeAt(n);
-        }
-        if (43 === g) {
-          if (++n === e) return null;
-          g = i.charCodeAt(n), t = 1;
-        } else if (45 === g) {
-          if (++n === e) return null;
-          g = i.charCodeAt(n), t = -1;
-        }
-        if (0 === _) {
-          if (_ = 10, 48 === g) {
-            if (++n === e) return JSBI.__zero();
-            if (g = i.charCodeAt(n), 88 === g || 120 === g) {
-              if (_ = 16, ++n === e) return null;
-              g = i.charCodeAt(n);
-            } else if (79 === g || 111 === g) {
-              if (_ = 8, ++n === e) return null;
-              g = i.charCodeAt(n);
-            } else if (66 === g || 98 === g) {
-              if (_ = 2, ++n === e) return null;
-              g = i.charCodeAt(n);
-            }
-          }
-        } else if (16 === _ && 48 === g) {
-          if (++n === e) return JSBI.__zero();
-          if (g = i.charCodeAt(n), 88 === g || 120 === g) {
-            if (++n === e) return null;
-            g = i.charCodeAt(n);
-          }
-        }
-        if (0 != t && 10 !== _) return null;
-        for (; 48 === g;) {
-          if (++n === e) return JSBI.__zero();
-          g = i.charCodeAt(n);
-        }
-        var s = e - n;
-        var o = JSBI.__kMaxBitsPerChar[_],
-          l = JSBI.__kBitsPerCharTableMultiplier - 1;
-        if (s > 1073741824 / o) return null;
-        var r = o * s + l >>> JSBI.__kBitsPerCharTableShift,
-          a = new JSBI(0 | (r + 29) / 30, !1),
-          u = 10 > _ ? _ : 10,
-          h = 10 < _ ? _ - 10 : 0;
-        if (0 == (_ & _ - 1)) {
-          o >>= JSBI.__kBitsPerCharTableShift;
-          var _9 = [],
-            _t3 = [];
-          var _s3 = !1;
-          do {
-            var _l2 = 0,
-              _r = 0;
-            for (;;) {
-              var _10 = void 0;
-              if (g - 48 >>> 0 < u) _10 = g - 48;else if ((32 | g) - 97 >>> 0 < h) _10 = (32 | g) - 87;else {
-                _s3 = !0;
-                break;
-              }
-              if (_r += o, _l2 = _l2 << o | _10, ++n === e) {
-                _s3 = !0;
-                break;
-              }
-              if (g = i.charCodeAt(n), 30 < _r + o) break;
-            }
-            _9.push(_l2), _t3.push(_r);
-          } while (!_s3);
-          JSBI.__fillFromParts(a, _9, _t3);
-        } else {
-          a.__initializeDigits();
-          var _t4 = !1,
-            _s4 = 0;
-          do {
-            var _r2 = 0,
-              b = 1;
-            for (;;) {
-              var _o3 = void 0;
-              if (g - 48 >>> 0 < u) _o3 = g - 48;else if ((32 | g) - 97 >>> 0 < h) _o3 = (32 | g) - 87;else {
-                _t4 = !0;
-                break;
-              }
-              var _l3 = b * _;
-              if (1073741823 < _l3) break;
-              if (b = _l3, _r2 = _r2 * _ + _o3, _s4++, ++n === e) {
-                _t4 = !0;
-                break;
-              }
-              g = i.charCodeAt(n);
-            }
-            l = 30 * JSBI.__kBitsPerCharTableMultiplier - 1;
-            var D = 0 | (o * _s4 + l >>> JSBI.__kBitsPerCharTableShift) / 30;
-            a.__inplaceMultiplyAdd(b, _r2, D);
-          } while (!_t4);
-        }
-        if (n !== e) {
-          if (!JSBI.__isWhitespace(g)) return null;
-          for (n++; n < e; n++) if (g = i.charCodeAt(n), !JSBI.__isWhitespace(g)) return null;
-        }
-        return a.sign = -1 == t, a.__trim();
-      }
-    }, {
-      key: "__fillFromParts",
-      value: function __fillFromParts(_, t, e) {
-        var n = 0,
-          g = 0,
-          s = 0;
-        for (var o = t.length - 1; 0 <= o; o--) {
-          var i = t[o],
-            l = e[o];
-          g |= i << s, s += l, 30 === s ? (_.__setDigit(n++, g), s = 0, g = 0) : 30 < s && (_.__setDigit(n++, 1073741823 & g), s -= 30, g = i >>> l - s);
-        }
-        if (0 !== g) {
-          if (n >= _.length) throw new Error("implementation bug");
-          _.__setDigit(n++, g);
-        }
-        for (; n < _.length; n++) _.__setDigit(n, 0);
-      }
-    }, {
-      key: "__toStringBasePowerOfTwo",
-      value: function __toStringBasePowerOfTwo(_, i) {
-        var t = _.length;
-        var e = i - 1;
-        e = (85 & e >>> 1) + (85 & e), e = (51 & e >>> 2) + (51 & e), e = (15 & e >>> 4) + (15 & e);
-        var n = e,
-          g = i - 1,
-          s = _.__digit(t - 1),
-          o = JSBI.__clz30(s);
-        var l = 0 | (30 * t - o + n - 1) / n;
-        if (_.sign && l++, 268435456 < l) throw new Error("string too long");
-        var r = Array(l);
-        var a = l - 1,
-          u = 0,
-          d = 0;
-        for (var _e5 = 0; _e5 < t - 1; _e5++) {
-          var _i9 = _.__digit(_e5),
-            _t5 = (u | _i9 << d) & g;
-          r[a--] = JSBI.__kConversionChars[_t5];
-          var _s5 = n - d;
-          for (u = _i9 >>> _s5, d = 30 - _s5; d >= n;) r[a--] = JSBI.__kConversionChars[u & g], u >>>= n, d -= n;
-        }
-        var h = (u | s << d) & g;
-        for (r[a--] = JSBI.__kConversionChars[h], u = s >>> n - d; 0 !== u;) r[a--] = JSBI.__kConversionChars[u & g], u >>>= n;
-        if (_.sign && (r[a--] = "-"), -1 != a) throw new Error("implementation bug");
-        return r.join("");
-      }
-    }, {
-      key: "__toStringGeneric",
-      value: function __toStringGeneric(_, i, t) {
-        var e = _.length;
-        if (0 === e) return "";
-        if (1 === e) {
-          var _e6 = _.__unsignedDigit(0).toString(i);
-          return !1 === t && _.sign && (_e6 = "-" + _e6), _e6;
-        }
-        var n = 30 * e - JSBI.__clz30(_.__digit(e - 1)),
-          g = JSBI.__kMaxBitsPerChar[i],
-          s = g - 1;
-        var o = n * JSBI.__kBitsPerCharTableMultiplier;
-        o += s - 1, o = 0 | o / s;
-        var l = o + 1 >> 1,
-          r = JSBI.exponentiate(JSBI.__oneDigit(i, !1), JSBI.__oneDigit(l, !1));
-        var a, u;
-        var d = r.__unsignedDigit(0);
-        if (1 === r.length && 32767 >= d) {
-          a = new JSBI(_.length, !1), a.__initializeDigits();
-          var _t6 = 0;
-          for (var _e7 = 2 * _.length - 1; 0 <= _e7; _e7--) {
-            var _i10 = _t6 << 15 | _.__halfDigit(_e7);
-            a.__setHalfDigit(_e7, 0 | _i10 / d), _t6 = 0 | _i10 % d;
-          }
-          u = _t6.toString(i);
-        } else {
-          var _t7 = JSBI.__absoluteDivLarge(_, r, !0, !0);
-          a = _t7.quotient;
-          var _e8 = _t7.remainder.__trim();
-          u = JSBI.__toStringGeneric(_e8, i, !0);
-        }
-        a.__trim();
-        var h = JSBI.__toStringGeneric(a, i, !0);
-        for (; u.length < l;) u = "0" + u;
-        return !1 === t && _.sign && (h = "-" + h), h + u;
-      }
-    }, {
-      key: "__unequalSign",
-      value: function __unequalSign(i) {
-        return i ? -1 : 1;
-      }
-    }, {
-      key: "__absoluteGreater",
-      value: function __absoluteGreater(i) {
-        return i ? -1 : 1;
-      }
-    }, {
-      key: "__absoluteLess",
-      value: function __absoluteLess(i) {
-        return i ? 1 : -1;
-      }
-    }, {
-      key: "__compareToBigInt",
-      value: function __compareToBigInt(i, _) {
-        var t = i.sign;
-        if (t !== _.sign) return JSBI.__unequalSign(t);
-        var e = JSBI.__absoluteCompare(i, _);
-        return 0 < e ? JSBI.__absoluteGreater(t) : 0 > e ? JSBI.__absoluteLess(t) : 0;
-      }
-    }, {
-      key: "__compareToNumber",
-      value: function __compareToNumber(i, _) {
-        if (JSBI.__isOneDigitInt(_)) {
-          var t = i.sign,
-            e = 0 > _;
-          if (t !== e) return JSBI.__unequalSign(t);
-          if (0 === i.length) {
-            if (e) throw new Error("implementation bug");
-            return 0 === _ ? 0 : -1;
-          }
-          if (1 < i.length) return JSBI.__absoluteGreater(t);
-          var n = Math.abs(_),
-            g = i.__unsignedDigit(0);
-          return g > n ? JSBI.__absoluteGreater(t) : g < n ? JSBI.__absoluteLess(t) : 0;
-        }
-        return JSBI.__compareToDouble(i, _);
-      }
-    }, {
-      key: "__compareToDouble",
-      value: function __compareToDouble(i, _) {
-        if (_ !== _) return _;
-        if (_ === 1 / 0) return -1;
-        if (_ === -Infinity) return 1;
-        var t = i.sign;
-        if (t !== 0 > _) return JSBI.__unequalSign(t);
-        if (0 === _) throw new Error("implementation bug: should be handled elsewhere");
-        if (0 === i.length) return -1;
-        JSBI.__kBitConversionDouble[0] = _;
-        var e = 2047 & JSBI.__kBitConversionInts[1] >>> 20;
-        if (2047 == e) throw new Error("implementation bug: handled elsewhere");
-        var n = e - 1023;
-        if (0 > n) return JSBI.__absoluteGreater(t);
-        var g = i.length;
-        var s = i.__digit(g - 1);
-        var o = JSBI.__clz30(s),
-          l = 30 * g - o,
-          r = n + 1;
-        if (l < r) return JSBI.__absoluteLess(t);
-        if (l > r) return JSBI.__absoluteGreater(t);
-        var a = 1048576 | 1048575 & JSBI.__kBitConversionInts[1],
-          u = JSBI.__kBitConversionInts[0];
-        var d = 20,
-          h = 29 - o;
-        if (h !== (0 | (l - 1) % 30)) throw new Error("implementation bug");
-        var m,
-          b = 0;
-        if (20 > h) {
-          var _i11 = d - h;
-          b = _i11 + 32, m = a >>> _i11, a = a << 32 - _i11 | u >>> _i11, u <<= 32 - _i11;
-        } else if (20 === h) b = 32, m = a, a = u, u = 0;else {
-          var _i12 = h - d;
-          b = 32 - _i12, m = a << _i12 | u >>> 32 - _i12, a = u << _i12, u = 0;
-        }
-        if (s >>>= 0, m >>>= 0, s > m) return JSBI.__absoluteGreater(t);
-        if (s < m) return JSBI.__absoluteLess(t);
-        for (var _e9 = g - 2; 0 <= _e9; _e9--) {
-          0 < b ? (b -= 30, m = a >>> 2, a = a << 30 | u >>> 2, u <<= 30) : m = 0;
-          var _11 = i.__unsignedDigit(_e9);
-          if (_11 > m) return JSBI.__absoluteGreater(t);
-          if (_11 < m) return JSBI.__absoluteLess(t);
-        }
-        if (0 !== a || 0 !== u) {
-          if (0 === b) throw new Error("implementation bug");
-          return JSBI.__absoluteLess(t);
-        }
-        return 0;
-      }
-    }, {
-      key: "__equalToNumber",
-      value: function __equalToNumber(i, _) {
-        var t = Math.abs;
-        return JSBI.__isOneDigitInt(_) ? 0 === _ ? 0 === i.length : 1 === i.length && i.sign === 0 > _ && i.__unsignedDigit(0) === t(_) : 0 === JSBI.__compareToDouble(i, _);
-      }
-    }, {
-      key: "__comparisonResultToBool",
-      value: function __comparisonResultToBool(i, _) {
-        return 0 === _ ? 0 > i : 1 === _ ? 0 >= i : 2 === _ ? 0 < i : 3 === _ ? 0 <= i : void 0;
-      }
-    }, {
-      key: "__compare",
-      value: function __compare(i, _, t) {
-        if (i = JSBI.__toPrimitive(i), _ = JSBI.__toPrimitive(_), "string" == typeof i && "string" == typeof _) switch (t) {
-          case 0:
-            return i < _;
-          case 1:
-            return i <= _;
-          case 2:
-            return i > _;
-          case 3:
-            return i >= _;
-        }
-        if (JSBI.__isBigInt(i) && "string" == typeof _) return _ = JSBI.__fromString(_), null !== _ && JSBI.__comparisonResultToBool(JSBI.__compareToBigInt(i, _), t);
-        if ("string" == typeof i && JSBI.__isBigInt(_)) return i = JSBI.__fromString(i), null !== i && JSBI.__comparisonResultToBool(JSBI.__compareToBigInt(i, _), t);
-        if (i = JSBI.__toNumeric(i), _ = JSBI.__toNumeric(_), JSBI.__isBigInt(i)) {
-          if (JSBI.__isBigInt(_)) return JSBI.__comparisonResultToBool(JSBI.__compareToBigInt(i, _), t);
-          if ("number" != typeof _) throw new Error("implementation bug");
-          return JSBI.__comparisonResultToBool(JSBI.__compareToNumber(i, _), t);
-        }
-        if ("number" != typeof i) throw new Error("implementation bug");
-        if (JSBI.__isBigInt(_)) return JSBI.__comparisonResultToBool(JSBI.__compareToNumber(_, i), 2 ^ t);
-        if ("number" != typeof _) throw new Error("implementation bug");
-        return 0 === t ? i < _ : 1 === t ? i <= _ : 2 === t ? i > _ : 3 === t ? i >= _ : void 0;
-      }
-    }, {
-      key: "__absoluteAdd",
-      value: function __absoluteAdd(_, t, e) {
-        if (_.length < t.length) return JSBI.__absoluteAdd(t, _, e);
-        if (0 === _.length) return _;
-        if (0 === t.length) return _.sign === e ? _ : JSBI.unaryMinus(_);
-        var n = _.length;
-        (0 === _.__clzmsd() || t.length === _.length && 0 === t.__clzmsd()) && n++;
-        var g = new JSBI(n, e);
-        var s = 0,
-          o = 0;
-        for (; o < t.length; o++) {
-          var i = _.__digit(o) + t.__digit(o) + s;
-          s = i >>> 30, g.__setDigit(o, 1073741823 & i);
-        }
-        for (; o < _.length; o++) {
-          var _i13 = _.__digit(o) + s;
-          s = _i13 >>> 30, g.__setDigit(o, 1073741823 & _i13);
-        }
-        return o < g.length && g.__setDigit(o, s), g.__trim();
-      }
-    }, {
-      key: "__absoluteSub",
-      value: function __absoluteSub(_, t, e) {
-        if (0 === _.length) return _;
-        if (0 === t.length) return _.sign === e ? _ : JSBI.unaryMinus(_);
-        var n = new JSBI(_.length, e);
-        var g = 0,
-          s = 0;
-        for (; s < t.length; s++) {
-          var i = _.__digit(s) - t.__digit(s) - g;
-          g = 1 & i >>> 30, n.__setDigit(s, 1073741823 & i);
-        }
-        for (; s < _.length; s++) {
-          var _i14 = _.__digit(s) - g;
-          g = 1 & _i14 >>> 30, n.__setDigit(s, 1073741823 & _i14);
-        }
-        return n.__trim();
-      }
-    }, {
-      key: "__absoluteAddOne",
-      value: function __absoluteAddOne(_, i) {
-        var t = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-        var e = _.length;
-        null === t ? t = new JSBI(e, i) : t.sign = i;
-        var n = 1;
-        for (var g = 0; g < e; g++) {
-          var _i15 = _.__digit(g) + n;
-          n = _i15 >>> 30, t.__setDigit(g, 1073741823 & _i15);
-        }
-        return 0 != n && t.__setDigitGrow(e, 1), t;
-      }
-    }, {
-      key: "__absoluteSubOne",
-      value: function __absoluteSubOne(_, t) {
-        var e = _.length;
-        t = t || e;
-        var n = new JSBI(t, !1);
-        var g = 1;
-        for (var s = 0; s < e; s++) {
-          var i = _.__digit(s) - g;
-          g = 1 & i >>> 30, n.__setDigit(s, 1073741823 & i);
-        }
-        if (0 != g) throw new Error("implementation bug");
-        for (var _g2 = e; _g2 < t; _g2++) n.__setDigit(_g2, 0);
-        return n;
-      }
-    }, {
-      key: "__absoluteAnd",
-      value: function __absoluteAnd(_, t) {
-        var e = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-        var n = _.length,
-          g = t.length,
-          s = g;
-        if (n < g) {
-          s = n;
-          var i = _,
-            _e10 = n;
-          _ = t, n = g, t = i, g = _e10;
-        }
-        var o = s;
-        null === e ? e = new JSBI(o, !1) : o = e.length;
-        var l = 0;
-        for (; l < s; l++) e.__setDigit(l, _.__digit(l) & t.__digit(l));
-        for (; l < o; l++) e.__setDigit(l, 0);
-        return e;
-      }
-    }, {
-      key: "__absoluteAndNot",
-      value: function __absoluteAndNot(_, t) {
-        var e = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-        var n = _.length,
-          g = t.length;
-        var s = g;
-        n < g && (s = n);
-        var o = n;
-        null === e ? e = new JSBI(o, !1) : o = e.length;
-        var l = 0;
-        for (; l < s; l++) e.__setDigit(l, _.__digit(l) & ~t.__digit(l));
-        for (; l < n; l++) e.__setDigit(l, _.__digit(l));
-        for (; l < o; l++) e.__setDigit(l, 0);
-        return e;
-      }
-    }, {
-      key: "__absoluteOr",
-      value: function __absoluteOr(_, t) {
-        var e = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-        var n = _.length,
-          g = t.length,
-          s = g;
-        if (n < g) {
-          s = n;
-          var i = _,
-            _e11 = n;
-          _ = t, n = g, t = i, g = _e11;
-        }
-        var o = n;
-        null === e ? e = new JSBI(o, !1) : o = e.length;
-        var l = 0;
-        for (; l < s; l++) e.__setDigit(l, _.__digit(l) | t.__digit(l));
-        for (; l < n; l++) e.__setDigit(l, _.__digit(l));
-        for (; l < o; l++) e.__setDigit(l, 0);
-        return e;
-      }
-    }, {
-      key: "__absoluteXor",
-      value: function __absoluteXor(_, t) {
-        var e = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-        var n = _.length,
-          g = t.length,
-          s = g;
-        if (n < g) {
-          s = n;
-          var i = _,
-            _e12 = n;
-          _ = t, n = g, t = i, g = _e12;
-        }
-        var o = n;
-        null === e ? e = new JSBI(o, !1) : o = e.length;
-        var l = 0;
-        for (; l < s; l++) e.__setDigit(l, _.__digit(l) ^ t.__digit(l));
-        for (; l < n; l++) e.__setDigit(l, _.__digit(l));
-        for (; l < o; l++) e.__setDigit(l, 0);
-        return e;
-      }
-    }, {
-      key: "__absoluteCompare",
-      value: function __absoluteCompare(_, t) {
-        var e = _.length - t.length;
-        if (0 != e) return e;
-        var n = _.length - 1;
-        for (; 0 <= n && _.__digit(n) === t.__digit(n);) n--;
-        return 0 > n ? 0 : _.__unsignedDigit(n) > t.__unsignedDigit(n) ? 1 : -1;
-      }
-    }, {
-      key: "__multiplyAccumulate",
-      value: function __multiplyAccumulate(_, t, e, n) {
-        if (0 === t) return;
-        var g = 32767 & t,
-          s = t >>> 15;
-        var o = 0,
-          l = 0;
-        for (var r, a = 0; a < _.length; a++, n++) {
-          r = e.__digit(n);
-          var i = _.__digit(a),
-            _t8 = 32767 & i,
-            u = i >>> 15,
-            d = JSBI.__imul(_t8, g),
-            h = JSBI.__imul(_t8, s),
-            m = JSBI.__imul(u, g),
-            b = JSBI.__imul(u, s);
-          r += l + d + o, o = r >>> 30, r &= 1073741823, r += ((32767 & h) << 15) + ((32767 & m) << 15), o += r >>> 30, l = b + (h >>> 15) + (m >>> 15), e.__setDigit(n, 1073741823 & r);
-        }
-        for (; 0 != o || 0 !== l; n++) {
-          var _i16 = e.__digit(n);
-          _i16 += o + l, l = 0, o = _i16 >>> 30, e.__setDigit(n, 1073741823 & _i16);
-        }
-      }
-    }, {
-      key: "__internalMultiplyAdd",
-      value: function __internalMultiplyAdd(_, t, e, g, s) {
-        var o = e,
-          l = 0;
-        for (var n = 0; n < g; n++) {
-          var i = _.__digit(n),
-            _e13 = JSBI.__imul(32767 & i, t),
-            _g3 = JSBI.__imul(i >>> 15, t),
-            a = _e13 + ((32767 & _g3) << 15) + l + o;
-          o = a >>> 30, l = _g3 >>> 15, s.__setDigit(n, 1073741823 & a);
-        }
-        if (s.length > g) for (s.__setDigit(g++, o + l); g < s.length;) s.__setDigit(g++, 0);else if (0 !== o + l) throw new Error("implementation bug");
-      }
-    }, {
-      key: "__absoluteDivSmall",
-      value: function __absoluteDivSmall(_, t) {
-        var e = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-        null === e && (e = new JSBI(_.length, !1));
-        var n = 0;
-        for (var g, s = 2 * _.length - 1; 0 <= s; s -= 2) {
-          g = (n << 15 | _.__halfDigit(s)) >>> 0;
-          var i = 0 | g / t;
-          n = 0 | g % t, g = (n << 15 | _.__halfDigit(s - 1)) >>> 0;
-          var o = 0 | g / t;
-          n = 0 | g % t, e.__setDigit(s >>> 1, i << 15 | o);
-        }
-        return e;
-      }
-    }, {
-      key: "__absoluteModSmall",
-      value: function __absoluteModSmall(_, t) {
-        var e = 0;
-        for (var n = 2 * _.length - 1; 0 <= n; n--) {
-          var i = (e << 15 | _.__halfDigit(n)) >>> 0;
-          e = 0 | i % t;
-        }
-        return e;
-      }
-    }, {
-      key: "__absoluteDivLarge",
-      value: function __absoluteDivLarge(i, _, t, e) {
-        var g = _.__halfDigitLength(),
-          n = _.length,
-          s = i.__halfDigitLength() - g;
-        var o = null;
-        t && (o = new JSBI(s + 2 >>> 1, !1), o.__initializeDigits());
-        var l = new JSBI(g + 2 >>> 1, !1);
-        l.__initializeDigits();
-        var r = JSBI.__clz15(_.__halfDigit(g - 1));
-        0 < r && (_ = JSBI.__specialLeftShift(_, r, 0));
-        var a = JSBI.__specialLeftShift(i, r, 1),
-          u = _.__halfDigit(g - 1);
-        var d = 0;
-        for (var _r3, h = s; 0 <= h; h--) {
-          _r3 = 32767;
-          var _i17 = a.__halfDigit(h + g);
-          if (_i17 !== u) {
-            var _t9 = (_i17 << 15 | a.__halfDigit(h + g - 1)) >>> 0;
-            _r3 = 0 | _t9 / u;
-            var _e14 = 0 | _t9 % u;
-            var _n4 = _.__halfDigit(g - 2),
-              _s6 = a.__halfDigit(h + g - 2);
-            for (; JSBI.__imul(_r3, _n4) >>> 0 > (_e14 << 16 | _s6) >>> 0 && (_r3--, _e14 += u, !(32767 < _e14)););
-          }
-          JSBI.__internalMultiplyAdd(_, _r3, 0, n, l);
-          var _e15 = a.__inplaceSub(l, h, g + 1);
-          0 !== _e15 && (_e15 = a.__inplaceAdd(_, h, g), a.__setHalfDigit(h + g, 32767 & a.__halfDigit(h + g) + _e15), _r3--), t && (1 & h ? d = _r3 << 15 : o.__setDigit(h >>> 1, d | _r3));
-        }
-        if (e) return a.__inplaceRightShift(r), t ? {
-          quotient: o,
-          remainder: a
-        } : a;
-        if (t) return o;
-        throw new Error("unreachable");
-      }
-    }, {
-      key: "__clz15",
-      value: function __clz15(i) {
-        return JSBI.__clz30(i) - 15;
-      }
-    }, {
-      key: "__specialLeftShift",
-      value: function __specialLeftShift(_, t, e) {
-        var g = _.length,
-          n = new JSBI(g + e, !1);
-        if (0 === t) {
-          for (var _t10 = 0; _t10 < g; _t10++) n.__setDigit(_t10, _.__digit(_t10));
-          return 0 < e && n.__setDigit(g, 0), n;
-        }
-        var s = 0;
-        for (var o = 0; o < g; o++) {
-          var i = _.__digit(o);
-          n.__setDigit(o, 1073741823 & i << t | s), s = i >>> 30 - t;
-        }
-        return 0 < e && n.__setDigit(g, s), n;
-      }
-    }, {
-      key: "__leftShiftByAbsolute",
-      value: function __leftShiftByAbsolute(_, i) {
-        var t = JSBI.__toShiftAmount(i);
-        if (0 > t) throw new RangeError("BigInt too big");
-        var e = 0 | t / 30,
-          n = t % 30,
-          g = _.length,
-          s = 0 !== n && 0 != _.__digit(g - 1) >>> 30 - n,
-          o = g + e + (s ? 1 : 0),
-          l = new JSBI(o, _.sign);
-        if (0 === n) {
-          var _t11 = 0;
-          for (; _t11 < e; _t11++) l.__setDigit(_t11, 0);
-          for (; _t11 < o; _t11++) l.__setDigit(_t11, _.__digit(_t11 - e));
-        } else {
-          var _t12 = 0;
-          for (var _12 = 0; _12 < e; _12++) l.__setDigit(_12, 0);
-          for (var _s7 = 0; _s7 < g; _s7++) {
-            var _i18 = _.__digit(_s7);
-            l.__setDigit(_s7 + e, 1073741823 & _i18 << n | _t12), _t12 = _i18 >>> 30 - n;
-          }
-          if (s) l.__setDigit(g + e, _t12);else if (0 !== _t12) throw new Error("implementation bug");
-        }
-        return l.__trim();
-      }
-    }, {
-      key: "__rightShiftByAbsolute",
-      value: function __rightShiftByAbsolute(_, i) {
-        var t = _.length,
-          e = _.sign,
-          n = JSBI.__toShiftAmount(i);
-        if (0 > n) return JSBI.__rightShiftByMaximum(e);
-        var g = 0 | n / 30,
-          s = n % 30;
-        var o = t - g;
-        if (0 >= o) return JSBI.__rightShiftByMaximum(e);
-        var l = !1;
-        if (e) {
-          if (0 != (_.__digit(g) & (1 << s) - 1)) l = !0;else for (var _t13 = 0; _t13 < g; _t13++) if (0 !== _.__digit(_t13)) {
-            l = !0;
-            break;
-          }
-        }
-        if (l && 0 === s) {
-          var _i19 = _.__digit(t - 1);
-          0 == ~_i19 && o++;
-        }
-        var r = new JSBI(o, e);
-        if (0 === s) {
-          r.__setDigit(o - 1, 0);
-          for (var _e16 = g; _e16 < t; _e16++) r.__setDigit(_e16 - g, _.__digit(_e16));
-        } else {
-          var _e17 = _.__digit(g) >>> s;
-          var _n5 = t - g - 1;
-          for (var _t14 = 0; _t14 < _n5; _t14++) {
-            var _i20 = _.__digit(_t14 + g + 1);
-            r.__setDigit(_t14, 1073741823 & _i20 << 30 - s | _e17), _e17 = _i20 >>> s;
-          }
-          r.__setDigit(_n5, _e17);
-        }
-        return l && (r = JSBI.__absoluteAddOne(r, !0, r)), r.__trim();
-      }
-    }, {
-      key: "__rightShiftByMaximum",
-      value: function __rightShiftByMaximum(i) {
-        return i ? JSBI.__oneDigit(1, !0) : JSBI.__zero();
-      }
-    }, {
-      key: "__toShiftAmount",
-      value: function __toShiftAmount(i) {
-        if (1 < i.length) return -1;
-        var _ = i.__unsignedDigit(0);
-        return _ > JSBI.__kMaxLengthBits ? -1 : _;
-      }
-    }, {
-      key: "__toPrimitive",
-      value: function __toPrimitive(i) {
-        var _ = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "default";
-        if ("object" != _typeof(i)) return i;
-        if (i.constructor === JSBI) return i;
-        if ("undefined" != typeof Symbol && "symbol" == _typeof(Symbol.toPrimitive)) {
-          var _t15 = i[Symbol.toPrimitive];
-          if (_t15) {
-            var _i21 = _t15(_);
-            if ("object" != _typeof(_i21)) return _i21;
-            throw new TypeError("Cannot convert object to primitive value");
-          }
-        }
-        var t = i.valueOf;
-        if (t) {
-          var _13 = t.call(i);
-          if ("object" != _typeof(_13)) return _13;
-        }
-        var e = i.toString;
-        if (e) {
-          var _14 = e.call(i);
-          if ("object" != _typeof(_14)) return _14;
-        }
-        throw new TypeError("Cannot convert object to primitive value");
-      }
-    }, {
-      key: "__toNumeric",
-      value: function __toNumeric(i) {
-        return JSBI.__isBigInt(i) ? i : +i;
-      }
-    }, {
-      key: "__isBigInt",
-      value: function __isBigInt(i) {
-        return "object" == _typeof(i) && null !== i && i.constructor === JSBI;
-      }
-    }, {
-      key: "__truncateToNBits",
-      value: function __truncateToNBits(i, _) {
-        var t = 0 | (i + 29) / 30,
-          e = new JSBI(t, _.sign),
-          n = t - 1;
-        for (var _t16 = 0; _t16 < n; _t16++) e.__setDigit(_t16, _.__digit(_t16));
-        var g = _.__digit(n);
-        if (0 != i % 30) {
-          var _15 = 32 - i % 30;
-          g = g << _15 >>> _15;
-        }
-        return e.__setDigit(n, g), e.__trim();
-      }
-    }, {
-      key: "__truncateAndSubFromPowerOfTwo",
-      value: function __truncateAndSubFromPowerOfTwo(_, t, e) {
-        var n = Math.min;
-        var g = 0 | (_ + 29) / 30,
-          s = new JSBI(g, e);
-        var o = 0;
-        var l = g - 1;
-        var a = 0;
-        for (var i = n(l, t.length); o < i; o++) {
-          var _i22 = 0 - t.__digit(o) - a;
-          a = 1 & _i22 >>> 30, s.__setDigit(o, 1073741823 & _i22);
-        }
-        for (; o < l; o++) s.__setDigit(o, 0 | 1073741823 & -a);
-        var u = l < t.length ? t.__digit(l) : 0;
-        var d = _ % 30;
-        var h;
-        if (0 == d) h = 0 - u - a, h &= 1073741823;else {
-          var _i23 = 32 - d;
-          u = u << _i23 >>> _i23;
-          var _16 = 1 << 32 - _i23;
-          h = _16 - u - a, h &= _16 - 1;
-        }
-        return s.__setDigit(l, h), s.__trim();
-      }
-    }, {
-      key: "__digitPow",
-      value: function __digitPow(i, _) {
-        var t = 1;
-        for (; 0 < _;) 1 & _ && (t *= i), _ >>>= 1, i *= i;
-        return t;
-      }
-    }, {
-      key: "__isOneDigitInt",
-      value: function __isOneDigitInt(i) {
-        return (1073741823 & i) === i;
-      }
-    }]);
-    return JSBI;
-  }( /*#__PURE__*/_wrapNativeSuper(Array));
-  JSBI.__kMaxLength = 33554432, JSBI.__kMaxLengthBits = JSBI.__kMaxLength << 5, JSBI.__kMaxBitsPerChar = [0, 0, 32, 51, 64, 75, 83, 90, 96, 102, 107, 111, 115, 119, 122, 126, 128, 131, 134, 136, 139, 141, 143, 145, 147, 149, 151, 153, 154, 156, 158, 159, 160, 162, 163, 165, 166], JSBI.__kBitsPerCharTableShift = 5, JSBI.__kBitsPerCharTableMultiplier = 1 << JSBI.__kBitsPerCharTableShift, JSBI.__kConversionChars = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"], JSBI.__kBitConversionBuffer = new ArrayBuffer(8), JSBI.__kBitConversionDouble = new Float64Array(JSBI.__kBitConversionBuffer), JSBI.__kBitConversionInts = new Int32Array(JSBI.__kBitConversionBuffer), JSBI.__clz30 = Math.clz32 ? function (i) {
-    return Math.clz32(i) - 2;
-  } : function (i) {
-    return 0 === i ? 30 : 0 | 29 - (0 | Math.log(i >>> 0) / Math.LN2);
-  }, JSBI.__imul = Math.imul || function (i, _) {
-    return 0 | i * _;
-  };
 
   function assert(condition, message) {
     if (!condition) throw new Error("assertion failure: ".concat(message));
@@ -1675,36 +251,31 @@
     throw new Error("assertion failure: code should not be reached".concat(reason));
   }
 
-  var ZERO = JSBI.BigInt(0);
-  var ONE = JSBI.BigInt(1);
-  var TWO = JSBI.BigInt(2);
-  var TEN = JSBI.BigInt(10);
-  var TWENTY_FOUR = JSBI.BigInt(24);
-  var SIXTY = JSBI.BigInt(60);
-  var THOUSAND = JSBI.BigInt(1e3);
-  var MILLION = JSBI.BigInt(1e6);
-  var BILLION = JSBI.BigInt(1e9);
-  var HOUR_SECONDS = 3600;
-  var HOUR_NANOS = JSBI.multiply(JSBI.BigInt(HOUR_SECONDS), BILLION);
-  var MINUTE_NANOS_JSBI = JSBI.multiply(SIXTY, BILLION);
-  var DAY_NANOS_JSBI = JSBI.multiply(HOUR_NANOS, TWENTY_FOUR);
-  /** Handle a JSBI or native BigInt. For user input, use ES.ToBigInt instead */
-  function ensureJSBI(value) {
-    return typeof value === 'bigint' ? JSBI.BigInt(value.toString(10)) : value;
-  }
+  var ZERO = 0n;
+  var ONE = 1n;
+  var TWO = 2n;
+  var TEN = 10n;
+  var TWENTY_FOUR = 24n;
+  var SIXTY = 60n;
+  var THOUSAND = 1000n;
+  var MILLION = 1000000n;
+  var BILLION = 1000000000n;
+  var HOUR_SECONDS = 3600n;
+  var HOUR_NANOS = HOUR_SECONDS * BILLION;
+  var MINUTE_NANOS$1 = SIXTY * BILLION;
+  var DAY_NANOS$1 = HOUR_NANOS * TWENTY_FOUR;
   function isEven(value) {
-    return JSBI.equal(JSBI.remainder(value, TWO), ZERO);
+    return value % 2n === 0n;
   }
   function abs(x) {
-    if (JSBI.lessThan(x, ZERO)) return JSBI.unaryMinus(x);
-    return x;
+    return x < 0n ? -x : x;
   }
   function compare(x, y) {
-    return JSBI.lessThan(x, y) ? -1 : JSBI.greaterThan(x, y) ? 1 : 0;
+    return x < y ? -1 : x > y ? 1 : 0;
   }
   function divmod(x, y) {
-    var quotient = JSBI.divide(x, y);
-    var remainder = JSBI.remainder(x, y);
+    var quotient = x / y;
+    var remainder = x % y;
     return {
       quotient: quotient,
       remainder: remainder
@@ -1950,11 +521,11 @@
   var TimeDuration = /*#__PURE__*/function () {
     function TimeDuration(totalNs) {
       _classCallCheck(this, TimeDuration);
-      assert(typeof totalNs !== 'number', 'big integer required');
-      this.totalNs = ensureJSBI(totalNs);
-      assert(JSBI.lessThanOrEqual(abs(this.totalNs), TimeDuration.MAX), 'integer too big');
-      this.sec = JSBI.toNumber(JSBI.divide(this.totalNs, BILLION));
-      this.subsec = JSBI.toNumber(JSBI.remainder(this.totalNs, BILLION));
+      assert(typeof totalNs !== 'bigint', 'big integer required');
+      this.totalNs = totalNs;
+      assert(abs(this.totalNs) <= TimeDuration.MAX, 'integer too big');
+      this.sec = Number(this.totalNs / BILLION);
+      this.subsec = Number(this.totalNs % BILLION);
       assert(Number.isSafeInteger(this.sec), 'seconds too big');
       assert(Math.abs(this.subsec) <= 999999999, 'subseconds too big');
     }
@@ -1966,18 +537,18 @@
     }, {
       key: "add",
       value: function add(other) {
-        return TimeDuration.validateNew(JSBI.add(this.totalNs, other.totalNs), 'sum');
+        return TimeDuration.validateNew(this.totalNs + other.totalNs, 'sum');
       }
     }, {
       key: "add24HourDays",
       value: function add24HourDays(days) {
         assert(Number.isInteger(days), 'days must be an integer');
-        return TimeDuration.validateNew(JSBI.add(this.totalNs, JSBI.multiply(JSBI.BigInt(days), DAY_NANOS_JSBI)), 'sum');
+        return TimeDuration.validateNew(this.totalNs + BigInt(days) * DAY_NANOS$1, 'sum');
       }
     }, {
       key: "addToEpochNs",
       value: function addToEpochNs(epochNs) {
-        return JSBI.add(ensureJSBI(epochNs), this.totalNs);
+        return epochNs + this.totalNs;
       }
     }, {
       key: "cmp",
@@ -1988,10 +559,10 @@
       key: "divmod",
       value: function divmod$1(n) {
         assert(n !== 0, 'division by zero');
-        var _divmod2 = divmod(this.totalNs, JSBI.BigInt(n)),
+        var _divmod2 = divmod(this.totalNs, BigInt(n)),
           quotient = _divmod2.quotient,
           remainder = _divmod2.remainder;
-        var q = JSBI.toNumber(quotient);
+        var q = quotient;
         var r = new TimeDuration(remainder);
         return {
           quotient: q,
@@ -2001,9 +572,9 @@
     }, {
       key: "fdiv",
       value: function fdiv(nParam) {
-        var n = ensureJSBI(nParam);
-        assert(!JSBI.equal(n, ZERO), 'division by zero');
-        var nBigInt = JSBI.BigInt(n);
+        var n = nParam;
+        assert(n !== ZERO, 'division by zero');
+        var nBigInt = BigInt(n);
         var _divmod3 = divmod(this.totalNs, nBigInt),
           quotient = _divmod3.quotient,
           remainder = _divmod3.remainder;
@@ -2012,36 +583,36 @@
         var precision = 50;
         var decimalDigits = [];
         var digit;
-        var sign = (JSBI.lessThan(this.totalNs, ZERO) ? -1 : 1) * Math.sign(JSBI.toNumber(n));
-        while (!JSBI.equal(remainder, ZERO) && decimalDigits.length < precision) {
-          remainder = JSBI.multiply(remainder, TEN);
+        var sign = (this.totalNs < 0n ? -1 : 1) * Math.sign(Number(n));
+        while (remainder !== 0n && decimalDigits.length < precision) {
+          remainder = remainder * TEN;
           var _divmod4 = divmod(remainder, nBigInt);
           digit = _divmod4.quotient;
           remainder = _divmod4.remainder;
-          decimalDigits.push(Math.abs(JSBI.toNumber(digit)));
+          decimalDigits.push(Math.abs(Number(digit)));
         }
         return sign * Number(abs(quotient).toString() + '.' + decimalDigits.join(''));
       }
     }, {
       key: "isZero",
       value: function isZero() {
-        return JSBI.equal(this.totalNs, ZERO);
+        return this.totalNs === ZERO;
       }
     }, {
       key: "round",
       value: function round(incrementParam, mode) {
-        var increment = ensureJSBI(incrementParam);
-        if (JSBI.equal(increment, ONE)) return this;
+        var increment = incrementParam;
+        if (increment === ONE) return this;
         var _divmod5 = divmod(this.totalNs, increment),
           quotient = _divmod5.quotient,
           remainder = _divmod5.remainder;
-        var sign = JSBI.lessThan(this.totalNs, ZERO) ? 'negative' : 'positive';
-        var r1 = JSBI.multiply(abs(quotient), increment);
-        var r2 = JSBI.add(r1, increment);
-        var cmp = compare(abs(JSBI.multiply(remainder, TWO)), increment);
+        var sign = this.totalNs < 0n ? 'negative' : 'positive';
+        var r1 = abs(quotient) * increment;
+        var r2 = r1 + increment;
+        var cmp = compare(abs(remainder * TWO), increment);
         var unsignedRoundingMode = GetUnsignedRoundingMode(mode, sign);
-        var rounded = JSBI.equal(remainder, ZERO) ? r1 : ApplyUnsignedRoundingMode(r1, r2, cmp, isEven(quotient), unsignedRoundingMode);
-        var result = sign === 'positive' ? rounded : JSBI.unaryMinus(rounded);
+        var rounded = remainder === 0n ? r1 : ApplyUnsignedRoundingMode(r1, r2, cmp, isEven(quotient), unsignedRoundingMode);
+        var result = sign === 'positive' ? rounded : -rounded;
         return TimeDuration.validateNew(result, 'rounding');
       }
     }, {
@@ -2052,12 +623,12 @@
     }, {
       key: "subtract",
       value: function subtract(other) {
-        return TimeDuration.validateNew(JSBI.subtract(this.totalNs, other.totalNs), 'difference');
+        return TimeDuration.validateNew(this.totalNs - other.totalNs, 'difference');
       }
     }], [{
       key: "validateNew",
       value: function validateNew(totalNs, operation) {
-        if (JSBI.greaterThan(abs(totalNs), TimeDuration.MAX)) {
+        if (abs(totalNs) > TimeDuration.MAX) {
           throw new RangeError("".concat(operation, " of duration time units cannot exceed ").concat(TimeDuration.MAX, " s"));
         }
         return new TimeDuration(totalNs);
@@ -2065,20 +636,20 @@
     }, {
       key: "fromEpochNsDiff",
       value: function fromEpochNsDiff(epochNs1, epochNs2) {
-        var diff = JSBI.subtract(ensureJSBI(epochNs1), ensureJSBI(epochNs2));
+        var diff = epochNs1 - epochNs2;
         // No extra validate step. Should instead fail assertion if too big
         return new TimeDuration(diff);
       }
     }, {
       key: "fromComponents",
       value: function fromComponents(h, min, s, ms, µs, ns) {
-        var totalNs = JSBI.add(JSBI.add(JSBI.add(JSBI.add(JSBI.add(JSBI.BigInt(ns), JSBI.multiply(JSBI.BigInt(µs), THOUSAND)), JSBI.multiply(JSBI.BigInt(ms), MILLION)), JSBI.multiply(JSBI.BigInt(s), BILLION)), JSBI.multiply(JSBI.BigInt(min), MINUTE_NANOS_JSBI)), JSBI.multiply(JSBI.BigInt(h), HOUR_NANOS));
+        var totalNs = BigInt(ns) + BigInt(µs) * THOUSAND + BigInt(ms) * MILLION + BigInt(s) * BILLION + BigInt(min) * MINUTE_NANOS$1 + BigInt(h) * HOUR_NANOS;
         return TimeDuration.validateNew(totalNs, 'total');
       }
     }]);
     return TimeDuration;
   }();
-  TimeDuration.MAX = JSBI.BigInt('9007199254740991999999999');
+  TimeDuration.MAX = 9007199254740991999999999n;
   TimeDuration.ZERO = new TimeDuration(ZERO);
 
   var offsetIdentifierNoCapture = /(?:[+-](?:[01][0-9]|2[0-3])(?::?[0-5][0-9])?)/;
@@ -2115,16 +686,17 @@
 
   var DAY_MS = 86400000;
   var DAY_NANOS = DAY_MS * 1e6;
+  var DAY_NANOS_BI = BigInt(DAY_NANOS);
   var MINUTE_NANOS = 60e9;
   // Instant range is 100 million days (inclusive) before or after epoch.
   var MS_MAX = DAY_MS * 1e8;
   var NS_MAX = epochMsToNs(MS_MAX);
-  var NS_MIN = JSBI.unaryMinus(NS_MAX);
+  var NS_MIN = -NS_MAX;
   // PlainDateTime range is 24 hours wider (exclusive) than the Instant range on
   // both ends, to allow for valid Instant=>PlainDateTime conversion for all
   // built-in time zones (whose offsets must have a magnitude less than 24 hours).
-  var DATETIME_NS_MIN = JSBI.add(JSBI.subtract(NS_MIN, DAY_NANOS_JSBI), ONE);
-  var DATETIME_NS_MAX = JSBI.subtract(JSBI.add(NS_MAX, DAY_NANOS_JSBI), ONE);
+  var DATETIME_NS_MIN = DAY_NANOS_BI - NS_MIN + ONE;
+  var DATETIME_NS_MAX = DAY_NANOS_BI + NS_MAX - ONE;
   // The pattern of leap years in the ISO 8601 calendar repeats every 400 years.
   // The constant below is the number of nanoseconds in 400 years. It is used to
   // avoid overflows when dealing with values at the edge legacy Date's range.
@@ -3538,7 +2110,7 @@
     var possibleEpochNs = GetPossibleEpochNanoseconds(timeZone, dt);
     for (var index = 0; index < possibleEpochNs.length; index++) {
       var candidate = possibleEpochNs[index];
-      var candidateOffset = JSBI.toNumber(JSBI.subtract(utcEpochNs, candidate));
+      var candidateOffset = ToNumber(utcEpochNs - candidate);
       var roundedCandidateOffset = RoundNumberToIncrement(candidateOffset, 60e9, 'halfExpand');
       if (candidateOffset === offsetNs || matchMinute && roundedCandidateOffset === offsetNs) {
         return candidate;
@@ -3547,7 +2119,7 @@
     // the user-provided offset doesn't match any instants for this time
     // zone and date/time.
     if (offsetOpt === 'reject') {
-      var offsetStr = FormatUTCOffsetNanoseconds(offsetNs);
+      var offsetStr = FormatUTCOffsetNanoseconds(BigInt(offsetNs));
       var dtStr = ISODateTimeToString(dt, 'iso8601', 'auto');
       throw new RangeError("Offset ".concat(offsetStr, " is invalid for ").concat(dtStr, " in ").concat(timeZone));
     }
@@ -3897,17 +2469,18 @@
     }
   }
   function GetOffsetNanosecondsFor(timeZone, epochNs) {
-    var offsetMinutes = ParseTimeZoneIdentifier(timeZone).offsetMinutes;
-    if (offsetMinutes !== undefined) return offsetMinutes * 60e9;
+    var _ParseTimeZoneIdentif;
+    var offsetMinutes = (_ParseTimeZoneIdentif = ParseTimeZoneIdentifier(timeZone).offsetMinutes) !== null && _ParseTimeZoneIdentif !== void 0 ? _ParseTimeZoneIdentif : 0;
+    if (offsetMinutes !== undefined) return offsetMinutes * 60000000000; //60*1e9
     return GetNamedTimeZoneOffsetNanoseconds(timeZone, epochNs);
   }
   function FormatUTCOffsetNanoseconds(offsetNs) {
-    var sign = offsetNs < 0 ? '-' : '+';
-    var absoluteNs = Math.abs(offsetNs);
-    var hour = Math.floor(absoluteNs / 3600e9);
-    var minute = Math.floor(absoluteNs / 60e9) % 60;
-    var second = Math.floor(absoluteNs / 1e9) % 60;
-    var subSecondNs = absoluteNs % 1e9;
+    var sign = offsetNs < 0n ? '-' : '+';
+    var absoluteNs = offsetNs < 0n ? -offsetNs : offsetNs;
+    var hour = Number(absoluteNs / 3600000000000n);
+    var minute = Number(absoluteNs / 60000000000n) % 60;
+    var second = Number(absoluteNs / 1000000000n) % 60;
+    var subSecondNs = Number(absoluteNs % 1000000000n);
     var precision = second === 0 && subSecondNs === 0 ? 'minute' : 'auto';
     var timeString = FormatTimeString(hour, minute, second, subSecondNs, precision);
     return "".concat(sign).concat(timeString);
@@ -3952,10 +2525,10 @@
     }
     if (disambiguation === 'reject') throw new RangeError('multiple instants found');
     var utcns = GetUTCEpochNanoseconds(isoDateTime);
-    var dayBefore = JSBI.subtract(utcns, DAY_NANOS_JSBI);
+    var dayBefore = utcns - DAY_NANOS_BI;
     ValidateEpochNanoseconds(dayBefore);
     var offsetBefore = GetOffsetNanosecondsFor(timeZone, dayBefore);
-    var dayAfter = JSBI.add(utcns, DAY_NANOS_JSBI);
+    var dayAfter = DAY_NANOS_BI + utcns;
     ValidateEpochNanoseconds(dayAfter);
     var offsetAfter = GetOffsetNanosecondsFor(timeZone, dayAfter);
     var nanoseconds = offsetAfter - offsetBefore;
@@ -4008,7 +2581,7 @@
     // guaranteed to be before the transition
     assert(!IsOffsetTimeZoneIdentifier(timeZone), 'should only be reached with named time zone');
     var utcns = GetUTCEpochNanoseconds(isoDateTime);
-    var dayBefore = JSBI.subtract(utcns, DAY_NANOS_JSBI);
+    var dayBefore = utcns - DAY_NANOS_BI;
     ValidateEpochNanoseconds(dayBefore);
     return castExists(GetNamedTimeZoneNextTransition(timeZone, dayBefore));
   }
@@ -4377,11 +2950,11 @@
   function GetUTCEpochNanoseconds(isoDateTime) {
     var ms = GetUTCEpochMilliseconds(isoDateTime);
     var subMs = isoDateTime.time.microsecond * 1e3 + isoDateTime.time.nanosecond;
-    return JSBI.add(epochMsToNs(ms), JSBI.BigInt(subMs));
+    return epochMsToNs(ms) + BigInt(subMs);
   }
   function GetISOPartsFromEpoch(epochNanoseconds) {
     var epochMilliseconds = epochNsToMs(epochNanoseconds, 'trunc');
-    var nanos = JSBI.toNumber(JSBI.remainder(epochNanoseconds, MILLION));
+    var nanos = Number(epochNanoseconds % BigInt(MILLION));
     if (nanos < 0) {
       nanos += 1e6;
       epochMilliseconds -= 1;
@@ -4497,7 +3070,7 @@
     var lookahead = now + DAY_MS * 366 * 3;
     if (epochMilliseconds > lookahead) {
       var prevBeforeLookahead = GetNamedTimeZonePreviousTransition(id, epochMsToNs(lookahead));
-      if (prevBeforeLookahead === null || JSBI.lessThan(prevBeforeLookahead, epochMsToNs(now))) {
+      if (prevBeforeLookahead === null || prevBeforeLookahead < epochMsToNs(now)) {
         return prevBeforeLookahead;
       }
     }
@@ -4581,10 +3154,10 @@
     // Get the offset of one day before and after the requested calendar date and
     // clock time, avoiding overflows if near the edge of the Instant range.
     var ns = GetUTCEpochNanoseconds(isoDateTime);
-    var nsEarlier = JSBI.subtract(ns, DAY_NANOS_JSBI);
-    if (JSBI.lessThan(nsEarlier, NS_MIN)) nsEarlier = ns;
-    var nsLater = JSBI.add(ns, DAY_NANOS_JSBI);
-    if (JSBI.greaterThan(nsLater, NS_MAX)) nsLater = ns;
+    var nsEarlier = ns - BigInt(DAY_NANOS);
+    if (nsEarlier < NS_MIN) nsEarlier = ns;
+    var nsLater = ns + BigInt(DAY_NANOS);
+    if (nsLater > NS_MAX) nsLater = ns;
     var earlierOffsetNs = GetNamedTimeZoneOffsetNanoseconds(id, nsEarlier);
     var laterOffsetNs = GetNamedTimeZoneOffsetNanoseconds(id, nsLater);
     // If before and after offsets are the same, then we assume there was no
@@ -4594,7 +3167,7 @@
     // offsets to see which one(s) will yield a matching exact time.
     var found = earlierOffsetNs === laterOffsetNs ? [earlierOffsetNs] : [earlierOffsetNs, laterOffsetNs];
     var candidates = found.map(function (offsetNanoseconds) {
-      var epochNanoseconds = JSBI.subtract(ns, JSBI.BigInt(offsetNanoseconds));
+      var epochNanoseconds = ns - BigInt(offsetNanoseconds);
       var parts = GetNamedTimeZoneDateTimeParts(id, epochNanoseconds);
       if (CompareISODateTime(isoDateTime, parts) !== 0) return undefined;
       ValidateEpochNanoseconds(epochNanoseconds);
@@ -4828,7 +3401,7 @@
   }
   function RejectDateTimeRange(isoDateTime) {
     var ns = GetUTCEpochNanoseconds(isoDateTime);
-    if (JSBI.lessThan(ns, DATETIME_NS_MIN) || JSBI.greaterThan(ns, DATETIME_NS_MAX)) {
+    if (ns < DATETIME_NS_MIN || ns > DATETIME_NS_MAX) {
       // Because PlainDateTime's range is wider than Instant's range, the line
       // below will always throw. Calling `ValidateEpochNanoseconds` avoids
       // repeating the same error message twice.
@@ -4838,13 +3411,13 @@
   // Same as above, but throws a different, non-user-facing error
   function AssertISODateTimeWithinLimits(isoDateTime) {
     var ns = GetUTCEpochNanoseconds(isoDateTime);
-    assert(JSBI.greaterThanOrEqual(ns, DATETIME_NS_MIN) && JSBI.lessThanOrEqual(ns, DATETIME_NS_MAX), "".concat(ISODateTimeToString(isoDateTime, 'iso8601', 'auto'), " is outside the representable range"));
+    assert(ns >= DATETIME_NS_MIN && ns <= DATETIME_NS_MAX, "".concat(ISODateTimeToString(isoDateTime, 'iso8601', 'auto'), " is outside the representable range"));
   }
   // In the spec, IsValidEpochNanoseconds returns a boolean and call sites are
   // responsible for throwing. In the polyfill, ValidateEpochNanoseconds takes its
   // place so that we can DRY the throwing code.
   function ValidateEpochNanoseconds(epochNanoseconds) {
-    if (JSBI.lessThan(epochNanoseconds, NS_MIN) || JSBI.greaterThan(epochNanoseconds, NS_MAX)) {
+    if (epochNanoseconds < NS_MIN || epochNanoseconds > NS_MAX) {
       throw new RangeError('date/time value is outside of supported range');
     }
   }
@@ -5070,12 +3643,12 @@
     return CombineDateAndTimeDuration(dateDifference, timeDuration);
   }
   function DifferenceZonedDateTime(ns1, ns2, timeZone, calendar, largestUnit) {
-    var nsDiff = JSBI.subtract(ns2, ns1);
-    if (JSBI.equal(nsDiff, ZERO)) return {
+    var nsDiff = ns2 - ns1;
+    if (nsDiff === ZERO) return {
       date: ZeroDateDuration(),
       time: TimeDuration.ZERO
     };
-    var sign = JSBI.lessThan(nsDiff, ZERO) ? -1 : 1;
+    var sign = nsDiff < 0n ? -1 : 1;
     // Convert start/end instants to datetimes
     var isoDtStart = GetISODateTimeFor(timeZone, ns1);
     var isoDtEnd = GetISODateTimeFor(timeZone, ns2);
@@ -5202,12 +3775,12 @@
     }
     // Round the smallestUnit within the epoch-nanosecond span
     if (sign === 1) {
-      assert(JSBI.lessThanOrEqual(startEpochNs, destEpochNs) && JSBI.lessThanOrEqual(destEpochNs, endEpochNs), "".concat(unit, " was 0 days long"));
+      assert(startEpochNs <= destEpochNs && destEpochNs <= endEpochNs, "".concat(unit, " was 0 days long"));
     }
     if (sign === -1) {
-      assert(JSBI.lessThanOrEqual(endEpochNs, destEpochNs) && JSBI.lessThanOrEqual(destEpochNs, startEpochNs), "".concat(unit, " was 0 days long"));
+      assert(endEpochNs <= destEpochNs && destEpochNs <= startEpochNs, "".concat(unit, " was 0 days long"));
     }
-    assert(!JSBI.equal(endEpochNs, startEpochNs), 'startEpochNs must ≠ endEpochNs');
+    assert(endEpochNs !== startEpochNs, 'startEpochNs must ≠ endEpochNs');
     var numerator = TimeDuration.fromEpochNsDiff(destEpochNs, startEpochNs);
     var denominator = TimeDuration.fromEpochNsDiff(endEpochNs, startEpochNs);
     var unsignedRoundingMode = GetUnsignedRoundingMode(roundingMode, sign < 0 ? 'negative' : 'positive');
@@ -5217,7 +3790,7 @@
     var roundedUnit = numerator.isZero() ? Math.abs(r1) : !numerator.cmp(denominator) // equal?
     ? Math.abs(r2) : ApplyUnsignedRoundingMode(Math.abs(r1), Math.abs(r2), cmp, even, unsignedRoundingMode);
     // Trick to minimize rounding error, due to the lack of fma() in JS
-    var fakeNumerator = new TimeDuration(JSBI.add(JSBI.multiply(denominator.totalNs, JSBI.BigInt(r1)), JSBI.multiply(numerator.totalNs, JSBI.BigInt(increment * sign))));
+    var fakeNumerator = new TimeDuration(BigInt(denominator.totalNs) * BigInt(r1) + BigInt(numerator.totalNs) * BigInt(increment * sign));
     var total = fakeNumerator.fdiv(denominator.totalNs);
     assert(Math.abs(r1) <= Math.abs(total) && Math.abs(total) <= Math.abs(r2), 'r1 ≤ total ≤ r2');
     // Determine whether expanded or contracted
@@ -5256,7 +3829,7 @@
     if (daySpan.sign() !== sign) throw new RangeError('time zone returned inconsistent Instants');
     // Compute time parts of the duration to nanoseconds and round
     // Result could be negative
-    var unitIncrement = JSBI.BigInt(NS_PER_TIME_UNIT[unit] * increment);
+    var unitIncrement = BigInt(NS_PER_TIME_UNIT[unit] * increment);
     var roundedTimeDuration = duration.time.round(unitIncrement, roundingMode);
     // Does the rounded time exceed the time-in-day?
     var beyondDaySpan = roundedTimeDuration.subtract(daySpan);
@@ -5288,22 +3861,22 @@
     var duration = durationParam;
     var timeDuration = duration.time.add24HourDays(duration.date.days);
     // Convert to nanoseconds and round
-    var roundedTime = timeDuration.round(JSBI.BigInt(increment * NS_PER_TIME_UNIT[smallestUnit]), roundingMode);
+    var roundedTime = timeDuration.round(BigInt(increment * NS_PER_TIME_UNIT[smallestUnit]), roundingMode);
     var diffTime = roundedTime.subtract(timeDuration);
     // Determine if whole days expanded
     var _timeDuration$divmod = timeDuration.divmod(DAY_NANOS),
       wholeDays = _timeDuration$divmod.quotient;
     var _roundedTime$divmod = roundedTime.divmod(DAY_NANOS),
       roundedWholeDays = _roundedTime$divmod.quotient;
-    var didExpandDays = Math.sign(roundedWholeDays - wholeDays) === timeDuration.sign();
+    var didExpandDays = Math.sign(Number(roundedWholeDays - wholeDays)) === timeDuration.sign();
     var nudgedEpochNs = diffTime.addToEpochNs(destEpochNs);
-    var days = 0;
+    var days = 0n;
     var remainder = roundedTime;
     if (TemporalUnitCategory(largestUnit) === 'date') {
       days = roundedWholeDays;
-      remainder = roundedTime.add(TimeDuration.fromComponents(-roundedWholeDays * 24, 0, 0, 0, 0, 0));
+      remainder = roundedTime.add(TimeDuration.fromComponents(-Number(roundedWholeDays * 24n), 0, 0, 0, 0, 0));
     }
-    var dateDuration = AdjustDateDurationRecord(duration.date, days);
+    var dateDuration = AdjustDateDurationRecord(duration.date, Number(days));
     return {
       duration: {
         date: dateDuration,
@@ -5460,7 +4033,7 @@
     RejectDateTimeRange(isoDateTime1);
     RejectDateTimeRange(isoDateTime2);
     var duration = DifferenceISODateTime(isoDateTime1, isoDateTime2, calendar, unit);
-    if (unit === 'nanosecond') return JSBI.toNumber(duration.time.totalNs);
+    if (unit === 'nanosecond') return duration.time.totalNs;
     var destEpochNs = GetUTCEpochNanoseconds(isoDateTime2);
     return TotalRelativeDuration(duration, destEpochNs, isoDateTime1, null, calendar, unit);
   }
@@ -5651,7 +4224,7 @@
       if (!TimeZoneEquals(timeZone, GetSlot(other, TIME_ZONE))) {
         throw new RangeError("When calculating difference between time zones, largestUnit must be 'hours' " + 'or smaller because day lengths can vary between time zones due to DST or time zone offset changes.');
       }
-      if (JSBI.equal(ns1, ns2)) return new Duration();
+      if (ns1 === ns2) return new Duration();
       var _duration = DifferenceZonedDateTimeWithRounding(ns1, ns2, timeZone, calendar, settings.largestUnit, settings.roundingIncrement, settings.smallestUnit, settings.roundingMode);
       result = TemporalDurationFromInternal(_duration, 'hour');
     }
@@ -5812,28 +4385,28 @@
   }
   // ts-prune-ignore-next TODO: remove this after tests are converted to TS
   function RoundNumberToIncrementAsIfPositive(quantityParam, incrementParam, mode) {
-    var quantity = ensureJSBI(quantityParam);
-    var increment = ensureJSBI(incrementParam);
-    var quotient = JSBI.divide(quantity, increment);
-    var remainder = JSBI.remainder(quantity, increment);
+    var quantity = quantityParam;
+    var increment = incrementParam;
+    var quotient = quantity / increment;
+    var remainder = quantity % increment;
     var unsignedRoundingMode = GetUnsignedRoundingMode(mode, 'positive');
     var r1, r2;
-    if (JSBI.lessThan(quantity, ZERO)) {
-      r1 = JSBI.subtract(quotient, ONE);
+    if (quantity < 0) {
+      r1 = quotient - ONE;
       r2 = quotient;
     } else {
       r1 = quotient;
-      r2 = JSBI.add(quotient, ONE);
+      r2 = quotient + ONE;
     }
     // Similar to the comparison in RoundNumberToIncrement, but multiplied by an
     // extra sign to make sure we treat it as positive
-    var cmp = compare(abs(JSBI.multiply(remainder, TWO)), increment) * (JSBI.lessThan(quantity, ZERO) ? -1 : 1) + 0;
-    var rounded = JSBI.equal(remainder, ZERO) ? quotient : ApplyUnsignedRoundingMode(r1, r2, cmp, isEven(r1), unsignedRoundingMode);
-    return JSBI.multiply(rounded, increment);
+    var cmp = compare(abs(remainder * TWO), increment) * (quantity < 0 ? -1 : 1) + 0;
+    var rounded = remainder === ZERO ? quotient : ApplyUnsignedRoundingMode(r1, r2, cmp, isEven(r1), unsignedRoundingMode);
+    return rounded * increment;
   }
   function RoundTemporalInstant(epochNs, increment, unit, roundingMode) {
     var incrementNs = NS_PER_TIME_UNIT[unit] * increment;
-    return RoundNumberToIncrementAsIfPositive(epochNs, JSBI.BigInt(incrementNs), roundingMode);
+    return RoundNumberToIncrementAsIfPositive(epochNs, BigInt(incrementNs), roundingMode);
   }
   function RoundISODateTime(isoDateTime, increment, unit, roundingMode) {
     AssertISODateTimeWithinLimits(isoDateTime);
@@ -5905,11 +4478,11 @@
   function RoundTimeDuration(timeDuration, increment, unit, roundingMode) {
     // unit must be a time unit
     var divisor = NS_PER_TIME_UNIT[unit];
-    return timeDuration.round(JSBI.BigInt(divisor * increment), roundingMode);
+    return timeDuration.round(BigInt(divisor * increment), roundingMode);
   }
   function TotalTimeDuration(timeDuration, unit) {
     var divisor = NS_PER_TIME_UNIT[unit];
-    return timeDuration.fdiv(JSBI.BigInt(divisor));
+    return timeDuration.fdiv(BigInt(divisor));
   }
   function CompareISODate(isoDate1, isoDate2) {
     if (isoDate1.year !== isoDate2.year) return ComparisonResult(isoDate1.year - isoDate2.year);
@@ -5932,64 +4505,37 @@
     return CompareTimeRecord(isoDateTime1.time, isoDateTime2.time);
   }
   function ToBigIntExternal(arg) {
-    var jsbiBI = ToBigInt(arg);
+    var jsbiBI = BigInt(arg);
     if (typeof globalThis.BigInt !== 'undefined') return globalThis.BigInt(jsbiBI.toString(10));
     return jsbiBI;
   }
   // rounding modes supported: floor, ceil, trunc
   function epochNsToMs(epochNanosecondsParam, mode) {
-    var epochNanoseconds = ensureJSBI(epochNanosecondsParam);
+    var epochNanoseconds = epochNanosecondsParam;
     var _divmod = divmod(epochNanoseconds, MILLION),
       quotient = _divmod.quotient,
       remainder = _divmod.remainder;
-    var epochMilliseconds = JSBI.toNumber(quotient);
-    if (mode === 'floor' && JSBI.toNumber(remainder) < 0) epochMilliseconds -= 1;
-    if (mode === 'ceil' && JSBI.toNumber(remainder) > 0) epochMilliseconds += 1;
+    var epochMilliseconds = ToNumber(quotient);
+    if (mode === 'floor' && remainder < 0) epochMilliseconds -= 1;
+    if (mode === 'ceil' && remainder > 0) epochMilliseconds += 1;
     return epochMilliseconds;
   }
   function epochMsToNs(epochMilliseconds) {
     if (!Number.isInteger(epochMilliseconds)) throw new RangeError('epoch milliseconds must be an integer');
-    return JSBI.multiply(JSBI.BigInt(epochMilliseconds), MILLION);
-  }
-  function ToBigInt(arg) {
-    var prim = arg;
-    if (_typeof(arg) === 'object') {
-      var toPrimFn = arg[Symbol.toPrimitive];
-      if (toPrimFn && typeof toPrimFn === 'function') {
-        prim = toPrimFn.call(arg, 'number');
-      }
-    }
-    // The AO ToBigInt throws on numbers because it does not allow implicit
-    // conversion between number and bigint (unlike the bigint constructor).
-    if (typeof prim === 'number') {
-      throw new TypeError('cannot convert number to bigint');
-    }
-    if (typeof prim === 'bigint') {
-      // JSBI doesn't know anything about the bigint type, and intentionally
-      // assumes it doesn't exist. Passing one to the BigInt function will throw
-      // an error.
-      return JSBI.BigInt(prim.toString(10));
-    }
-    // JSBI will properly coerce types into a BigInt the same as the native BigInt
-    // constructor will, with the exception of native bigint which is handled
-    // above.
-    // As of 2023-04-07, the only runtime type that neither of those can handle is
-    // 'symbol', and both native bigint and the JSBI.BigInt function will throw an
-    // error if they are given a Symbol.
-    return JSBI.BigInt(prim);
+    return BigInt(epochMilliseconds) * MILLION;
   }
   // Note: This method returns values with bogus nanoseconds based on the previous iteration's
   // milliseconds. That way there is a guarantee that the full nanoseconds are always going to be
   // increasing at least and that the microsecond and nanosecond fields are likely to be non-zero.
   var SystemUTCEpochNanoSeconds = function () {
-    var ns = JSBI.BigInt(Date.now() % 1e6);
+    var ns = BigInt(Date.now() % 1e6);
     return function () {
       var now = Date.now();
-      var ms = JSBI.BigInt(now);
-      var result = JSBI.add(epochMsToNs(now), ns);
-      ns = JSBI.remainder(ms, MILLION);
-      if (JSBI.greaterThan(result, NS_MAX)) return NS_MAX;
-      if (JSBI.lessThan(result, NS_MIN)) return NS_MIN;
+      var ms = BigInt(now);
+      var result = epochMsToNs(now) + ns;
+      ns = ms % MILLION;
+      if (result > NS_MAX) return NS_MAX;
+      if (result < NS_MIN) return NS_MIN;
       return result;
     };
   }();
@@ -9710,7 +8256,7 @@
       if (arguments.length < 1) {
         throw new TypeError('missing argument: epochNanoseconds is required');
       }
-      var ns = ToBigInt(epochNanoseconds);
+      var ns = BigInt(epochNanoseconds);
       CreateTemporalInstantSlots(this, ns);
     }
     _createClass(Instant, [{
@@ -9724,7 +8270,7 @@
       key: "epochNanoseconds",
       get: function get() {
         CheckReceiver(this, IsTemporalInstant);
-        return ToBigIntExternal(JSBI.BigInt(GetSlot(this, EPOCHNANOSECONDS)));
+        return ToBigIntExternal(BigInt(GetSlot(this, EPOCHNANOSECONDS)));
       }
     }, {
       key: "add",
@@ -9781,7 +8327,7 @@
         var other = ToTemporalInstant(otherParam);
         var one = GetSlot(this, EPOCHNANOSECONDS);
         var two = GetSlot(other, EPOCHNANOSECONDS);
-        return JSBI.equal(JSBI.BigInt(one), JSBI.BigInt(two));
+        return BigInt(one) === BigInt(two);
       }
     }, {
       key: "toString",
@@ -9839,7 +8385,7 @@
     }, {
       key: "fromEpochNanoseconds",
       value: function fromEpochNanoseconds(epochNanosecondsParam) {
-        var epochNanoseconds = ToBigInt(epochNanosecondsParam);
+        var epochNanoseconds = BigInt(epochNanosecondsParam);
         return CreateTemporalInstant(epochNanoseconds);
       }
     }, {
@@ -9854,8 +8400,8 @@
         var two = ToTemporalInstant(twoParam);
         var oneNs = GetSlot(one, EPOCHNANOSECONDS);
         var twoNs = GetSlot(two, EPOCHNANOSECONDS);
-        if (JSBI.lessThan(oneNs, twoNs)) return -1;
-        if (JSBI.greaterThan(oneNs, twoNs)) return 1;
+        if (oneNs < twoNs) return -1;
+        if (oneNs > twoNs) return 1;
         return 0;
       }
     }]);
@@ -10711,7 +9257,7 @@
           var _internalDuration$tim = internalDuration.time.divmod(DAY_NANOS),
             quotient = _internalDuration$tim.quotient,
             remainder = _internalDuration$tim.remainder;
-          var days = internalDuration.date.days + quotient + TotalTimeDuration(remainder, 'day');
+          var days = internalDuration.date.days + ToNumber(quotient) + TotalTimeDuration(remainder, 'day');
           days = RoundNumberToIncrement(days, roundingIncrement, roundingMode);
           var _dateDuration = {
             years: 0,
@@ -10754,7 +9300,7 @@
           var targetDate = CalendarDateAdd(_calendar2, isoRelativeToDate, dateDuration, 'constrain');
           var isoDateTime = CombineISODateAndTimeRecord(isoRelativeToDate, MidnightTimeRecord());
           var targetDateTime = CombineISODateAndTimeRecord(targetDate, targetTime);
-          return DifferencePlainDateTimeWithTotal(isoDateTime, targetDateTime, _calendar2, unit);
+          return ToNumber(DifferencePlainDateTimeWithTotal(isoDateTime, targetDateTime, _calendar2, unit));
         }
         // No reference date to calculate difference relative to
         var largestUnit = DefaultTemporalLargestUnit(this);
@@ -10843,7 +9389,7 @@
           var epochNs = GetSlot(zonedRelativeTo, EPOCHNANOSECONDS);
           var after1 = AddZonedDateTime(epochNs, timeZone, calendar, duration1);
           var after2 = AddZonedDateTime(epochNs, timeZone, calendar, duration2);
-          return ComparisonResult(JSBI.toNumber(JSBI.subtract(after1, after2)));
+          return ComparisonResult(Number(after1 - after2));
         }
         var d1 = duration1.date.days;
         var d2 = duration2.date.days;
@@ -11414,7 +9960,7 @@
       if (arguments.length < 1) {
         throw new TypeError('missing argument: epochNanoseconds is required');
       }
-      var epochNanoseconds = ToBigInt(epochNanosecondsParam);
+      var epochNanoseconds = epochNanosecondsParam;
       var timeZone = RequireString(timeZoneParam);
       var _ES$ParseTimeZoneIden = ParseTimeZoneIdentifier(timeZone),
         tzName = _ES$ParseTimeZoneIden.tzName,
@@ -11579,7 +10125,7 @@
       get: function get() {
         CheckReceiver(this, IsTemporalZonedDateTime);
         var offsetNs = GetOffsetNanosecondsFor(GetSlot(this, TIME_ZONE), GetSlot(this, EPOCHNANOSECONDS));
-        return FormatUTCOffsetNanoseconds(offsetNs);
+        return FormatUTCOffsetNanoseconds(BigInt(offsetNs));
       }
     }, {
       key: "offsetNanoseconds",
@@ -11602,7 +10148,7 @@
         var offsetNs = GetOffsetNanosecondsFor(timeZone, epochNs);
         var isoDateTime = dateTime(this);
         var fields = _objectSpread2(_objectSpread2(_objectSpread2({}, ISODateToFields(calendar, isoDateTime.isoDate)), isoDateTime.time), {}, {
-          offset: FormatUTCOffsetNanoseconds(offsetNs)
+          offset: FormatUTCOffsetNanoseconds(BigInt(offsetNs))
         });
         var partialZonedDateTime = PrepareCalendarFields(calendar, temporalZonedDateTimeLike, ['year', 'month', 'monthCode', 'day'], ['hour', 'minute', 'second', 'millisecond', 'microsecond', 'nanosecond', 'offset'], 'partial');
         fields = CalendarMergeFields(calendar, fields, partialZonedDateTime);
@@ -11710,10 +10256,10 @@
           var dateStart = iso.isoDate;
           var dateEnd = BalanceISODate(dateStart.year, dateStart.month, dateStart.day + 1);
           var startNs = GetStartOfDay(timeZone, dateStart);
-          assert(JSBI.greaterThanOrEqual(thisNs, startNs), 'cannot produce an instant during a day that occurs before start-of-day instant');
+          assert(thisNs >= startNs, 'cannot produce an instant during a day that occurs before start-of-day instant');
           var endNs = GetStartOfDay(timeZone, dateEnd);
-          assert(JSBI.lessThan(thisNs, endNs), 'cannot produce an instant during a day that occurs on or after end-of-day instant');
-          var dayLengthNs = JSBI.subtract(endNs, startNs);
+          assert(thisNs < endNs, 'cannot produce an instant during a day that occurs on or after end-of-day instant');
+          var dayLengthNs = endNs - startNs;
           var dayProgressNs = TimeDuration.fromEpochNsDiff(thisNs, startNs);
           var roundedDayNs = dayProgressNs.round(dayLengthNs, roundingMode);
           epochNanoseconds = roundedDayNs.addToEpochNs(startNs);
@@ -11738,7 +10284,7 @@
         var other = ToTemporalZonedDateTime(otherParam);
         var one = GetSlot(this, EPOCHNANOSECONDS);
         var two = GetSlot(other, EPOCHNANOSECONDS);
-        if (!JSBI.equal(JSBI.BigInt(one), JSBI.BigInt(two))) return false;
+        if (one !== two) return false;
         if (!TimeZoneEquals(GetSlot(this, TIME_ZONE), GetSlot(other, TIME_ZONE))) return false;
         return CalendarEquals(GetSlot(this, CALENDAR), GetSlot(other, CALENDAR));
       }
@@ -11871,8 +10417,8 @@
         var two = ToTemporalZonedDateTime(twoParam);
         var ns1 = GetSlot(one, EPOCHNANOSECONDS);
         var ns2 = GetSlot(two, EPOCHNANOSECONDS);
-        if (JSBI.lessThan(JSBI.BigInt(ns1), JSBI.BigInt(ns2))) return -1;
-        if (JSBI.greaterThan(JSBI.BigInt(ns1), JSBI.BigInt(ns2))) return 1;
+        if (BigInt(ns1) < BigInt(ns2)) return -1;
+        if (BigInt(ns1) > BigInt(ns2)) return 1;
         return 0;
       }
     }]);

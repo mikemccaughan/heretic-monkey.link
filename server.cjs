@@ -29,7 +29,16 @@ app.use(express.static('./', {
     },
 
 }));
+app.get('/temporal', (req, res) => {
+    res.setHeader('Content-Type', 'text/javascript');
+    res.sendFile(`${__dirname}/js-temporal/polyfill/dist/index.esm.js`);
+});
+app.get('/index.esm.js.map', (req, res) => {
+    res.setHeader('Content-Type', 'text/javascript');
+    res.sendFile(`${__dirname}/js-temporal/polyfill/dist/index.esm.js.map`);
+});
 app.listen(port, () => {
+
     // eslint-disable-next-line no-undef
     console.log(`http://localhost:${port}/`);
 });

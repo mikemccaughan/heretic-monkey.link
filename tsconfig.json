@@ -18,6 +18,7 @@
         "strictTemplates": true
     },
     "exclude": [
-        "publish"
+        "publish",
+        "js-temporal/polyfill/dist/dist"
     ]
 }
