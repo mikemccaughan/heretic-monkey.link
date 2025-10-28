@@ -521,8 +521,11 @@ function ToNumber(value) {
     // changes adds zero benefit to Temporal and brings in a lot of extra code. So
     // we'll leave ToNumber as-is.
     // See https://github.com/ljharb/es-abstract/blob/main/2022/ToNumber.js
-    if (typeof value === 'bigint')
-        throw new TypeError('Cannot convert BigInt to number');
+    if (typeof value === 'bigint') {
+        if (value > BigInt(Number.MAX_SAFE_INTEGER) || value < BigInt(Number.MIN_SAFE_INTEGER)) {
+            throw new TypeError('Cannot convert BigInt to number');
+        }
+    }
     return Number(value);
 }
 function IsIntegralNumber(argument) {
@@ -576,6 +579,9 @@ function ToZeroPaddedDecimalString(n, minLength) {
     {
         if (!IsIntegralNumber(n) || n < 0) {
             throw new RangeError('Assertion failed: `${n}` must be a non-negative integer');
+        }
+        if (!IsIntegralNumber(minLength) || minLength < 1) {
+            throw new RangeError('Assertion failed: `${minLength}` must be a positive integer');
         }
     }
     const s = String(n);
@@ -2942,7 +2948,13 @@ function RejectDateTimeRange(isoDateTime) {
 // Same as above, but throws a different, non-user-facing error
 function AssertISODateTimeWithinLimits(isoDateTime) {
     const ns = GetUTCEpochNanoseconds(isoDateTime);
-    assert(ns >= DATETIME_NS_MIN && ns <= DATETIME_NS_MAX, `${ISODateTimeToString(isoDateTime, 'iso8601', 'auto')} is outside the representable range`);
+    let assetError = `${ISODateTimeToString(isoDateTime, 'iso8601', 'auto')} is outside the representable range`;
+    if (ns < DATETIME_NS_MIN || ns > DATETIME_NS_MAX) {
+        const dtMinStr = CreateTemporalZonedDateTime(DATETIME_NS_MIN, 'UTC', 'iso8601').toString();
+        const dtMaxStr = CreateTemporalZonedDateTime(DATETIME_NS_MAX, 'UTC', 'iso8601').toString();
+        assetError += ` (${dtMinStr} to ${dtMaxStr})`;
+    }
+    assert(ns >= DATETIME_NS_MIN && ns <= DATETIME_NS_MAX, assetError);
 }
 // In the spec, IsValidEpochNanoseconds returns a boolean and call sites are
 // responsible for throwing. In the polyfill, ValidateEpochNanoseconds takes its
@@ -3475,8 +3487,8 @@ function RoundRelativeDuration(durationParam, destEpochNs, isoDateTime, timeZone
     // don't balance up into months
     if (nudgeResult.didExpandCalendarUnit && smallestUnit !== 'week') {
         duration = BubbleRelativeDuration(sign, duration, nudgeResult.nudgedEpochNs, // The destEpochNs after expanding/contracting
-        isoDateTime, timeZone, calendar, largestUnitParam, // where to STOP bubbling
-        LargerOfTwoTemporalUnits(smallestUnit, 'day') // where to START bubbling-up from
+            isoDateTime, timeZone, calendar, largestUnitParam, // where to STOP bubbling
+            LargerOfTwoTemporalUnits(smallestUnit, 'day') // where to START bubbling-up from
         );
     }
     return duration;
@@ -4694,10 +4706,10 @@ class HelperBase {
      * - no eras
      * - non-lunisolar calendar (no leap months)
      * */
-    adjustCalendarDate(calendarDateParam, cache = undefined, overflow = 'constrain', 
-    // This param is only used by derived classes
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fromLegacyDate = false) {
+    adjustCalendarDate(calendarDateParam, cache = undefined, overflow = 'constrain',
+        // This param is only used by derived classes
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        fromLegacyDate = false) {
         if (this.calendarType === 'lunisolar')
             throw new RangeError('Override required for lunisolar calendars');
         let calendarDate = calendarDateParam;
@@ -8213,7 +8225,7 @@ class ZonedDateTime {
         const overflow = GetTemporalOverflowOption(resolvedOptions);
         const newDateTime = InterpretTemporalDateTimeFields(calendar, fields, overflow);
         const newOffsetNs = ParseDateTimeUTCOffset(fields.offset);
-        const epochNanoseconds = InterpretISODateTimeOffset(newDateTime.isoDate, newDateTime.time, 'option', newOffsetNs, timeZone, disambiguation, offset, 
+        const epochNanoseconds = InterpretISODateTimeOffset(newDateTime.isoDate, newDateTime.time, 'option', newOffsetNs, timeZone, disambiguation, offset,
         /* matchMinute = */ false);
         return CreateTemporalZonedDateTime(epochNanoseconds, timeZone, calendar);
     }
@@ -8313,7 +8325,7 @@ class ZonedDateTime {
             // new date/time values. If DST disambiguation is required, the `compatible`
             // disambiguation algorithm will be used.
             const offsetNs = GetOffsetNanosecondsFor(timeZone, thisNs);
-            epochNanoseconds = InterpretISODateTimeOffset(roundedDateTime.isoDate, roundedDateTime.time, 'option', offsetNs, timeZone, 'compatible', 'prefer', 
+            epochNanoseconds = InterpretISODateTimeOffset(roundedDateTime.isoDate, roundedDateTime.time, 'option', offsetNs, timeZone, 'compatible', 'prefer',
             /* matchMinute = */ false);
         }
         return CreateTemporalZonedDateTime(epochNanoseconds, timeZone, GetSlot(this, CALENDAR));
