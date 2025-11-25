@@ -37,7 +37,7 @@
     "@vitejs/plugin-basic-ssl": "^2.1.0",
     "@yarnpkg/pnpify": "^4.1.5",
     "@yarnpkg/sdks": "^3.2.2",
-    "body-parser": "^2.2.0",
+    "body-parser": "^2.2.1",
     "brace-expansion": "^4.0.1",
     "braces": "^3.0.3",
     "cacache": "^20.0.0",
