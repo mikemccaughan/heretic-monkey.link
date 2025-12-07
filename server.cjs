@@ -5,8 +5,6 @@ const port = 4321;
 app.use(express.static('./', {
     extensions: ['js','mjs'],
     setHeaders: function setHeaders(res, path) {
-        // eslint-disable-next-line no-undef
-        console.log(path);
         if (path.includes('.zip')) {
             const zipPath = path.substring(path.indexOf('.zip') + 4);
             setHeaders(res, zipPath);
