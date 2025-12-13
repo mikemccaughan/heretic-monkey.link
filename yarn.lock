@@ -1121,12 +1121,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^24.10.2":
-  version: 24.10.2
-  resolution: "@types/node@npm:24.10.2"
+"@types/node@npm:^25.0.1":
+  version: 25.0.1
+  resolution: "@types/node@npm:25.0.1"
   dependencies:
     undici-types: "npm:~7.16.0"
-  checksum: 10/75b34e33087dc707aa76723f7269cd66acd2fae4272d127544ad20f295e7537dbd1e4a4405717b3093aeae2ff8ae35283fdec826a4f593273e326bb3deae588d
+  checksum: 10/a00ac3fc23fb94a06c23f4c9e422ad8f911cb31e4a51e72b7dc7349565b2142df6231f45ebdc4f856e1519f661d8b13074f05855f4b68ce050ac81173dbcbe0f
   languageName: node
   linkType: hard
 
@@ -2917,7 +2917,7 @@ __metadata:
     "@types/ejs": "npm:^3"
     "@types/express": "npm:^5.0.6"
     "@types/micromatch": "npm:^4"
-    "@types/node": "npm:^24.10.2"
+    "@types/node": "npm:^25.0.1"
     "@types/serve-static": "npm:^2.2.0"
     "@types/ws": "npm:^8.18.1"
     "@typescript-eslint/typescript-estree": "npm:^8.49.0"

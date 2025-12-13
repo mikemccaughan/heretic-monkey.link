@@ -15,7 +15,7 @@
   "scripts": {
     "start": "yarn node server.cjs",
     "build:yarn": "yarn set version latest",
-    "build:prebuild": "yarn dlx npm-check-updates -u && yarn install",
+    "build:prebuild": "yarn dlx npm-check-updates -u  -x \"@types/node@npm:25.0.1\" && yarn install",
     "build:directories": "rm -rf publish && mkdir -p publish && mkdir -p publish/mynsweepr-angular && mkdir -p publish/mynsweepr-hooks && mkdir -p publish/mynsweepr-react && mkdir -p publish/mynsweepr-react19",
     "build:nobuild": "yarn install && cp *.*js publish/ && cp *.html publish/ && cp *.css publish/ && cp -r hm-grid publish/hm-grid && cp -r design publish/design",
     "build:workspaces": "yarn workspaces focus --all && yarn workspaces foreach -v --all --exclude heretic-monkey.link run build",
@@ -69,7 +69,7 @@
     "@types/ejs": "^3",
     "@types/express": "^5.0.6",
     "@types/micromatch": "^4",
-    "@types/node": "^24.10.2",
+    "@types/node": "^25.0.1",
     "@types/serve-static": "^2.2.0",
     "@types/ws": "^8.18.1",
     "@typescript-eslint/typescript-estree": "^8.49.0",
