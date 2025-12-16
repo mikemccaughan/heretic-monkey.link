@@ -15,12 +15,12 @@
   "scripts": {
     "start": "yarn node server.cjs",
     "build:yarn": "yarn set version latest",
-    "build:prebuild": "yarn dlx npm-check-updates -u  -x \"@types/node@npm:25.0.1\" && yarn install",
+    "build:prebuild": "yarn dlx npm-check-updates -u  -x \"@types/node@npm:25.0.1\" && yarn config set enableImmutableInstalls false && yarn install",
     "build:directories": "rm -rf publish && mkdir -p publish && mkdir -p publish/mynsweepr-angular && mkdir -p publish/mynsweepr-hooks && mkdir -p publish/mynsweepr-react && mkdir -p publish/mynsweepr-react19",
     "build:nobuild": "yarn install && cp *.*js publish/ && cp *.html publish/ && cp *.css publish/ && cp -r hm-grid publish/hm-grid && cp -r design publish/design",
     "build:workspaces": "yarn workspaces focus --all && yarn workspaces foreach -v --all --exclude heretic-monkey.link run build",
     "build:predeploy": "bash ./build-mynsweeprs.sh",
-    "build": "yarn run build:yarn && yarn run build:prebuild && yarn run build:directories && yarn run build:nobuild && yarn run build:workspaces && yarn run build:predeploy"
+    "build": "yarn run build:yarn && yarn run build:prebuild && yarn run build:directories && yarn run build:nobuild && yarn run build:workspaces && yarn run build:predeploy && yarn config set enableImmutableInstalls true"
   },
   "repository": {
     "type": "git",
@@ -53,27 +53,27 @@
     "micromatch": "^4.0.8",
     "nanoid": "^5.1.6",
     "path-to-regexp": "^8.3.0",
-    "rollup": "^4.53.3",
-    "send": "^1.2.0",
+    "rollup": "^4.53.5",
+    "send": "^1.2.1",
     "serialize-javascript": "7.0.2",
-    "serve-static": "^2.2.0",
+    "serve-static": "^2.2.1",
     "typescript": "^5.9.3",
     "undici": "^7.16.0",
-    "vite": "^7.2.7",
+    "vite": "^7.3.0",
     "ws": "^8.18.3"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.1",
+    "@eslint/js": "^9.39.2",
     "@types/body-parser": "^1.19.6",
     "@types/braces": "^3",
     "@types/ejs": "^3",
     "@types/express": "^5.0.6",
     "@types/micromatch": "^4",
-    "@types/node": "^25.0.1",
+    "@types/node": "^25.0.2",
     "@types/serve-static": "^2.2.0",
     "@types/ws": "^8.18.1",
-    "@typescript-eslint/typescript-estree": "^8.49.0",
-    "eslint": "^9.39.1",
-    "typescript-eslint": "^8.49.0"
+    "@typescript-eslint/typescript-estree": "^8.50.0",
+    "eslint": "^9.39.2",
+    "typescript-eslint": "^8.50.0"
   }
 }
