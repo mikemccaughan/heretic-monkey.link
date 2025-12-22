@@ -3,10 +3,11 @@
  * in memory. The list will not have duplicate areas.
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-class TokenList {
+export class TokenList {
+  list/** @type {Set<string>} */;
   /**
    * Creates a new instance of the TokenList class.
-   * @param {string|undefined} value A value to parse as a token list.
+   * @param {string | undefined | null} value A value to parse as a token list.
    */
   constructor(value) {
     if (value == null || value.length === 0) {
@@ -36,11 +37,11 @@ class TokenList {
   /**
    * Gets the token at the index or null.
    * @param {number} index Gets the token at the index given
-   * @returns {string|null} The token at the index or null
+   * @returns {string|undefined} The token at the index or null
    */
   item(index) {
     return index < 0 || index > this.list.size - 1
-      ? null
+      ? undefined 
       : [...this.list][index];
   }
   /**
@@ -53,17 +54,19 @@ class TokenList {
   }
   /**
    * Adds the specified tokens to the list.
-   * @param  {...string} tokens The tokens to add to the list
+   * @param  {...string[]} tokens The tokens to add to the list
    */
   add(...tokens) {
     tokens.forEach(token => this.list.add(token));
+    return this;
   }
   /**
    * Removes the specified tokens from the list.
-   * @param  {...string} tokens The tokens to remove from the list
+   * @param  {...string[]} tokens The tokens to remove from the list
    */
   remove(...tokens) {
     tokens.forEach(token => this.list.delete(token));
+    return this;
   }
   /**
    * Replaces the token with another one.
@@ -74,6 +77,7 @@ class TokenList {
     const arr = [...this.list];
     arr.splice(arr.indexOf(oldToken), 1, newToken);
     this.list = new Set(arr);
+    return this;
   }
   /**
    * Indicates whether the token was found in the allowed list
@@ -90,8 +94,8 @@ class TokenList {
    * true.
    * @param {string} token The token to add or remove
    * @param {boolean|undefined} force (optional) If included, turns the 
-   * toggle into a one way-only operation. If set to false, then token
-   * will only be removed, not added. If set to true, then token will 
+   * toggle into a one way-only operation. If set to false (default), then 
+   * token will only be removed, not added. If set to true, then token will 
    * only be added, not removed.
    * @returns {boolean} true if token is in the list after the call;
    * otherwise, false
