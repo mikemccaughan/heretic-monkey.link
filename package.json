@@ -52,7 +52,7 @@
     "loader-utils": "^3.3.1",
     "micromatch": "^4.0.8",
     "nanoid": "^5.1.7",
-    "path-to-regexp": "^8.3.0",
+    "path-to-regexp": "^8.4.0",
     "rollup": "^4.60.0",
     "send": "^1.2.1",
     "serialize-javascript": "7.0.4",
