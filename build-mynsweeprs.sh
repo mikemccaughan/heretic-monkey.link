@@ -7,6 +7,7 @@ directoriesYarn=(
     "$rootDir/mynsweepr-hooks"
     "$rootDir/mynsweepr-react"
     "$rootDir/mynsweepr-react19"
+    "$rootDir/mynsweepr-next"
 )
 directoriesNpm=(
     "$rootDir/mynsweepr-angular"
