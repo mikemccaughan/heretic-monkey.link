@@ -15,7 +15,7 @@
   "scripts": {
     "start": "yarn node server.cjs",
     "build:yarn": "yarn set version latest",
-    "build:prebuild": "yarn dlx npm-check-updates -u  -x \"@types/node@npm:25.0.1\" && yarn config set enableImmutableInstalls false && yarn install",
+    "build:prebuild": "yarn dlx npm-check-updates -u && yarn config set enableImmutableInstalls false && yarn install",
     "build:directories": "rm -rf publish && mkdir -p publish && mkdir -p publish/mynsweepr-angular && mkdir -p publish/mynsweepr-hooks && mkdir -p publish/mynsweepr-react && mkdir -p publish/mynsweepr-react19",
     "build:nobuild": "yarn install && cp *.*js publish/ && cp *.html publish/ && cp *.css publish/ && cp -r hm-grid publish/hm-grid && cp -r design publish/design",
     "build:workspaces": "yarn workspaces focus --all && yarn workspaces foreach -v --all --exclude heretic-monkey.link run build",
@@ -53,7 +53,7 @@
     "micromatch": "^4.0.8",
     "nanoid": "^5.1.6",
     "path-to-regexp": "^8.3.0",
-    "rollup": "^4.53.5",
+    "rollup": "^4.54.0",
     "send": "^1.2.1",
     "serialize-javascript": "7.0.2",
     "serve-static": "^2.2.1",
@@ -72,8 +72,8 @@
     "@types/node": "^25.0.3",
     "@types/serve-static": "^2.2.0",
     "@types/ws": "^8.18.1",
-    "@typescript-eslint/typescript-estree": "^8.50.0",
+    "@typescript-eslint/typescript-estree": "^8.51.0",
     "eslint": "^9.39.2",
-    "typescript-eslint": "^8.50.0"
+    "typescript-eslint": "^8.51.0"
   }
 }
