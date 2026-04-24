@@ -21,6 +21,11 @@ jobs:
       - uses: actions/setup-node@v6.3.0
         with:
           node-version: 24
+      - name: Yarn Setup
+        uses: DerYeger/yarn-setup-action@v1.0.1
+        with:
+          # The version of Node.js that will be used
+          node-version: 24
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
