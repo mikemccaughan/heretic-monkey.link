@@ -1,7 +1,7 @@
-const { defineConfig } = require("npm-check-updates");
+import { defineConfig } from "npm-check-updates";
 const startsWithAtAngular = /^@angular.*$/;
 
-module.exports = defineConfig({
+export default defineConfig({
   "upgrade": true,
   "reject": (name, semver) => {
     /*if (startsWithAtAngular.test(name)) {

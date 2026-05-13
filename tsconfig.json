@@ -9,7 +9,7 @@
         ],
         "target": "ESNext",
         "module": "ESNext",
-        "moduleResolution": "node",
+        "moduleResolution": "bundler",
         "outDir": "tscOut",
         "strict": true,
         "forceConsistentCasingInFileNames": true
@@ -19,6 +19,7 @@
     },
     "exclude": [
         "publish",
-        "js-temporal/polyfill/dist/dist"
+        "js-temporal/polyfill/dist/dist",
+        "tscOut"
     ]
 }
