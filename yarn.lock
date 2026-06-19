@@ -2433,7 +2433,7 @@ __metadata:
     tar: "npm:^7.5.13"
     typescript: "npm:^5.9.3"
     typescript-eslint: "npm:^8.57.2"
-    undici: "npm:^8.0.0"
+    undici: "npm:^8.5.0"
     vite: "npm:^8.0.5"
     ws: "npm:^8.20.0"
   languageName: unknown
@@ -3832,10 +3832,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici@npm:^8.0.0":
-  version: 8.1.0
-  resolution: "undici@npm:8.1.0"
-  checksum: 10/cc16474d6c3378297f040520e1df83611c6eebe8a11019ecad04d561adf4e2cf1dd72d37110682f871c2147d191a952c5e98fcd884b3249931b222ac8c334081
+"undici@npm:^8.5.0":
+  version: 8.5.0
+  resolution: "undici@npm:8.5.0"
+  checksum: 10/e95913777afd47d76babfe62547bb4e9a94b93f44b50c84b4e0b6fa41c00364e31ff4f433a955b1592c3162f43e8757e2e0feae6eea195187730594523393568
   languageName: node
   linkType: hard
 
