@@ -4,12 +4,15 @@ import { nameGenerator } from "./characters.mjs";
 describe("nameGenerator", {}, () => {
   it("returns a stream that eventually has : in it", (_, done) => {
     (async () => {
+      let result = false;
       for await (const char of nameGenerator()) {
-        // eslint-disable-next-line no-undef
-        console.log(char);
         if (char === ":") {
-          done();
+          result = true;
+          done(true);
         }
+      }
+      if (!result) {
+        done(false);
       }
     })();
 });

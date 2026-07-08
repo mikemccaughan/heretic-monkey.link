@@ -282,5 +282,6 @@ export default class MineBoard {
      */
     clearBoard() {
         this.element.innerHTML = "";
+        this.init();
     }
 }
