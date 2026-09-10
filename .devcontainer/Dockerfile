@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm
+FROM mcr.microsoft.com/devcontainers/typescript-node:latest
 RUN apt-get update && \
     export DEBIAN_FRONTEND=noninteractive && \
     apt-get -y dist-upgrade && \
