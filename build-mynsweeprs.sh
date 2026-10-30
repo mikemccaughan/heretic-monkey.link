@@ -4,9 +4,9 @@ rootDir=$(dirname "$PWD")
 #
 # dirctories to build and deploy
 directoriesYarn=(
-    "$rootDir/mynsweepr-hooks"
-    "$rootDir/mynsweepr-react"
-    "$rootDir/mynsweepr-react19"
+    "$rootDir/mynsweepr-vue" 
+    "$rootDir/mynsweepr-react19" 
+    "$rootDir/hm-datetimepicker"
 )
 directoriesNpm=(
     "$rootDir/mynsweepr-angular"

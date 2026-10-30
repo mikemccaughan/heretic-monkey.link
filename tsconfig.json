@@ -1,6 +1,7 @@
 {
     "compileOnSave": true,
     "compilerOptions": {
+        "jsx": "react",
         "allowJs": true,
         "checkJs": true,
         "lib": [

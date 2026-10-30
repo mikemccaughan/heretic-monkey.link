@@ -1,0 +1,11 @@
+# Auto-detect text files and normalize to LF in repo
+* text=auto
+
+# Force specific endings
+*.bat text eol=crlf
+*.sh text eol=lf
+
+# Binary files (no conversion)
+*.png binary
+*.jpg binary
+*.zip binary
