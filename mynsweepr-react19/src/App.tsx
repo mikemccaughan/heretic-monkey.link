@@ -18,7 +18,7 @@ function App() {
         <div>
           <h1>Get started</h1>
           <p>
-            
+            <a href="./mynsweepr/MineBoard.tsx">Play Mynsweepr</a>
           </p>
         </div>
         <button
