@@ -1,0 +1,59 @@
+dialog.modal {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    max-width: 100vh;
+    min-width: 25vh;
+    max-height: 100vh;
+    min-height: 25vh;
+}
+dialog.modal[open] {
+    display: flex;
+    opacity: 1;
+}
+dialog.modal::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+}
+.modal-header {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: baseline;
+    width: 100%;
+    padding: 0.5rem 1rem;
+}
+.modal-header h2 {
+    font-size: smaller;
+    flex-grow: 1;
+}
+.modal-header button {
+    align-self: flex-end;
+}
+.modal-button {
+    background-color: transparent;
+    border: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1rem;
+}
+.modal-content {
+    flex-grow: 1;
+}
+.modal-footer {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: 100%;
+    padding: 0.5rem 1rem;
+}
