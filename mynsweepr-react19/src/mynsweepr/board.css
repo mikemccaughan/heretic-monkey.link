@@ -1,7 +1,0 @@
-.mynsweepr .board {
-    display: grid;
-    grid-template-columns: repeat(var(--cols), 1fr);
-    grid-template-rows: repeat(var(--rows), 1fr);
-    gap: 4px;
-    aspect-ratio: var(--cols) / var(--rows);
-}

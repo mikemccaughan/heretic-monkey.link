@@ -2,3 +2,15 @@
 	path = hm-datetimepicker
 	url = https://github.com/mikemccaughan/hm-datetimepicker.git
 	branch = main
+[submodule "mynsweepr-angular"]
+	path = mynsweepr-angular
+	url = https://github.com/mikemccaughan/mynsweepr-angular.git
+	branch = main
+[submodule "mynsweepr-react19"]
+	path = mynsweepr-react19
+	url = https://github.com/mikemccaughan/mynsweepr-react19.git
+	branch = main
+[submodule "mynsweepr-vue"]
+	path = mynsweepr-vue
+	url = https://github.com/mikemccaughan/mynsweepr-vue.git
+	branch = main
