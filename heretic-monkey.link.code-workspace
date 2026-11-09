@@ -2,6 +2,18 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "hm-datetimepicker"
+		},
+		{
+			"path": "mynsweepr-angular"
+		},
+		{
+			"path": "mynsweepr-react19"
+		},
+		{
+			"path": "mynsweepr-vue"
 		}
 	],
 	"settings": {}
