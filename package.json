@@ -43,6 +43,7 @@
     "body-parser": "^2.4.0",
     "brace-expansion": "^5.0.12",
     "braces": "^3.0.3",
+    "browserslist": "^4.29.5",
     "cacache": "^21.0.1",
     "cookie": "^2.0.2",
     "cross-spawn": "^7.0.6",
