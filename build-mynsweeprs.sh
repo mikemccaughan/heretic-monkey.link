@@ -7,9 +7,9 @@ directoriesYarn=(
     "$rootDir/mynsweepr-vue" 
     "$rootDir/mynsweepr-react19" 
     "$rootDir/hm-datetimepicker"
+    "$rootDir/mynsweepr-angular"
 )
 directoriesNpm=(
-    "$rootDir/mynsweepr-angular"
 )
 # command to run
 commandYarn="yarn run build:deploy"
