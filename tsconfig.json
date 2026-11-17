@@ -13,7 +13,11 @@
         "moduleResolution": "bundler",
         "outDir": "tscOut",
         "strict": true,
-        "forceConsistentCasingInFileNames": true
+        "forceConsistentCasingInFileNames": true,
+        "types": [
+            "vite-plugin-pwa/client",
+            "vite-plugin-pwa/info",
+        ]
     },
     "angularCompilerOptions": {
         "strictTemplates": true
